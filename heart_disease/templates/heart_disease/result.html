@@ -7,119 +7,142 @@
   <div class="row justify-content-center">
     <div class="col-xl-8">
 
-      <!-- ── Hasil Utama ── -->
-      <div class="card-custom mb-4 text-center" style="overflow:hidden;">
-        {% if result.prediction == 1 %}
-        <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:2.5rem;color:#fff;">
-          <i class="bi bi-exclamation-triangle-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
-          <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">POSITIF PENYAKIT JANTUNG</h2>
-          <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung</p>
+      <!-- Wrapper for PDF Export -->
+      <div id="pdfReportContainer" class="p-1">
+        <!-- Printable Report Header (only visible on print/PDF) -->
+        <div class="d-none align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary" id="pdfPrintHeader">
+          <div class="d-flex align-items-center gap-2">
+            <div style="background:var(--lime); width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#0A0A0A; font-size:1.2rem; box-shadow: 0 4px 12px rgba(170,255,0,0.35);">
+              <i class="bi bi-heart-pulse-fill"></i>
+            </div>
+            <div>
+              <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard AI</h4>
+              <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">Prediction System Report</span>
+            </div>
+          </div>
+          <div class="text-end">
+            <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">Laporan Hasil Analisis Jantung</div>
+            <div style="font-size:0.65rem; color:var(--muted);">Dicetak pada: <span id="pdfPrintDate"></span></div>
+          </div>
         </div>
-        {% else %}
-        <div style="background:linear-gradient(135deg,#2a9d8f,#1b7a70);padding:2.5rem;color:#fff;">
-          <i class="bi bi-shield-check-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
-          <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">NEGATIF PENYAKIT JANTUNG</h2>
-          <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung</p>
-        </div>
-        {% endif %}
 
-        <div class="p-4">
-          <div class="row g-3 justify-content-center">
-            <div class="col-sm-4">
-              <div class="metric-box">
-                <div class="val {% if result.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
-                  {{ result.probability.positive }}%
-                </div>
-                <div class="lbl">Prob. Positif</div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="metric-box">
-                <div class="val" style="color:var(--teal);">{{ result.probability.negative }}%</div>
-                <div class="lbl">Prob. Negatif</div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="metric-box">
-                <div class="val
-                  {% if result.risk_level == 'Tinggi' %}text-danger
-                  {% elif result.risk_level == 'Sedang' %}text-warning
-                  {% else %}text-success{% endif %}">
-                  {{ result.risk_level }}
-                </div>
-                <div class="lbl">Tingkat Risiko</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Probability bar -->
-          <div class="mt-4">
-            <div class="d-flex justify-content-between mb-1" style="font-size:.82rem;font-weight:600;">
-              <span style="color:var(--teal);">Negatif {{ result.probability.negative }}%</span>
-              <span style="color:var(--accent);">Positif {{ result.probability.positive }}%</span>
-            </div>
-            <div class="progress" style="height:14px;border-radius:8px;background:#333333;">
-              {% if result.prediction == 1 %}
-              <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--accent);border-radius:8px;transition:width 1s ease;"></div>
-              {% else %}
-              <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--teal);border-radius:8px;transition:width 1s ease;"></div>
-              {% endif %}
-            </div>
-          </div>
-
-          {% if result.risk_level == 'Tinggi' %}
-          <div class="alert alert-danger alert-custom mt-3 text-start" style="font-size:.88rem;">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Risiko Tinggi:</strong> Sangat disarankan untuk segera berkonsultasi dengan dokter spesialis jantung.
-          </div>
-          {% elif result.risk_level == 'Sedang' %}
-          <div class="alert alert-warning alert-custom mt-3 text-start" style="font-size:.88rem;">
-            <i class="bi bi-exclamation-circle-fill me-2"></i>
-            <strong>Risiko Sedang:</strong> Disarankan untuk melakukan pemeriksaan lebih lanjut dengan dokter.
+        <!-- ── Hasil Utama ── -->
+        <div class="card-custom mb-4 text-center" style="overflow:hidden;">
+          {% if result.prediction == 1 %}
+          <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:2.5rem;color:#fff;">
+            <i class="bi bi-exclamation-triangle-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
+            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">POSITIF PENYAKIT JANTUNG</h2>
+            <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung</p>
           </div>
           {% else %}
-          <div class="alert alert-success alert-custom mt-3 text-start" style="font-size:.88rem;">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <strong>Risiko Rendah:</strong> Tetap jaga pola hidup sehat dan lakukan pemeriksaan rutin.
+          <div style="background:linear-gradient(135deg,#2a9d8f,#1b7a70);padding:2.5rem;color:#fff;">
+            <i class="bi bi-shield-check-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
+            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">NEGATIF PENYAKIT JANTUNG</h2>
+            <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung</p>
           </div>
           {% endif %}
-        </div>
-      </div>
 
-      <!-- ── Data Input ── -->
-      <div class="card-custom mb-4">
-        <div class="card-header-custom"><i class="bi bi-clipboard-data"></i> Data Klinis yang Diinput</div>
-        <div class="p-4">
-          <div class="row g-2">
-            {% for key, info in feature_info.items %}
-            <div class="col-md-4 col-sm-6">
-              <div style="background:#0A0A0A;border-radius:10px;padding:.7rem 1rem;border:1px solid #333333;">
-                <div style="font-size:.75rem;color:#BBBBBB;text-transform:uppercase;letter-spacing:.3px;font-weight:600;">{{ info.label }}</div>
-                <div style="font-weight:700;font-size:.95rem;margin-top:2px;color:#FFFFFF;">
-                  {% if info.choices %}
-                    {% for val, lbl in info.choices %}
-                      {% if val|stringformat:"s" == input_data|getitem:key|stringformat:"s" %}{{ lbl }}{% endif %}
-                    {% endfor %}
-                  {% else %}
-                    {{ input_data|getitem:key }}
-                  {% endif %}
+          <div class="p-4">
+            <div class="row g-3 justify-content-center">
+              <div class="col-sm-4">
+                <div class="metric-box">
+                  <div class="val {% if result.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
+                    {{ result.probability.positive }}%
+                  </div>
+                  <div class="lbl">Prob. Positif</div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="metric-box">
+                  <div class="val" style="color:var(--teal);">{{ result.probability.negative }}%</div>
+                  <div class="lbl">Prob. Negatif</div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="metric-box">
+                  <div class="val
+                    {% if result.risk_level == 'Tinggi' %}text-danger
+                    {% elif result.risk_level == 'Sedang' %}text-warning
+                    {% else %}text-success{% endif %}">
+                    {{ result.risk_level }}
+                  </div>
+                  <div class="lbl">Tingkat Risiko</div>
                 </div>
               </div>
             </div>
-            {% endfor %}
+
+            <!-- Probability bar -->
+            <div class="mt-4">
+              <div class="d-flex justify-content-between mb-1" style="font-size:.82rem;font-weight:600;">
+                <span style="color:var(--teal);">Negatif {{ result.probability.negative }}%</span>
+                <span style="color:var(--accent);">Positif {{ result.probability.positive }}%</span>
+              </div>
+              <div class="progress" style="height:14px;border-radius:8px;background:#333333;">
+                {% if result.prediction == 1 %}
+                <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--accent);border-radius:8px;transition:width 1s ease;"></div>
+                {% else %}
+                <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--teal);border-radius:8px;transition:width 1s ease;"></div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if result.risk_level == 'Tinggi' %}
+            <div class="alert alert-danger alert-custom mt-3 text-start" style="font-size:.88rem;">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <strong>Risiko Tinggi:</strong> Sangat disarankan untuk segera berkonsultasi dengan dokter spesialis jantung.
+            </div>
+            {% elif result.risk_level == 'Sedang' %}
+            <div class="alert alert-warning alert-custom mt-3 text-start" style="font-size:.88rem;">
+              <i class="bi bi-exclamation-circle-fill me-2"></i>
+              <strong>Risiko Sedang:</strong> Disarankan untuk melakukan pemeriksaan lebih lanjut dengan dokter.
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-custom mt-3 text-start" style="font-size:.88rem;">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <strong>Risiko Rendah:</strong> Tetap jaga pola hidup sehat dan lakukan pemeriksaan rutin.
+            </div>
+            {% endif %}
           </div>
         </div>
-      </div>
 
-      <!-- ── Disclaimer ── -->
-      <div class="alert alert-warning alert-custom mb-4" style="font-size:.85rem;">
-        <i class="bi bi-shield-exclamation me-2"></i>
-        <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan <strong>tidak menggantikan diagnosis dokter</strong>.
-        Hasil ini hanya untuk tujuan akademik dan penelitian.
-      </div>
+        <!-- ── Data Input ── -->
+        <div class="card-custom mb-4">
+          <div class="card-header-custom"><i class="bi bi-clipboard-data"></i> Data Klinis yang Diinput</div>
+          <div class="p-4">
+            <div class="row g-2">
+              {% for key, info in feature_info.items %}
+              <div class="col-md-4 col-sm-6">
+                <div style="background:#0A0A0A;border-radius:10px;padding:.7rem 1rem;border:1px solid #333333;">
+                  <div style="font-size:.75rem;color:#BBBBBB;text-transform:uppercase;letter-spacing:.3px;font-weight:600;">{{ info.label }}</div>
+                  <div style="font-weight:700;font-size:.95rem;margin-top:2px;color:#FFFFFF;">
+                    {% if info.choices %}
+                      {% for val, lbl in info.choices %}
+                        {% if val|stringformat:"s" == input_data|getitem:key|stringformat:"s" %}{{ lbl }}{% endif %}
+                      {% endfor %}
+                    {% else %}
+                      {{ input_data|getitem:key }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Disclaimer ── -->
+        <div class="alert alert-warning alert-custom mb-4" style="font-size:.85rem;">
+          <i class="bi bi-shield-exclamation me-2"></i>
+          <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan <strong>tidak menggantikan diagnosis dokter</strong>.
+          Hasil ini hanya untuk tujuan akademik dan penelitian.
+        </div>
+      </div> <!-- /pdfReportContainer -->
 
       <div class="d-flex flex-column flex-sm-row gap-3">
-        <a href="{% url 'predict' %}" class="btn-primary-custom btn w-100 w-sm-auto text-center">
+        <button id="downloadPdfBtn" class="btn-primary-custom btn w-100 w-sm-auto text-center d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-file-earmark-pdf-fill"></i> Unduh PDF
+        </button>
+        <a href="{% url 'predict' %}" class="btn-secondary-custom btn w-100 w-sm-auto text-center">
           <i class="bi bi-arrow-repeat me-2"></i>Prediksi Baru
         </a>
         <a href="{% url 'history' %}" class="btn-secondary-custom btn w-100 w-sm-auto text-center">
@@ -133,4 +156,66 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- html2pdf.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+    const btn = this;
+    const originalText = btn.innerHTML;
+    
+    // Show spinner
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan PDF...';
+    btn.disabled = true;
+    
+    const printHeader = document.getElementById('pdfPrintHeader');
+    const printDateSpan = document.getElementById('pdfPrintDate');
+    
+    if (printHeader && printDateSpan) {
+      printDateSpan.textContent = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+      printHeader.classList.remove('d-none');
+      printHeader.classList.add('d-flex');
+    }
+    
+    const element = document.getElementById('pdfReportContainer');
+    
+    // Get info from template vars
+    const patientAge = "{{ input_data.age|default:'-' }}";
+    const patientRisk = "{{ result.risk_level|default:'-' }}";
+    const filename = `Hasil_Prediksi_HeartGuard_Usia${patientAge}_Risiko${patientRisk}.pdf`;
+    
+    const opt = {
+      margin:       [10, 10, 10, 10],
+      filename:     filename,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#111111',
+        scrollX: 0,
+        scrollY: 0
+      },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().from(element).set(opt).save().then(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      if (printHeader) {
+        printHeader.classList.remove('d-flex');
+        printHeader.classList.add('d-none');
+      }
+    }).catch(err => {
+      console.error(err);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      if (printHeader) {
+        printHeader.classList.remove('d-flex');
+        printHeader.classList.add('d-none');
+      }
+    });
+  });
+</script>
 {% endblock %}

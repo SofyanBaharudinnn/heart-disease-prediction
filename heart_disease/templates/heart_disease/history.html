@@ -108,116 +108,141 @@
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                  <div class="row g-4">
-                    <!-- Data Pasien -->
-                    <div class="col-md-6">
-                      <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>Data Profil</h6>
-                      <ul class="list-group list-group-flush" style="font-size:0.9rem;">
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Usia</span>
-                          <strong>{{ h.age }} Tahun</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Jenis Kelamin</span>
-                          <strong>{% if h.sex == 1 %}Laki-laki{% else %}Perempuan{% endif %}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Jenis Nyeri Dada (cp)</span>
-                          <strong>
-                            {% if h.cp == 0 %}Typical Angina
-                            {% elif h.cp == 1 %}Atypical Angina
-                            {% elif h.cp == 2 %}Non-anginal Pain
-                            {% else %}Asymptomatic{% endif %}
-                          </strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Tekanan Darah Istirahat (trestbps)</span>
-                          <strong>{{ h.trestbps }} mmHg</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Kolesterol (chol)</span>
-                          <strong>{{ h.chol }} mg/dl</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Gula Darah Puasa (fbs)</span>
-                          <strong>{% if h.fbs == 1 %}> 120 mg/dl{% else %}< 120 mg/dl{% endif %}</strong>
-                        </li>
-                      </ul>
+                  <div id="pdfReportContainer{{ h.id }}" class="p-1">
+                    <!-- Printable Report Header (only visible on print/PDF) -->
+                    <div class="d-none align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary" id="pdfPrintHeader{{ h.id }}">
+                      <div class="d-flex align-items-center gap-2">
+                        <div style="background:var(--lime); width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#0A0A0A; font-size:1.2rem; box-shadow: 0 4px 12px rgba(170,255,0,0.35);">
+                          <i class="bi bi-heart-pulse-fill"></i>
+                        </div>
+                        <div>
+                          <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard AI</h4>
+                          <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">Prediction System Report</span>
+                        </div>
+                      </div>
+                      <div class="text-end">
+                        <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">Laporan Hasil Analisis Jantung</div>
+                        <div style="font-size:0.65rem; color:var(--muted);">Dicetak pada: <span id="pdfPrintDate{{ h.id }}"></span></div>
+                      </div>
+                    </div>
+
+                    <div class="row g-4">
+                      <!-- Data Pasien -->
+                      <div class="col-md-6">
+                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>Data Profil</h6>
+                        <ul class="list-group list-group-flush" style="font-size:0.9rem;">
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Usia</span>
+                            <strong>{{ h.age }} Tahun</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Jenis Kelamin</span>
+                            <strong>{% if h.sex == 1 %}Laki-laki{% else %}Perempuan{% endif %}</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Jenis Nyeri Dada (cp)</span>
+                            <strong>
+                              {% if h.cp == 0 %}Typical Angina
+                              {% elif h.cp == 1 %}Atypical Angina
+                              {% elif h.cp == 2 %}Non-anginal Pain
+                              {% else %}Asymptomatic{% endif %}
+                            </strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Tekanan Darah Istirahat (trestbps)</span>
+                            <strong>{{ h.trestbps }} mmHg</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Kolesterol (chol)</span>
+                            <strong>{{ h.chol }} mg/dl</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Gula Darah Puasa (fbs)</span>
+                            <strong>{% if h.fbs == 1 %}> 120 mg/dl{% else %}< 120 mg/dl{% endif %}</strong>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <!-- Data Medis Tambahan -->
+                      <div class="col-md-6">
+                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>Data Klinis</h6>
+                        <ul class="list-group list-group-flush" style="font-size:0.9rem;">
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">EKG Istirahat (restecg)</span>
+                            <strong>
+                              {% if h.restecg == 0 %}Normal
+                              {% elif h.restecg == 1 %}ST-T Wave Abnormality
+                              {% else %}Left Ventricular Hypertrophy{% endif %}
+                            </strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Detak Jantung Maksimal (thalach)</span>
+                            <strong>{{ h.thalach }} bpm</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Angina karena Olahraga (exang)</span>
+                            <strong>{% if h.exang == 1 %}Ya{% else %}Tidak{% endif %}</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">ST Depresi (oldpeak)</span>
+                            <strong>{{ h.oldpeak }}</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Kemiringan ST (slope)</span>
+                            <strong>
+                              {% if h.slope == 0 %}Upsloping
+                              {% elif h.slope == 1 %}Flat
+                              {% else %}Downsloping{% endif %}
+                            </strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Pembuluh Darah (ca)</span>
+                            <strong>{{ h.ca }}</strong>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between px-0">
+                            <span style="color:var(--muted)">Thalassemia (thal)</span>
+                            <strong>
+                              {% if h.thal == 0 %}Normal
+                              {% elif h.thal == 1 %}Fixed Defect
+                              {% else %}Reversable Defect{% endif %}
+                            </strong>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                     
-                    <!-- Data Medis Tambahan -->
-                    <div class="col-md-6">
-                      <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>Data Klinis</h6>
-                      <ul class="list-group list-group-flush" style="font-size:0.9rem;">
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">EKG Istirahat (restecg)</span>
-                          <strong>
-                            {% if h.restecg == 0 %}Normal
-                            {% elif h.restecg == 1 %}ST-T Wave Abnormality
-                            {% else %}Left Ventricular Hypertrophy{% endif %}
-                          </strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Detak Jantung Maksimal (thalach)</span>
-                          <strong>{{ h.thalach }} bpm</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Angina karena Olahraga (exang)</span>
-                          <strong>{% if h.exang == 1 %}Ya{% else %}Tidak{% endif %}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">ST Depresi (oldpeak)</span>
-                          <strong>{{ h.oldpeak }}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Kemiringan ST (slope)</span>
-                          <strong>
-                            {% if h.slope == 0 %}Upsloping
-                            {% elif h.slope == 1 %}Flat
-                            {% else %}Downsloping{% endif %}
-                          </strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Pembuluh Darah (ca)</span>
-                          <strong>{{ h.ca }}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between px-0">
-                          <span style="color:var(--muted)">Thalassemia (thal)</span>
-                          <strong>
-                            {% if h.thal == 0 %}Normal
-                            {% elif h.thal == 1 %}Fixed Defect
-                            {% else %}Reversable Defect{% endif %}
-                          </strong>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <hr style="opacity:0.1;margin:2rem 0;">
-                  
-                  <!-- Hasil Prediksi -->
-                  <div class="p-3" style="background:#0A0A0A; border-radius:12px; border:1px solid rgba(170,255,0,0.2);">
-                    <div class="row align-items-center text-center gy-3">
-                      <div class="col-12 col-sm-4">
-                        <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Hasil Akhir</div>
-                        {% if h.prediction == 1 %}
-                        <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">POSITIF</div>
-                        {% else %}
-                        <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">NEGATIF</div>
-                        {% endif %}
-                      </div>
-                      <div class="col-12 col-sm-4 modal-stat-divider">
-                        <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Probabilitas (+)</div>
-                        <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{{ h.probability_pos|floatformat:1 }}%</div>
-                      </div>
-                      <div class="col-12 col-sm-4">
-                        <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Tingkat Risiko</div>
-                        {% if h.risk_level == 'Tinggi' %}<div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">TINGGI</div>
-                        {% elif h.risk_level == 'Sedang' %}<div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">SEDANG</div>
-                        {% else %}<div style="color:var(--lime);font-weight:800;font-size:1.2rem;">RENDAH</div>{% endif %}
+                    <hr style="opacity:0.1;margin:2rem 0;">
+                    
+                    <!-- Hasil Prediksi -->
+                    <div class="p-3" style="background:#0A0A0A; border-radius:12px; border:1px solid rgba(170,255,0,0.2);">
+                      <div class="row align-items-center text-center gy-3">
+                        <div class="col-12 col-sm-4">
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Hasil Akhir</div>
+                          {% if h.prediction == 1 %}
+                          <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">POSITIF</div>
+                          {% else %}
+                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">NEGATIF</div>
+                          {% endif %}
+                        </div>
+                        <div class="col-12 col-sm-4 modal-stat-divider">
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Probabilitas (+)</div>
+                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{{ h.probability_pos|floatformat:1 }}%</div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Tingkat Risiko</div>
+                          {% if h.risk_level == 'Tinggi' %}<div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">TINGGI</div>
+                          {% elif h.risk_level == 'Sedang' %}<div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">SEDANG</div>
+                          {% else %}<div style="color:var(--lime);font-weight:800;font-size:1.2rem;">RENDAH</div>{% endif %}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </div> <!-- /pdfReportContainer -->
+                </div>
+                <div class="modal-footer" style="background:#0A0A0A; border-radius: 0 0 15px 15px; padding:1rem 1.5rem; border-top:1px solid #333; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                  <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2 btn-sm" onclick="downloadModalPdf('{{ h.id }}', '{{ h.age }}', '{{ h.risk_level }}')" id="downloadPdfBtn{{ h.id }}">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> Unduh PDF
+                  </button>
+                  <button type="button" class="btn btn-secondary-custom btn-sm" data-bs-dismiss="modal">Tutup</button>
                 </div>
               </div>
             </div>
@@ -238,4 +263,62 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- html2pdf.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function downloadModalPdf(historyId, age, riskLevel) {
+    const btn = document.getElementById(`downloadPdfBtn${historyId}`);
+    const originalText = btn.innerHTML;
+    
+    // Show spinner
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan...';
+    btn.disabled = true;
+    
+    const printHeader = document.getElementById(`pdfPrintHeader${historyId}`);
+    const printDateSpan = document.getElementById(`pdfPrintDate${historyId}`);
+    
+    if (printHeader && printDateSpan) {
+      printDateSpan.textContent = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+      printHeader.classList.remove('d-none');
+      printHeader.classList.add('d-flex');
+    }
+    
+    const element = document.getElementById(`pdfReportContainer${historyId}`);
+    const filename = `Hasil_Prediksi_HeartGuard_Riwayat_ID${historyId}_Usia${age}_Risiko${riskLevel}.pdf`;
+    
+    const opt = {
+      margin:       [10, 10, 10, 10],
+      filename:     filename,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#1C1C1C',
+        scrollX: 0,
+        scrollY: 0
+      },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().from(element).set(opt).save().then(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      if (printHeader) {
+        printHeader.classList.remove('d-flex');
+        printHeader.classList.add('d-none');
+      }
+    }).catch(err => {
+      console.error(err);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      if (printHeader) {
+        printHeader.classList.remove('d-flex');
+        printHeader.classList.add('d-none');
+      }
+    });
+  }
+</script>
 {% endblock %}
