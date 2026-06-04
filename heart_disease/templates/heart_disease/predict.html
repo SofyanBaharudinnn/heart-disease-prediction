@@ -1,5 +1,5 @@
 {% extends 'heart_disease/base.html' %}
-{% block title %}Form Prediksi – HeartGuard AI{% endblock %}
+{% block title %}Form Prediksi – HeartGuard{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -173,4 +173,273 @@
     </div>
   </div>
 </div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay">
+  <div class="loading-content">
+    <div class="radar-container mb-4">
+      <div class="radar-scanner"></div>
+      <div class="radar-ring ring-1"></div>
+      <div class="radar-ring ring-2"></div>
+      <!-- SVG Heart animation is offline-safe and robust -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-pulsing-svg">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </div>
+    
+    <h3 class="loading-title mb-2">Menganalisis Kesehatan Jantung</h3>
+    <p class="loading-subtitle mb-4 text-muted">Sistem AI sedang memproses data klinis...</p>
+    
+    <!-- Custom Simulated Progress Bar -->
+    <div class="progress-wrapper">
+      <div class="progress-bar-container">
+        <div id="loading-progress-bar" class="progress-bar-fill"></div>
+      </div>
+      <div class="d-flex justify-content-between mt-2 progress-status-text">
+        <span id="loading-status-text">Menghubungkan ke modul AI...</span>
+        <span id="loading-percentage-text" class="status-percentage">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Loading Overlay */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.96);
+    backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-content {
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Radar / Pulse Ring Container */
+  .radar-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Rotating dashed radar ring */
+  .radar-scanner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed rgba(170, 255, 0, 0.3);
+    border-radius: 50%;
+    animation: spin-scanner 10s linear infinite;
+  }
+
+  /* Outer expanding ripples */
+  .radar-ring {
+    position: absolute;
+    border: 2px solid rgba(170, 255, 0, 0.2);
+    border-radius: 50%;
+    animation: ripple 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    opacity: 0;
+  }
+
+  .ring-1 {
+    animation-delay: 0s;
+  }
+
+  .ring-2 {
+    animation-delay: 0.8s;
+  }
+
+  /* Pulsing red/lime heart (SVG version) */
+  .heart-pulsing-svg {
+    width: 72px;
+    height: 72px;
+    fill: var(--lime);
+    filter: drop-shadow(0 0 15px rgba(170, 255, 0, 0.6));
+    animation: human-heartbeat 1.2s infinite ease-in-out;
+    z-index: 5;
+  }
+
+  /* Progress bar container */
+  .progress-wrapper {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .progress-bar-container {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #88cc00, var(--lime));
+    border-radius: 20px;
+    box-shadow: 0 0 12px var(--lime);
+    transition: width 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-status-text {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--muted);
+  }
+
+  .status-percentage {
+    color: var(--lime);
+    font-weight: 700;
+  }
+
+  .loading-title {
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+  }
+
+  .loading-subtitle {
+    font-size: 0.9rem;
+    color: #888888;
+  }
+
+  /* Animations */
+  @keyframes spin-scanner {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes ripple {
+    0% {
+      width: 100px;
+      height: 100px;
+      opacity: 0.8;
+    }
+    100% {
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+    }
+  }
+
+  @keyframes human-heartbeat {
+    0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(170, 255, 0, 0.4)); }
+    14% { transform: scale(1.18); filter: drop-shadow(0 0 20px rgba(170, 255, 0, 0.8)); }
+    28% { transform: scale(1.02); filter: drop-shadow(0 0 8px rgba(170, 255, 0, 0.5)); }
+    42% { transform: scale(1.22); filter: drop-shadow(0 0 25px rgba(170, 255, 0, 0.9)); }
+    70% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(170, 255, 0, 0.4)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(170, 255, 0, 0.4)); }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const overlay = document.getElementById('loading-overlay');
+    const progressBar = document.getElementById('loading-progress-bar');
+    const statusText = document.getElementById('loading-status-text');
+    const percentageText = document.getElementById('loading-percentage-text');
+    
+    if (!form || !overlay) return;
+
+    let isSubmitting = false;
+
+    // Define simulation steps
+    const steps = [
+      { percentage: 15, status: 'Menghubungkan ke modul AI...', duration: 400 },
+      { percentage: 35, status: 'Membaca parameter klinis...', duration: 600 },
+      { percentage: 60, status: 'Mengevaluasi dengan Random Forest...', duration: 700 },
+      { percentage: 85, status: 'Menghitung probabilitas risiko...', duration: 500 },
+      { percentage: 100, status: 'Menyusun hasil diagnosis...', duration: 400 }
+    ];
+
+    form.addEventListener('submit', function(e) {
+      if (isSubmitting) {
+        return;
+      }
+      
+      // Stop the initial submission to show animation
+      e.preventDefault();
+      
+      // Show overlay
+      overlay.style.display = 'flex';
+      
+      isSubmitting = true;
+      
+      let currentStepIndex = 0;
+      
+      function runSimulation() {
+        if (currentStepIndex >= steps.length) {
+          // Finish and submit form
+          setTimeout(function() {
+            form.submit();
+          }, 200);
+          return;
+        }
+        
+        const step = steps[currentStepIndex];
+        const targetPercent = step.percentage;
+        const status = step.status;
+        const duration = step.duration;
+        
+        // Update status text
+        statusText.textContent = status;
+        
+        // Smoothly animate percentage
+        let startPercent = currentStepIndex > 0 ? steps[currentStepIndex - 1].percentage : 0;
+        let startTime = performance.now();
+        
+        function animateProgress(timestamp) {
+          let elapsed = timestamp - startTime;
+          let progressRatio = Math.min(elapsed / duration, 1);
+          
+          // Easing: easeOutQuad
+          let easeRatio = progressRatio * (2 - progressRatio);
+          
+          let currentPercent = Math.round(startPercent + (targetPercent - startPercent) * easeRatio);
+          
+          progressBar.style.width = currentPercent + '%';
+          percentageText.textContent = currentPercent + '%';
+          
+          if (progressRatio < 1) {
+            requestAnimationFrame(animateProgress);
+          } else {
+            // Step complete, move to next step
+            currentStepIndex++;
+            setTimeout(runSimulation, 100);
+          }
+        }
+        
+        requestAnimationFrame(animateProgress);
+      }
+      
+      // Start simulation
+      runSimulation();
+    });
+  });
+</script>
 {% endblock %}

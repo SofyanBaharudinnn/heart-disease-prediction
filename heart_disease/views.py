@@ -1,6 +1,11 @@
+import io
+import base64
 import json
 import os
 import shutil
+import socket
+# pyrefly: ignore [missing-import]
+from django.urls import reverse
 # pyrefly: ignore [missing-import]
 from django.shortcuts import render, redirect, get_object_or_404
 # pyrefly: ignore [missing-import]
@@ -25,6 +30,44 @@ from .models import PredictionHistory, ModelMetrics
 
 def is_admin(user):
     return user.is_authenticated and user.is_staff
+
+
+# ─── QR Code Generator ───────────────────────────────────────────────────────
+def generate_qr_base64(url):
+    """Generate QR code dari URL dan kembalikan sebagai base64 PNG string."""
+    try:
+        import qrcode
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=10,
+            border=3,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+        # Theme: lime (#AAFF00) background, near-black fill — sesuai brand HeartGuard
+        img = qr.make_image(fill_color="#0A0A0A", back_color="#AAFF00")
+        buffer = io.BytesIO()
+        # pyrefly: ignore [unexpected-keyword]
+        img.save(buffer, format='PNG')
+        buffer.seek(0)
+        return base64.b64encode(buffer.getvalue()).decode()
+    except Exception:
+        return None
+
+
+# ─── LAN IP Detector ──────────────────────────────────────────────────────────
+def get_local_network_ip():
+    """Deteksi IP LAN mesin agar QR code bisa diakses dari HP di jaringan yang sama."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Tidak perlu koneksi nyata — hanya untuk mendapatkan interface yang digunakan
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return None
 
 
 # ─── Home ────────────────────────────────────────────────────────────────────
@@ -211,7 +254,7 @@ def predict_view(request):
                 return redirect('predict')
 
             # Simpan riwayat
-            PredictionHistory.objects.create(
+            history_obj = PredictionHistory.objects.create(
                 user     = request.user if request.user.is_authenticated else None,
                 age      = int(input_data['age']),
                 sex      = int(input_data['sex']),
@@ -232,10 +275,38 @@ def predict_view(request):
                 risk_level      = result['risk_level'],
             )
 
+            # Generate nomor seri unik: HG-YYYYMMDD-XXXX
+            serial = f"HG-{history_obj.created_at.strftime('%Y%m%d')}-{history_obj.id:04d}"
+            history_obj.serial_number = serial
+            history_obj.save(update_fields=['serial_number'])
+
+            # Generate QR code yang menuju halaman detail prediksi
+            # Gunakan IP LAN agar QR bisa dipindai dari HP di jaringan yang sama
+            detail_path = reverse('prediction_detail', args=[history_obj.id])
+            detail_url_browser = request.build_absolute_uri(detail_path)
+
+            local_ip = get_local_network_ip()
+            port = request.get_port()
+            if local_ip and request.get_host() in ('127.0.0.1:' + port, 'localhost:' + port,
+                                                    '127.0.0.1', 'localhost'):
+                # Ganti localhost/127.0.0.1 dengan IP LAN yang bisa diakses HP
+                detail_url_qr = detail_url_browser.replace(
+                    request.get_host(), f"{local_ip}:{port}"
+                )
+            else:
+                detail_url_qr = detail_url_browser
+
+            qr_b64 = generate_qr_base64(detail_url_qr)
+
             context = {
-                'result':     result,
-                'input_data': input_data,
-                'feature_info': FEATURE_INFO,
+                'result':             result,
+                'input_data':         input_data,
+                'feature_info':       FEATURE_INFO,
+                'prediction_record':  history_obj,
+                'qr_code_b64':        qr_b64,
+                'detail_url':         detail_url_qr,   # URL versi LAN untuk QR
+                'detail_url_browser': detail_url_browser,  # URL browser untuk tombol "Buka Halaman"
+                'local_ip':           local_ip,
             }
             return render(request, 'heart_disease/result.html', context)
 
@@ -256,6 +327,22 @@ def history_view(request):
         history = PredictionHistory.objects.filter(user=request.user).order_by('-created_at')
     context = {'history': history}
     return render(request, 'heart_disease/history.html', context)
+
+
+# ─── Prediction Detail (QR scan destination) ──────────────────────────────────
+@login_required(login_url='login')
+def prediction_detail_view(request, id):
+    """Halaman detail prediksi — tujuan scan QR code."""
+    record = get_object_or_404(PredictionHistory, id=id)
+    # Hanya pemilik atau admin yang boleh melihat
+    if not request.user.is_staff and record.user != request.user:
+        messages.error(request, 'Anda tidak memiliki akses ke rekam medis ini.')
+        return redirect('history')
+    context = {
+        'record':       record,
+        'feature_info': FEATURE_INFO,
+    }
+    return render(request, 'heart_disease/prediction_detail.html', context)
 
 
 @login_required(login_url='login')

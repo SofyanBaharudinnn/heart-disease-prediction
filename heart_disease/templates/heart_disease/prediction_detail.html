@@ -1,0 +1,244 @@
+{% extends 'heart_disease/base.html' %}
+{% block title %}{{ record.serial_number|default:"Detail Prediksi" }} – HeartGuard{% endblock %}
+
+{% block extra_css %}
+<style>
+  .detail-hero-positive { background: linear-gradient(135deg, #e63946, #c1121f); }
+  .detail-hero-negative { background: linear-gradient(135deg, #2a9d8f, #1b7a70); }
+
+  .record-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(170,255,0,0.12);
+    border: 1px solid rgba(170,255,0,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--lime);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #222;
+    font-size: 0.9rem;
+  }
+
+  .data-row:last-child { border-bottom: none; }
+  .data-row .key  { color: #888; font-weight: 600; }
+  .data-row .val  { color: #FFFFFF; font-weight: 700; text-align: right; }
+
+  .qr-scan-notice {
+    background: rgba(170,255,0,0.05);
+    border: 1px dashed rgba(170,255,0,0.2);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @keyframes scan-pulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1; }
+  }
+  .scan-dot {
+    width: 8px; height: 8px;
+    background: var(--lime);
+    border-radius: 50%;
+    animation: scan-pulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-xl-8">
+
+      <!-- QR Scan Notice Badge -->
+      <div class="record-tag">
+        <i class="bi bi-qr-code-scan"></i>
+        Diakses via QR Code
+        <span class="scan-dot ms-1"></span>
+      </div>
+
+      <!-- Serial Number Header -->
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+          <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:4px;">
+            Nomor Rekam Medis
+          </div>
+          <h1 style="font-family:var(--mono);font-size:1.9rem;font-weight:900;color:var(--lime);letter-spacing:2px;margin:0;">
+            {{ record.serial_number|default:"#"}}{{ record.id }}
+          </h1>
+          <div style="font-size:0.82rem;color:#666;margin-top:4px;">
+            <i class="bi bi-clock me-1"></i>{{ record.created_at|date:"d F Y, H:i" }} WIB
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{% url 'history' %}" class="btn-outline-custom btn">
+            <i class="bi bi-clock-history me-2"></i>Riwayat
+          </a>
+          <a href="{% url 'predict' %}" class="btn-primary-custom btn">
+            <i class="bi bi-cpu me-2"></i>Prediksi Baru
+          </a>
+        </div>
+      </div>
+
+      <!-- ── Main Result Banner ── -->
+      <div class="card-custom mb-4" style="overflow:hidden;">
+        {% if record.prediction == 1 %}
+        <div class="detail-hero-positive" style="padding:2rem;color:#fff;text-align:center;">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:3.5rem;display:block;margin-bottom:0.75rem;"></i>
+          <h2 style="font-weight:800;font-size:1.6rem;margin-bottom:.4rem;">POSITIF PENYAKIT JANTUNG</h2>
+          <p style="opacity:.85;font-size:.95rem;margin:0;">Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung</p>
+        </div>
+        {% else %}
+        <div class="detail-hero-negative" style="padding:2rem;color:#fff;text-align:center;">
+          <i class="bi bi-shield-check-fill" style="font-size:3.5rem;display:block;margin-bottom:0.75rem;"></i>
+          <h2 style="font-weight:800;font-size:1.6rem;margin-bottom:.4rem;">NEGATIF PENYAKIT JANTUNG</h2>
+          <p style="opacity:.85;font-size:.95rem;margin:0;">Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung</p>
+        </div>
+        {% endif %}
+
+        <!-- Metric Boxes -->
+        <div class="p-4">
+          <div class="row g-3 justify-content-center">
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val {% if record.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
+                  {{ record.probability_pos|floatformat:1 }}%
+                </div>
+                <div class="lbl">Prob. Positif</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val" style="color:var(--teal);">{{ record.probability_neg|floatformat:1 }}%</div>
+                <div class="lbl">Prob. Negatif</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val
+                  {% if record.risk_level == 'Tinggi' %}text-danger
+                  {% elif record.risk_level == 'Sedang' %}text-warning
+                  {% else %}text-success{% endif %}">
+                  {{ record.risk_level }}
+                </div>
+                <div class="lbl">Tingkat Risiko</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Probability Bar -->
+          <div class="mt-4">
+            <div class="d-flex justify-content-between mb-1" style="font-size:.82rem;font-weight:600;">
+              <span style="color:var(--teal);">Negatif {{ record.probability_neg|floatformat:1 }}%</span>
+              <span style="color:var(--accent);">Positif {{ record.probability_pos|floatformat:1 }}%</span>
+            </div>
+            <div class="progress" style="height:12px;border-radius:8px;background:#333;">
+              {% if record.prediction == 1 %}
+              <div class="progress-bar" style="width:{{ record.probability_pos|floatformat:0 }}%;background:var(--accent);border-radius:8px;transition:width 1s ease;"></div>
+              {% else %}
+              <div class="progress-bar" style="width:{{ record.probability_pos|floatformat:0 }}%;background:var(--teal);border-radius:8px;transition:width 1s ease;"></div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if record.risk_level == 'Tinggi' %}
+          <div class="alert alert-danger alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Risiko Tinggi:</strong> Sangat disarankan untuk segera berkonsultasi dengan dokter spesialis jantung.
+          </div>
+          {% elif record.risk_level == 'Sedang' %}
+          <div class="alert alert-warning alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <strong>Risiko Sedang:</strong> Disarankan untuk melakukan pemeriksaan lebih lanjut dengan dokter.
+          </div>
+          {% else %}
+          <div class="alert alert-success alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong>Risiko Rendah:</strong> Tetap jaga pola hidup sehat dan lakukan pemeriksaan rutin.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ── Data Klinis ── -->
+      <div class="row g-4 mb-4">
+        <!-- Profil Dasar -->
+        <div class="col-md-6">
+          <div class="card-custom h-100">
+            <div class="card-header-custom">
+              <i class="bi bi-person-fill"></i> Data Profil
+            </div>
+            <div class="p-3">
+              <div class="data-row"><span class="key">Usia</span><span class="val">{{ record.age }} Tahun</span></div>
+              <div class="data-row"><span class="key">Jenis Kelamin</span><span class="val">{% if record.sex == 1 %}Laki-laki{% else %}Perempuan{% endif %}</span></div>
+              <div class="data-row"><span class="key">Nyeri Dada (cp)</span><span class="val">
+                {% if record.cp == 0 %}Typical Angina{% elif record.cp == 1 %}Atypical Angina{% elif record.cp == 2 %}Non-anginal Pain{% else %}Asymptomatic{% endif %}
+              </span></div>
+              <div class="data-row"><span class="key">Tekanan Darah</span><span class="val">{{ record.trestbps }} mmHg</span></div>
+              <div class="data-row"><span class="key">Kolesterol</span><span class="val">{{ record.chol }} mg/dl</span></div>
+              <div class="data-row"><span class="key">Gula Darah Puasa</span><span class="val">{% if record.fbs == 1 %}&gt; 120 mg/dl{% else %}&lt; 120 mg/dl{% endif %}</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Data Klinis Tambahan -->
+        <div class="col-md-6">
+          <div class="card-custom h-100">
+            <div class="card-header-custom">
+              <i class="bi bi-heart-pulse-fill"></i> Data Klinis
+            </div>
+            <div class="p-3">
+              <div class="data-row"><span class="key">EKG Istirahat</span><span class="val">
+                {% if record.restecg == 0 %}Normal{% elif record.restecg == 1 %}ST-T Abnormality{% else %}LVH{% endif %}
+              </span></div>
+              <div class="data-row"><span class="key">Detak Jantung Maks.</span><span class="val">{{ record.thalach }} bpm</span></div>
+              <div class="data-row"><span class="key">Angina Olahraga</span><span class="val">{% if record.exang == 1 %}Ya{% else %}Tidak{% endif %}</span></div>
+              <div class="data-row"><span class="key">ST Depresi</span><span class="val">{{ record.oldpeak }}</span></div>
+              <div class="data-row"><span class="key">Kemiringan ST</span><span class="val">
+                {% if record.slope == 0 %}Upsloping{% elif record.slope == 1 %}Flat{% else %}Downsloping{% endif %}
+              </span></div>
+              <div class="data-row"><span class="key">Pembuluh Darah (ca)</span><span class="val">{{ record.ca }}</span></div>
+              <div class="data-row"><span class="key">Thalassemia</span><span class="val">
+                {% if record.thal == 0 %}Normal{% elif record.thal == 1 %}Fixed Defect{% else %}Reversable Defect{% endif %}
+              </span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── QR Scan Notice ── -->
+      <div class="qr-scan-notice mb-4">
+        <span class="scan-dot"></span>
+        <span>
+          Halaman ini dibuka melalui QR Code dari sistem HeartGuard.
+          Rekam medis <strong style="color:var(--lime);">{{ record.serial_number }}</strong>
+          tersimpan secara aman dalam sistem.
+        </span>
+      </div>
+
+      <!-- ── Disclaimer ── -->
+      <div class="alert alert-warning alert-custom mb-0" style="font-size:.85rem;">
+        <i class="bi bi-shield-exclamation me-2"></i>
+        <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan
+        <strong>tidak menggantikan diagnosis dokter</strong>. Hasil ini hanya untuk tujuan akademik dan penelitian.
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

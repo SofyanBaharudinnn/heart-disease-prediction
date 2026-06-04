@@ -11,6 +11,7 @@ urlpatterns = [
     path('train/',        views.train_model,      name='train_model'),
     path('predict/',      views.predict_view,     name='predict'),
     path('history/',      views.history_view,     name='history'),
+    path('prediction/<int:id>/', views.prediction_detail_view, name='prediction_detail'),
     path('about/',        views.about,            name='about'),
     path('api/dataset/',  views.dataset_info_api, name='dataset_info_api'),
     path('training/result/<int:id>/', views.training_result_view, name='training_result'),

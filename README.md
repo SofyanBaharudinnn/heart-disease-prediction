@@ -1,4 +1,4 @@
-# HeartGuard AI — Prediksi Penyakit Jantung
+# HeartGuard — Prediksi Penyakit Jantung
 ### Proyek Akhir Mata Kuliah Pengembangan Sistem Informasi
 
 Sistem prediksi penyakit jantung menggunakan **Random Forest** dengan metode evaluasi **Multi-Holdout Validation**, dibangun dengan Django + Scikit-learn.

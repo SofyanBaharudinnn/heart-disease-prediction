@@ -1,5 +1,8 @@
+# pyrefly: ignore [missing-import]
 from django.db import models
+# pyrefly: ignore [missing-import]
 from django.utils import timezone
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
 
 
@@ -27,6 +30,7 @@ class PredictionHistory(models.Model):
     probability_neg   = models.FloatField()
     risk_level        = models.CharField(max_length=20)
     created_at        = models.DateTimeField(default=timezone.now)
+    serial_number     = models.CharField(max_length=30, blank=True, default='', verbose_name='Nomor Seri')
 
     class Meta:
         ordering = ['-created_at']
@@ -35,7 +39,8 @@ class PredictionHistory(models.Model):
 
     def __str__(self):
         label = 'Positif' if self.prediction == 1 else 'Negatif'
-        return f"[{self.created_at.strftime('%d-%m-%Y %H:%M')}] {label} – Risiko {self.risk_level}"
+        ref = self.serial_number if self.serial_number else f'#{self.id}'
+        return f"[{ref}] {self.created_at.strftime('%d-%m-%Y %H:%M')} – {label} – Risiko {self.risk_level}"
 
 
 class ModelMetrics(models.Model):

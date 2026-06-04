@@ -1,5 +1,5 @@
 {% extends 'heart_disease/base.html' %}
-{% block title %}Riwayat Prediksi – HeartGuard AI{% endblock %}
+{% block title %}Riwayat Prediksi – HeartGuard{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -16,6 +16,17 @@
       padding-top: 1rem !important;
       padding-bottom: 1rem !important;
     }
+  }
+  /* Share Buttons Hover on History Modals */
+  .share-wa-btn:hover {
+    background: #20ba5a !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+  }
+  .share-email-btn:hover {
+    background: rgba(255,193,7,0.15) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255,193,7,0.2);
   }
 </style>
 {% endblock %}
@@ -38,7 +49,7 @@
       <table class="table table-custom mb-0">
         <thead>
           <tr>
-            <th>#</th><th>Usia</th><th>Jenis Kelamin</th><th>Nyeri Dada</th>
+            <th style="min-width:155px;">No. Rekam Medis</th><th>Usia</th><th>Jenis Kelamin</th><th>Nyeri Dada</th>
             <th>Tekanan Darah</th><th>Kolesterol</th><th>Hasil</th>
             <th>Prob. +</th><th>Tingkat Risiko</th><th>Waktu</th><th class="text-end">Aksi</th>
           </tr>
@@ -46,7 +57,13 @@
         <tbody>
           {% for h in history %}
           <tr>
-            <td><span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);">#{{ h.id }}</span></td>
+            <td>
+              {% if h.serial_number %}
+              <div style="font-family:var(--mono);font-size:0.78rem;color:var(--lime);font-weight:700;letter-spacing:0.5px;">{{ h.serial_number }}</div>
+              {% else %}
+              <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);">#{{ h.id }}</span>
+              {% endif %}
+            </td>
             <td><strong>{{ h.age }}</strong> thn</td>
             <td>{% if h.sex == 1 %}<i class="bi bi-gender-male text-primary me-1"></i>L{% else %}<i class="bi bi-gender-female text-danger me-1"></i>P{% endif %}</td>
             <td>
@@ -103,7 +120,8 @@
               <div class="modal-content" style="border:none; border-radius:15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background:#1C1C1C;">
                 <div class="modal-header" style="background:#0A0A0A; border-radius: 15px 15px 0 0; padding:1.5rem; border-bottom:1px solid #333;">
                   <h5 class="modal-title" id="detailModalLabel{{ h.id }}" style="color:var(--lime);">
-                    <i class="bi bi-file-earmark-medical me-2"></i>Detail Prediksi #{{ h.id }}
+                    <i class="bi bi-file-earmark-medical me-2"></i>
+                    {% if h.serial_number %}{{ h.serial_number }}{% else %}Detail Prediksi #{{ h.id }}{% endif %}
                   </h5>
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -116,7 +134,7 @@
                           <i class="bi bi-heart-pulse-fill"></i>
                         </div>
                         <div>
-                          <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard AI</h4>
+                          <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard</h4>
                           <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">Prediction System Report</span>
                         </div>
                       </div>
@@ -127,6 +145,51 @@
                     </div>
 
                     <div class="row g-4">
+                      <!-- Info Rekam Medis -->
+                      {% if h.serial_number %}
+                      <div class="col-12">
+                        <div style="background:#111;border:1px solid rgba(170,255,0,0.2);border-radius:12px;padding:0.8rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.8rem;">
+
+                          <!-- Kiri: ikon + serial + timestamp -->
+                          <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <i class="bi bi-upc-scan" style="color:var(--lime);font-size:1.2rem;flex-shrink:0;"></i>
+                            <div>
+                              <div style="font-size:0.6rem;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Nomor Rekam Medis</div>
+                              <div style="font-family:var(--mono);font-size:1rem;font-weight:800;color:var(--lime);">{{ h.serial_number }}</div>
+                              <div style="font-size:0.75rem;color:#888;margin-top:2px;"><i class="bi bi-clock me-1"></i>{{ h.created_at|date:"d M Y, H:i" }} WIB</div>
+                              <!-- Share Actions -->
+                              <div class="d-flex gap-2 mt-2">
+                                <button onclick="shareHistoryToWhatsApp('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} WIB', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                                  class="btn btn-success btn-sm d-flex align-items-center gap-1 share-wa-btn"
+                                  style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: #25D366; border: none; color: #FFF; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
+                                  <i class="bi bi-whatsapp"></i> WhatsApp
+                                </button>
+                                <button onclick="shareHistoryToEmail('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} WIB', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                                  class="btn btn-warning btn-sm d-flex align-items-center gap-1 share-email-btn"
+                                  style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: transparent; border: 1px solid rgba(255,193,7,0.4); color: #FFC107; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
+                                  <i class="bi bi-envelope"></i> Email
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Kanan: QR Code -->
+                          <div class="text-center" style="flex-shrink:0;">
+                            <div style="background:var(--lime);border-radius:10px;padding:7px;display:inline-block;box-shadow:0 4px 16px rgba(170,255,0,0.35);">
+                              <div id="qrModal{{ h.id }}"
+                                   data-history-id="{{ h.id }}"
+                                   style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;">
+                              </div>
+                            </div>
+                            <div style="font-size:0.6rem;color:#888;margin-top:5px;text-transform:uppercase;letter-spacing:0.8px;">
+                              <i class="bi bi-qr-code-scan me-1" style="color:var(--lime);"></i>Scan QR
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      {% endif %}
+
                       <!-- Data Pasien -->
                       <div class="col-md-6">
                         <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>Data Profil</h6>
@@ -268,7 +331,94 @@
 {% block extra_js %}
 <!-- html2pdf.js CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- qrcode.js untuk generate QR di modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+  // ── Share History via WhatsApp ──
+  function shareHistoryToWhatsApp(serial, time, prediction, probPos, risk, age, sex, trestbps, chol, id) {
+    const predictionText = prediction === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
+    const sexText = sex === "1" ? "Laki-laki" : "Perempuan";
+    const detailUrl = window.location.origin + `/prediction/${id}/`;
+
+    const text = `*Hasil Prediksi Rekam Medis - HeartGuard*
+======================================
+*Nomor Rekam Medis:* ${serial}
+*Waktu Analisis:* ${time}
+
+*Hasil Prediksi:* *${predictionText}*
+*Probabilitas Positif:* ${probPos}
+*Tingkat Risiko:* ${risk}
+
+*Profil Singkat Pasien:*
+- Usia: ${age} Tahun
+- Jenis Kelamin: ${sexText}
+- Tekanan Darah: ${trestbps} mmHg
+- Kolesterol: ${chol} mg/dl
+
+*Detail Selengkapnya:* ${detailUrl}
+--------------------------------------
+*Catatan:* Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+
+    const encodedText = encodeURIComponent(text);
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    window.open(whatsappUrl, '_blank');
+  }
+
+  // ── Share History via Email ──
+  function shareHistoryToEmail(serial, time, prediction, probPos, risk, age, sex, trestbps, chol, id) {
+    const predictionText = prediction === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
+    const sexText = sex === "1" ? "Laki-laki" : "Perempuan";
+    const detailUrl = window.location.origin + `/prediction/${id}/`;
+
+    const subject = `Laporan Hasil Analisis HeartGuard - ${serial}`;
+    const body = `Hasil Prediksi Rekam Medis - HeartGuard
+======================================
+Nomor Rekam Medis: ${serial}
+Waktu Analisis: ${time}
+
+Hasil Prediksi: ${predictionText}
+Probabilitas Positif: ${probPos}
+Tingkat Risiko: ${risk}
+
+Profil Singkat Pasien:
+- Usia: ${age} Tahun
+- Jenis Kelamin: ${sexText}
+- Tekanan Darah: ${trestbps} mmHg
+- Kolesterol: ${chol} mg/dl
+
+Detail Selengkapnya: ${detailUrl}
+--------------------------------------
+Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+  }
+
+  // ── Generate QR Code saat modal dibuka ──
+  const generatedQRs = new Set(); // Hindari generate ulang
+
+  document.querySelectorAll('[id^="detailModal"]').forEach(function(modal) {
+    modal.addEventListener('show.bs.modal', function() {
+      const modalId = this.id.replace('detailModal', '');
+      const qrContainer = document.getElementById('qrModal' + modalId);
+
+      if (qrContainer && !generatedQRs.has(modalId)) {
+        generatedQRs.add(modalId);
+        // Gunakan host saat ini agar bekerja baik dengan tunnel maupun localhost
+        const detailUrl = `${window.location.protocol}//${window.location.host}/prediction/${modalId}/`;
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+          text: detailUrl,
+          width:  90,
+          height: 90,
+          colorDark:  '#0A0A0A',
+          colorLight: '#AAFF00',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    });
+  });
+
   function downloadModalPdf(historyId, age, riskLevel) {
     const btn = document.getElementById(`downloadPdfBtn${historyId}`);
     const originalText = btn.innerHTML;
