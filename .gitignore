@@ -1,0 +1,21 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Django database & media
+db.sqlite3
+media/
+dataset/heart_backup.csv
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+*.log

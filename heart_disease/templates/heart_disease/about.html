@@ -1,0 +1,158 @@
+{% extends 'heart_disease/base.html' %}
+{% block title %}Tentang – HeartGuard AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <div class="text-center mb-5">
+        <h2 class="section-title"><i class="bi bi-info-circle me-2" style="color:var(--accent)"></i>Tentang Proyek</h2>
+        <p class="section-sub">Prediksi Penyakit Jantung Menggunakan Algoritma Random Forest<br>dengan Metode Multi-Holdout Validation</p>
+      </div>
+
+      <!-- Tentang -->
+      <div class="card-custom mb-4">
+        <div class="card-header-custom"><i class="bi bi-journal-text"></i> Deskripsi Proyek</div>
+        <div class="p-4" style="line-height:1.8;color:#FFFFFF;">
+          <p>
+            Proyek ini merupakan tugas akhir mata kuliah <strong style="color:var(--lime);">Proyek Pengembangan Sistem Informasi</strong>
+            yang membangun sistem prediksi penyakit jantung berbasis machine learning.
+          </p>
+          <p>
+            Sistem menggunakan algoritma <strong style="color:var(--lime);">Random Forest</strong> metode ensemble yang membangun
+            banyak decision tree secara paralel dikombinasikan dengan metode evaluasi
+            <strong style="color:var(--lime);">Multi-Holdout Validation</strong> untuk mendapatkan estimasi performa model yang lebih
+            robust dan tidak bias.
+          </p>
+          <p>
+            Dataset yang digunakan adalah Heart Disease UCI Dataset dari Kaggle yang berisi
+            <strong style="color:var(--lime);">13 fitur klinis</strong> dan satu variabel target (ada/tidaknya penyakit jantung).
+          </p>
+        </div>
+      </div>
+
+      <!-- Teknologi -->
+      <div class="card-custom mb-4">
+        <div class="card-header-custom"><i class="bi bi-stack"></i> Teknologi Yang Digunakan</div>
+        <div class="p-4">
+          <div class="row g-3">
+            {% for icon, name, desc, color in tech_stack %}{% endfor %}
+            {% for item in tech_list %}{% endfor %}
+
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(255,100,100,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-globe2" style="color:#FF8080;"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Django 4.2</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Backend Framework (Python)</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(170,255,0,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-cpu" style="color:var(--lime);"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Scikit-learn</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Machine Learning Library</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(100,150,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-bar-chart" style="color:#80A0FF;"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Pandas + NumPy</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Data Processing</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(255,170,0,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-pie-chart" style="color:#FFAA00;"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Matplotlib + Seaborn</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Data Visualization</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(121,82,179,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-bootstrap" style="color:#CC88FF;"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Bootstrap 5</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Frontend CSS Framework</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
+                <div style="width:42px;height:42px;background:rgba(100,255,100,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-database" style="color:#66FF66;"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">SQLite</div>
+                  <div style="font-size:.78rem;color:#BBBBBB;">Database (via Django ORM)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alur Sistem -->
+      <div class="card-custom mb-4">
+        <div class="card-header-custom"><i class="bi bi-diagram-3"></i> Alur Sistem</div>
+        <div class="p-4">
+          <div class="d-flex flex-column gap-3">
+            {% for step, icon, title, desc in steps %}{% endfor %}
+            {% for i, icon, color, title, desc in workflow %}{% endfor %}
+
+            {% for item in "12345" %}{% endfor %}
+
+            <div style="display:flex;align-items:start;gap:14px;">
+              <div style="width:36px;height:36px;background:var(--lime);color:#0A0A0A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">1</div>
+              <div><strong style="color:#FFFFFF;">Persiapan Dataset</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Dataset heart.csv dari Kaggle dimuat, dibersihkan dari duplikat dan nilai null.</span></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:14px;">
+              <div style="width:36px;height:36px;background:#FF6B6B;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">2</div>
+              <div><strong style="color:#FFFFFF;">Multi-Holdout Validation</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Data dibagi 80/20 sebanyak n kali dengan random state berbeda. Setiap iterasi melatih model Random Forest baru.</span></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:14px;">
+              <div style="width:36px;height:36px;background:#4FD1C5;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">3</div>
+              <div><strong style="color:#FFFFFF;">Evaluasi Model</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Accuracy, Precision, Recall, F1-Score, dan ROC-AUC dihitung per holdout lalu dirata-ratakan.</span></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:14px;">
+              <div style="width:36px;height:36px;background:#FFAA00;color:#0A0A0A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">4</div>
+              <div><strong style="color:#FFFFFF;">Simpan Model Terbaik</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Model dengan F1-Score tertinggi disimpan menggunakan joblib untuk digunakan pada prediksi.</span></div>
+            </div>
+            <div style="display:flex;align-items:start;gap:14px;">
+              <div style="width:36px;height:36px;background:#CC88FF;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">5</div>
+              <div><strong style="color:#FFFFFF;">Prediksi Real-Time</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Pengguna memasukkan data klinis melalui form web, model menghasilkan probabilitas dan tingkat risiko.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        {% if request.user.is_staff %}
+        <a href="{% url 'dashboard' %}" class="btn-outline-custom btn">
+          <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

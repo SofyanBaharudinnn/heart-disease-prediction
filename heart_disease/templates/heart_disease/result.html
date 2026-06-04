@@ -1,0 +1,136 @@
+{% extends 'heart_disease/base.html' %}
+{% load custom_filters %}
+{% block title %}Hasil Prediksi – HeartGuard AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-xl-8">
+
+      <!-- ── Hasil Utama ── -->
+      <div class="card-custom mb-4 text-center" style="overflow:hidden;">
+        {% if result.prediction == 1 %}
+        <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:2.5rem;color:#fff;">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
+          <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">POSITIF PENYAKIT JANTUNG</h2>
+          <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung</p>
+        </div>
+        {% else %}
+        <div style="background:linear-gradient(135deg,#2a9d8f,#1b7a70);padding:2.5rem;color:#fff;">
+          <i class="bi bi-shield-check-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
+          <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">NEGATIF PENYAKIT JANTUNG</h2>
+          <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung</p>
+        </div>
+        {% endif %}
+
+        <div class="p-4">
+          <div class="row g-3 justify-content-center">
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val {% if result.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
+                  {{ result.probability.positive }}%
+                </div>
+                <div class="lbl">Prob. Positif</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val" style="color:var(--teal);">{{ result.probability.negative }}%</div>
+                <div class="lbl">Prob. Negatif</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="metric-box">
+                <div class="val
+                  {% if result.risk_level == 'Tinggi' %}text-danger
+                  {% elif result.risk_level == 'Sedang' %}text-warning
+                  {% else %}text-success{% endif %}">
+                  {{ result.risk_level }}
+                </div>
+                <div class="lbl">Tingkat Risiko</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Probability bar -->
+          <div class="mt-4">
+            <div class="d-flex justify-content-between mb-1" style="font-size:.82rem;font-weight:600;">
+              <span style="color:var(--teal);">Negatif {{ result.probability.negative }}%</span>
+              <span style="color:var(--accent);">Positif {{ result.probability.positive }}%</span>
+            </div>
+            <div class="progress" style="height:14px;border-radius:8px;background:#333333;">
+              {% if result.prediction == 1 %}
+              <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--accent);border-radius:8px;transition:width 1s ease;"></div>
+              {% else %}
+              <div class="progress-bar" style="width:{{ result.probability.positive }}%;background:var(--teal);border-radius:8px;transition:width 1s ease;"></div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if result.risk_level == 'Tinggi' %}
+          <div class="alert alert-danger alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Risiko Tinggi:</strong> Sangat disarankan untuk segera berkonsultasi dengan dokter spesialis jantung.
+          </div>
+          {% elif result.risk_level == 'Sedang' %}
+          <div class="alert alert-warning alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <strong>Risiko Sedang:</strong> Disarankan untuk melakukan pemeriksaan lebih lanjut dengan dokter.
+          </div>
+          {% else %}
+          <div class="alert alert-success alert-custom mt-3 text-start" style="font-size:.88rem;">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong>Risiko Rendah:</strong> Tetap jaga pola hidup sehat dan lakukan pemeriksaan rutin.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ── Data Input ── -->
+      <div class="card-custom mb-4">
+        <div class="card-header-custom"><i class="bi bi-clipboard-data"></i> Data Klinis yang Diinput</div>
+        <div class="p-4">
+          <div class="row g-2">
+            {% for key, info in feature_info.items %}
+            <div class="col-md-4 col-sm-6">
+              <div style="background:#0A0A0A;border-radius:10px;padding:.7rem 1rem;border:1px solid #333333;">
+                <div style="font-size:.75rem;color:#BBBBBB;text-transform:uppercase;letter-spacing:.3px;font-weight:600;">{{ info.label }}</div>
+                <div style="font-weight:700;font-size:.95rem;margin-top:2px;color:#FFFFFF;">
+                  {% if info.choices %}
+                    {% for val, lbl in info.choices %}
+                      {% if val|stringformat:"s" == input_data|getitem:key|stringformat:"s" %}{{ lbl }}{% endif %}
+                    {% endfor %}
+                  {% else %}
+                    {{ input_data|getitem:key }}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Disclaimer ── -->
+      <div class="alert alert-warning alert-custom mb-4" style="font-size:.85rem;">
+        <i class="bi bi-shield-exclamation me-2"></i>
+        <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan <strong>tidak menggantikan diagnosis dokter</strong>.
+        Hasil ini hanya untuk tujuan akademik dan penelitian.
+      </div>
+
+      <div class="d-flex flex-column flex-sm-row gap-3">
+        <a href="{% url 'predict' %}" class="btn-primary-custom btn w-100 w-sm-auto text-center">
+          <i class="bi bi-arrow-repeat me-2"></i>Prediksi Baru
+        </a>
+        <a href="{% url 'history' %}" class="btn-secondary-custom btn w-100 w-sm-auto text-center">
+          <i class="bi bi-clock-history me-2"></i>Lihat Riwayat
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn-outline-custom btn w-100 w-sm-auto text-center">
+          <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – HeartGuard AI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --lime:    #AAFF00;
+      --lime-lt: #C8FF4D;
+      --lime-dk: #88CC00;
+      --black:   #0A0A0A;
+      --near:    #111111;
+      --white:   #FFFFFF;
+      --gray:    #F7F7F7;
+      --muted:   #888888;
+      --border:  #E5E5E5;
+      --font:    'Plus Jakarta Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* ── Animated background ── */
+    .bg-canvas { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(170,255,0,0.18), transparent);
+      top: -200px; left: -150px;
+    }
+    .orb-2 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(170,255,0,0.08), transparent);
+      bottom: -100px; right: -80px;
+      animation-delay: -7s;
+    }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(25px, -20px) scale(1.05); }
+      100% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* Grid */
+    .bg-grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+
+    /* ── Card ── */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 460px;
+      padding: 1rem;
+    }
+
+    .card-box {
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 28px;
+      padding: 2.8rem 2.6rem 2.4rem;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+      animation: cardIn .6s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(22px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      width: 68px; height: 68px;
+      border-radius: 22px;
+      background: var(--lime);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.4rem;
+      box-shadow: 0 0 0 6px rgba(170,255,0,0.12), 0 12px 32px rgba(170,255,0,0.35);
+      position: relative;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    .logo-wrap i { font-size: 2rem; color: var(--black); }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(170,255,0,0.12), 0 12px 32px rgba(170,255,0,0.35); }
+      50%       { box-shadow: 0 0 0 14px rgba(170,255,0,0.06), 0 16px 44px rgba(170,255,0,0.5); }
+    }
+
+    .logo-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--lime);
+      border: 2.5px solid #111;
+      animation: pulse-online 2s infinite;
+    }
+
+    @keyframes pulse-online {
+      0%   { box-shadow: 0 0 0 0 rgba(170,255,0,0.6); }
+      70%  { box-shadow: 0 0 0 8px rgba(170,255,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(170,255,0,0); }
+    }
+
+    /* ── Brand pill ── */
+    .brand-strip {
+      display: flex; justify-content: center;
+      margin-bottom: 1.4rem;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(170,255,0,0.1);
+      border: 1px solid rgba(170,255,0,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--lime);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Headings ── */
+    .card-title {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.6px;
+      text-align: center;
+    }
+
+    .card-sub {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    /* ── Role toggle ── */
+    .role-toggle {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 4px;
+      margin: 1.6rem 0 1.4rem;
+      gap: 4px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 0.55rem 0;
+      border: none;
+      border-radius: 11px;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s ease;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .role-btn.active {
+      background: var(--lime);
+      color: var(--black);
+      box-shadow: 0 4px 16px rgba(170,255,0,0.35);
+    }
+
+    .role-btn:not(.active):hover {
+      color: var(--white);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ── Fields ── */
+    .field-group { margin-bottom: 1rem; }
+
+    .field-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #666666;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .role-chip {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .chip-admin { background: rgba(170,255,0,0.12); color: var(--lime); }
+    .chip-user  { background: rgba(255,255,255,0.08); color: #ccc; }
+
+    .input-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      font-size: 1rem;
+      color: #444;
+      pointer-events: none;
+      transition: color .25s;
+      z-index: 2;
+    }
+
+    .field-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #2A2A2A;
+      border-radius: 13px;
+      padding: 0.78rem 1rem 0.78rem 2.7rem;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+      outline: none;
+      transition: border-color .25s, box-shadow .25s, background .25s;
+    }
+
+    .field-input::placeholder { color: #444; }
+
+    .field-input:focus {
+      border-color: var(--lime);
+      background: rgba(170,255,0,0.04);
+      box-shadow: 0 0 0 3px rgba(170,255,0,0.15);
+    }
+
+    .input-shell:focus-within .input-icon { color: var(--lime); }
+
+    .eye-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #444;
+      font-size: 1rem;
+      padding: 0;
+      transition: color .2s;
+      z-index: 2;
+    }
+    .eye-btn:hover { color: var(--lime); }
+
+    /* ── Error ── */
+    .error-alert {
+      background: rgba(255,60,60,0.08);
+      border: 1px solid rgba(255,80,80,0.2);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #FF8080;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      animation: shake .4s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-5px); }
+      40%      { transform: translateX(5px); }
+      60%      { transform: translateX(-3px); }
+      80%      { transform: translateX(3px); }
+    }
+
+    /* ── Submit ── */
+    .btn-submit {
+      position: relative;
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      color: var(--black);
+      background: var(--lime);
+      box-shadow: 0 8px 28px rgba(170,255,0,0.4);
+      overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease, background .2s;
+      margin-top: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(170,255,0,0.6);
+      background: var(--lime-lt);
+      color: var(--black);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* shimmer */
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+      background-size: 200% 100%;
+      background-position: -100% 0;
+      transition: background-position .5s ease;
+    }
+
+    .btn-submit:hover::before { background-position: 200% 0; }
+
+    .btn-submit .btn-arrow { transition: transform .25s ease; }
+    .btn-submit:hover .btn-arrow { transform: translateX(4px); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: #222;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Footer links ── */
+    .card-footer-links { text-align: center; }
+
+    .footer-link-row {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-link-row a {
+      color: var(--lime);
+      font-weight: 700;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .footer-link-row a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -1px;
+      width: 0; height: 1.5px;
+      background: var(--lime);
+      transition: width .25s;
+    }
+
+    .footer-link-row a:hover::after { width: 100%; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.82rem;
+      color: #444;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color .2s;
+    }
+
+    .back-link:hover { color: var(--lime); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <div class="login-wrapper">
+    <div class="card-box">
+
+      <div class="logo-wrap">
+        <i class="bi bi-shield-lock-fill"></i>
+        <span class="logo-dot"></span>
+      </div>
+
+      <div class="brand-strip">
+        <span class="brand-pill">
+          <i class="bi bi-heart-pulse-fill"></i> HeartGuard AI
+        </span>
+      </div>
+
+      <h1 class="card-title">Selamat Datang</h1>
+      <p class="card-sub">Masuk untuk mengakses sistem prediksi penyakit jantung</p>
+
+      <!-- Role toggle -->
+      <div class="role-toggle">
+        <button class="role-btn active" id="btn-admin" type="button" onclick="setRole('Admin')">
+          <i class="bi bi-shield-fill-check"></i> Admin
+        </button>
+        <button class="role-btn" id="btn-user" type="button" onclick="setRole('User')">
+          <i class="bi bi-person-fill"></i> Pasien
+        </button>
+      </div>
+
+      <form method="post" id="login-form">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="error-alert">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          Username atau password tidak valid. Silakan coba lagi.
+        </div>
+        {% endif %}
+
+        <div class="field-group">
+          <div class="field-label">
+            Username <span class="role-chip chip-admin" id="role-chip">Admin</span>
+          </div>
+          <div class="input-shell">
+            <i class="bi bi-person-fill input-icon"></i>
+            <input type="text" name="username" id="id_username" class="field-input"
+              placeholder="Masukkan username Anda" required autofocus autocomplete="username">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Password</div>
+          <div class="input-shell">
+            <i class="bi bi-key-fill input-icon"></i>
+            <input type="password" name="password" id="id_password" class="field-input"
+              placeholder="Masukkan password Anda" required autocomplete="current-password"
+              style="padding-right:2.8rem;">
+            <button type="button" class="eye-btn" onclick="togglePwd()">
+              <i class="bi bi-eye-fill" id="eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span>Masuk ke Sistem</span>
+          <i class="bi bi-arrow-right btn-arrow"></i>
+        </button>
+      </form>
+
+      <div class="divider"></div>
+
+      <div class="card-footer-links">
+        <div class="footer-link-row">
+          Belum punya akun? <a href="{% url 'register' %}">Daftar di sini</a>
+        </div>
+        <a href="{% url 'index' %}" class="back-link">
+          <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setRole(role) {
+      const chip     = document.getElementById('role-chip');
+      const btnAdmin = document.getElementById('btn-admin');
+      const btnUser  = document.getElementById('btn-user');
+      if (role === 'Admin') {
+        chip.textContent = 'Admin';
+        chip.className   = 'role-chip chip-admin';
+        btnAdmin.classList.add('active');
+        btnUser.classList.remove('active');
+      } else {
+        chip.textContent = 'Pasien';
+        chip.className   = 'role-chip chip-user';
+        btnUser.classList.add('active');
+        btnAdmin.classList.remove('active');
+      }
+    }
+
+    function togglePwd() {
+      const pwd  = document.getElementById('id_password');
+      const icon = document.getElementById('eye-icon');
+      pwd.type       = pwd.type === 'password' ? 'text' : 'password';
+      icon.className = pwd.type === 'password' ? 'bi bi-eye-fill' : 'bi bi-eye-slash-fill';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function () {
+      const btn = document.getElementById('submit-btn');
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;border-color:#000;border-right-color:transparent;"></span> <span>Memverifikasi...</span>';
+      btn.disabled  = true;
+    });
+  </script>
+</body>
+</html>

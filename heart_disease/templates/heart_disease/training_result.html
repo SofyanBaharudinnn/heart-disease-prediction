@@ -1,0 +1,182 @@
+{% extends 'heart_disease/base.html' %}
+{% block title %}Hasil Training – HeartGuard AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3 mb-4">
+    <a href="{% url 'train_page' %}" class="btn-outline-custom btn btn-sm w-100 w-sm-auto text-center">
+      <i class="bi bi-arrow-left me-1"></i>Pelatihan Model
+    </a>
+    <div>
+      <h2 class="section-title mb-1">Hasil Pelatihan Model</h2>
+      <p class="section-sub mb-0">Multi-Holdout Validation — Random Forest</p>
+    </div>
+  </div>
+
+  <!-- ── Rata-rata Metrik ── -->
+  <div class="card-custom mb-4">
+    <div class="card-header-custom">
+      <i class="bi bi-bar-chart-line"></i> Rata-Rata Metrik ({{ data.results|length }} Holdout)
+    </div>
+    <div class="p-4">
+      <div class="row g-3">
+        {% with metrics=avg %}
+        <div class="col-6 col-sm-4 col-md"><div class="metric-box">
+          <div class="val" style="color:var(--teal);">{{ metrics.accuracy }}%</div>
+          <div class="lbl">Accuracy</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">± {{ std.accuracy }}%</div>
+        </div></div>
+        <div class="col-6 col-sm-4 col-md"><div class="metric-box">
+          <div class="val" style="color:var(--accent);">{{ metrics.precision }}%</div>
+          <div class="lbl">Precision</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">± {{ std.precision }}%</div>
+        </div></div>
+        <div class="col-6 col-sm-4 col-md"><div class="metric-box">
+          <div class="val" style="color:#FFAA00;">{{ metrics.recall }}%</div>
+          <div class="lbl">Recall</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">± {{ std.recall }}%</div>
+        </div></div>
+        <div class="col-6 col-sm-4 col-md"><div class="metric-box">
+          <div class="val" style="color:var(--primary);">{{ metrics.f1 }}%</div>
+          <div class="lbl">F1-Score</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">± {{ std.f1 }}%</div>
+        </div></div>
+        <div class="col-6 col-sm-4 col-md"><div class="metric-box">
+          <div class="val" style="color:#CC88FF;">{{ metrics.roc_auc }}%</div>
+          <div class="lbl">ROC-AUC</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">± {{ std.roc_auc }}%</div>
+        </div></div>
+        {% endwith %}
+      </div>
+      <div class="alert alert-success alert-custom mt-3" style="font-size:.85rem; background: rgba(170,255,0,0.08); border: 1px solid rgba(170,255,0,0.25); color: var(--lime); border-radius: 12px; padding: 0.85rem 1.2rem;">
+        <i class="bi bi-trophy-fill me-2" style="color: var(--lime);"></i>
+        <strong>Model terbaik:</strong> Holdout ke-{{ data.best_fold }} (berdasarkan F1-Score tertinggi) — disimpan untuk prediksi.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tabel per Holdout ── -->
+  <div class="card-custom mb-4">
+    <div class="card-header-custom"><i class="bi bi-table"></i> Detail Setiap Holdout</div>
+    <div class="table-responsive">
+      <table class="table table-custom mb-0">
+        <thead>
+          <tr>
+            <th>Holdout</th><th>Accuracy</th><th>Precision</th>
+            <th>Recall</th><th>F1-Score</th><th>ROC-AUC</th><th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in fold_data %}
+          <tr {% if row.fold == data.best_fold %}style="background:#f0faf7;"{% endif %}>
+            <td><strong>Holdout {{ row.fold }}</strong></td>
+            <td><span style="font-family:var(--mono);">{{ row.accuracy }}%</span></td>
+            <td><span style="font-family:var(--mono);">{{ row.precision }}%</span></td>
+            <td><span style="font-family:var(--mono);">{{ row.recall }}%</span></td>
+            <td><span style="font-family:var(--mono);">{{ row.f1 }}%</span></td>
+            <td><span style="font-family:var(--mono);">{{ row.roc_auc }}%</span></td>
+            <td>{% if row.fold == data.best_fold %}<span class="badge-negative">⭐ Terbaik</span>{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Plots ── -->
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-grid-3x3"></i> Confusion Matrix</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.confusion_matrix }}" class="plot-img" alt="Confusion Matrix">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-graph-up"></i> ROC Curve</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.roc_curve }}" class="plot-img" alt="ROC Curve">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-list-ol"></i> Feature Importance</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.feature_importance }}" class="plot-img" alt="Feature Importance">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-bar-chart-grouped"></i> Perbandingan Holdout</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.holdout_comparison }}" class="plot-img" alt="Holdout Comparison">
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-pie-chart"></i> Distribusi Dataset & Scatter Plot</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.distribution }}" class="plot-img" alt="Distribution">
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card-custom">
+        <div class="card-header-custom"><i class="bi bi-symmetry-horizontal"></i> Korelasi Antar Fitur</div>
+        <div class="p-3">
+          <img src="data:image/png;base64,{{ data.plots.correlation }}" class="plot-img" alt="Correlation Heatmap">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Dataset info ── -->
+  <div class="card-custom mt-4">
+    <div class="card-header-custom"><i class="bi bi-database"></i> Informasi Dataset</div>
+    <div class="p-4">
+      <div class="row g-3">
+        <div class="col-6 col-sm-3">
+          <div class="metric-box">
+            <div class="val">{{ data.dataset_info.total_samples }}</div>
+            <div class="lbl">Total Sampel</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-3">
+          <div class="metric-box">
+            <div class="val">{{ data.dataset_info.features }}</div>
+            <div class="lbl">Jumlah Fitur</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-3">
+          <div class="metric-box">
+            <div class="val" style="color:var(--accent);">{{ data.dataset_info.positive }}</div>
+            <div class="lbl">Kelas Positif</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-3">
+          <div class="metric-box">
+            <div class="val" style="color:var(--teal);">{{ data.dataset_info.negative }}</div>
+            <div class="lbl">Kelas Negatif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+    <a href="{% url 'predict' %}" class="btn-primary-custom btn w-100 w-sm-auto text-center">
+      <i class="bi bi-cpu me-2"></i>Mulai Prediksi
+    </a>
+    <a href="{% url 'train_page' %}" class="btn-outline-custom btn w-100 w-sm-auto text-center">
+      <i class="bi bi-arrow-left me-2"></i>Kembali ke Pelatihan Model
+    </a>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,293 @@
+{% extends 'heart_disease/base.html' %}
+
+{% block title %}HeartGuard AI – Beranda{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+  @keyframes float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-12px); box-shadow: 0 15px 25px rgba(170,255,0,0.25); }
+    100% { transform: translateY(0px); }
+  }
+  .icon-float { animation: float 3s ease-in-out infinite; }
+
+  /* Marquee */
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--lime);
+    color: #0A0A0A;
+    padding: 12px 0;
+    display: block;
+    box-shadow: 0 4px 15px rgba(170,255,0,0.3);
+  }
+  .marquee-content {
+    display: inline-block;
+    animation: marquee 25s linear infinite;
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: #0A0A0A;
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-item { margin-right: 3rem; }
+
+  /* Hero section */
+  .hero-section {
+    background: var(--bg);
+    padding: 5rem 0 7rem;
+    position: relative;
+  }
+
+  .hero-badge {
+    background: rgba(170,255,0,0.12);
+    color: var(--lime);
+    font-size: .85rem;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(170,255,0,0.25);
+  }
+
+  .hero-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: var(--text-main);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+    letter-spacing: -1px;
+  }
+
+  .hero-title .accent-lime { color: var(--lime); }
+  .hero-title .accent-lt   { color: var(--lime-lt); }
+
+  .hero-desc {
+    color: var(--muted);
+    font-size: 1.1rem;
+    max-width: 550px;
+    line-height: 1.75;
+  }
+
+  .hero-desc strong { color: var(--text-main); font-weight: 700; }
+
+  /* Hero card */
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  }
+
+  .hero-card-badge {
+    position: absolute;
+    top: -14px; right: -14px;
+    background: var(--lime);
+    color: #0A0A0A;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(170,255,0,0.4);
+  }
+
+  .hero-stat-box {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1rem .5rem;
+    border: 1px solid var(--border);
+  }
+
+  .hero-stat-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-main);
+  }
+
+  .hero-stat-label {
+    font-size: .72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* Feature cards */
+  .feature-icon-wrap {
+    width: 64px; height: 64px;
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.2rem;
+  }
+
+  .feature-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    margin-bottom: 0.6rem;
+  }
+
+  .feature-desc {
+    color: var(--muted);
+    font-size: .92rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ── Hero ── -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-7" data-aos="fade-right">
+        <span class="hero-badge">
+          🔬 Machine Learning &amp; Data Science
+        </span>
+        <h1 class="hero-title">
+          Prediksi Penyakit Jantung<br>
+          <span class="accent-lime">Lebih Akurat</span> Dengan<br>
+          <span class="accent-lt">Random Forest</span>
+        </h1>
+        <p class="hero-desc">
+          Sistem Prediksi Berbasis <strong>Multi-Holdout Validation</strong> Dengan
+          Algoritma Random Forest Untuk Mendeteksi Risiko Penyakit Jantung Secara Akurat Dan
+          Transparan Berdasarkan Data Klinis.
+        </p>
+      </div>
+
+      <div class="col-lg-5 text-center" data-aos="fade-left" data-aos-delay="200">
+        <div class="hero-card">
+          <span class="hero-card-badge">
+            <i class="bi bi-star-fill me-1"></i> Akurasi Tinggi
+          </span>
+          <div class="icon-float" style="width:80px;height:80px;background:var(--lime);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 8px 24px rgba(170,255,0,0.4);">
+            <i class="bi bi-heart-pulse" style="font-size:3rem;color:#0A0A0A;"></i>
+          </div>
+          <div class="row g-3">
+            <div class="col-4">
+              <div class="hero-stat-box">
+                <div class="hero-stat-num">{{ dataset_size }}</div>
+                <div class="hero-stat-label">Sampel</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="hero-stat-box">
+                <div class="hero-stat-num">13</div>
+                <div class="hero-stat-label">Fitur</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="hero-stat-box">
+                <div class="hero-stat-num">5×</div>
+                <div class="hero-stat-label">Holdout</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Marquee ── -->
+<div class="marquee-container mb-4">
+  <div class="marquee-content">
+    <span class="marquee-item"><i class="bi bi-cpu me-1"></i> MACHINE LEARNING</span>
+    <span class="marquee-item"><i class="bi bi-activity me-1"></i> PREDICTIVE ANALYTICS</span>
+    <span class="marquee-item"><i class="bi bi-heart-pulse me-1"></i> HEARTGUARD</span>
+    <span class="marquee-item"><i class="bi bi-shield-check me-1"></i> HIGH ACCURACY</span>
+    <span class="marquee-item"><i class="bi bi-layers me-1"></i> MULTI-HOLDOUT VALIDATION</span>
+    <span class="marquee-item"><i class="bi bi-tree me-1"></i> RANDOM FOREST</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item"><i class="bi bi-cpu me-1"></i> MACHINE LEARNING</span>
+    <span class="marquee-item"><i class="bi bi-activity me-1"></i> PREDICTIVE ANALYTICS</span>
+    <span class="marquee-item"><i class="bi bi-heart-pulse me-1"></i> HEARTGUARD</span>
+    <span class="marquee-item"><i class="bi bi-shield-check me-1"></i> HIGH ACCURACY</span>
+    <span class="marquee-item"><i class="bi bi-layers me-1"></i> MULTI-HOLDOUT VALIDATION</span>
+    <span class="marquee-item"><i class="bi bi-tree me-1"></i> RANDOM FOREST</span>
+  </div>
+</div>
+
+<!-- ── Status dataset ── -->
+<section class="container mt-4">
+  {% if not dataset_ready %}
+  <div class="alert alert-custom d-flex align-items-start gap-3" style="background:rgba(255,170,0,0.12);border:1px solid rgba(255,170,0,0.3);color:#FFD166;border-radius:16px;">
+    <i class="bi bi-exclamation-triangle-fill fs-4 mt-1" style="color:#FFD166;"></i>
+    <div>
+      <strong>Dataset Belum Tersedia</strong><br>
+      Upload file <code style="color:#AAFF00;">heart.csv</code> dari Kaggle ke folder <code style="color:#AAFF00;">dataset/</code>.
+      <a href="https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset" target="_blank" style="color:var(--lime);font-weight:700;">Download di sini →</a>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<!-- ── Fitur unggulan ── -->
+<section class="container mt-4 mb-5">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Fitur Utama Sistem</h2>
+    <p class="section-sub">Dibangun Dengan Teknologi Machine Learning Modern Untuk Hasil Yang Dapat Dipercaya</p>
+  </div>
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100 text-center">
+        <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
+          <i class="bi bi-tree-fill fs-3" style="color:var(--lime);"></i>
+        </div>
+        <h5 class="feature-title">Random Forest</h5>
+        <p class="feature-desc">
+          Ensemble Learning Yang Menggabungkan Ratusan Decision Tree Untuk Menghasilkan Prediksi Yang Kuat Dan Tahan Terhadap Overfitting.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100 text-center">
+        <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
+          <i class="bi bi-layers-fill fs-3" style="color:var(--lime);"></i>
+        </div>
+        <h5 class="feature-title">Multi-Holdout Validation</h5>
+        <p class="feature-desc">
+          Validasi Model Dilakukan 5× Dengan Pembagian Data Berbeda Untuk Menghasilkan Estimasi Performa Yang Lebih Stabil Dan Representatif.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100 text-center">
+        <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
+          <i class="bi bi-bar-chart-fill fs-3" style="color:var(--lime);"></i>
+        </div>
+        <h5 class="feature-title">Visualisasi Lengkap</h5>
+        <p class="feature-desc">
+          Confusion Matrix, ROC Curve, Feature Importance, Dan Perbandingan Holdout Tersedia Secara Interaktif Dan Informatif.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true, offset: 50 });
+</script>
+{% endblock %}
