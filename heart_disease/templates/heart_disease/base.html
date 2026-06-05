@@ -793,24 +793,120 @@
       font-weight: 500;
     }
 
-    /* ── Footer ── */
+    /* ── Ultra-Modern Dashboard Footer ── */
     .footer-custom {
-      background: #0A0A0A;
-      color: var(--muted);
-      font-size: 0.9rem;
+      background: rgba(10, 10, 10, 0.45) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #777777;
+      font-size: 0.76rem;
       padding: 1.5rem 0;
       margin-top: auto;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    /* Subtle top glow line */
+    .footer-custom::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(170, 255, 0, 0.22), transparent);
     }
 
     .footer-custom a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 600;
+      transition: color 0.2s ease;
     }
 
     .footer-custom a:hover {
+      color: var(--primary-lt);
       text-decoration: underline;
+    }
+
+    .footer-sep {
+      color: rgba(255, 255, 255, 0.08);
+      font-weight: 300;
+    }
+
+    .footer-brand-name {
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.3px;
+    }
+
+    .footer-brand-name span {
+      color: var(--lime);
+      text-shadow: 0 0 10px rgba(170, 255, 0, 0.3);
+    }
+
+    .footer-copy {
+      color: #666666;
+      font-weight: 500;
+    }
+
+    /* Pulsing status indicator */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(170, 255, 0, 0.04);
+      border: 1px solid rgba(170, 255, 0, 0.15);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: var(--lime);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(170, 255, 0, 0.03);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--lime);
+      animation: status-blink 1.8s infinite ease-in-out;
+    }
+
+    @keyframes status-blink {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .footer-tech-pill {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #888888;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .footer-tech-pill:hover {
+      border-color: rgba(170, 255, 0, 0.35);
+      color: var(--lime);
+      background: rgba(170, 255, 0, 0.03);
+      box-shadow: 0 0 8px rgba(170, 255, 0, 0.08);
+    }
+
+    .footer-project-label {
+      font-size: 0.75rem;
+      color: #555555;
+      font-weight: 500;
     }
 
     /* ── Misc ── */
@@ -984,13 +1080,13 @@
       class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
       <i class="bi bi-bar-chart-line"></i> Dashboard
     </a>
-    <a href="{% url 'train_page' %}"
-      class="sidebar-link {% if request.resolver_match.url_name == 'train_page' %}active{% endif %}">
-      <i class="bi bi-sliders"></i> Pelatihan Model
-    </a>
     <a href="{% url 'dataset_management' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'dataset_management' %}active{% endif %}">
       <i class="bi bi-database-fill-gear"></i> Dataset
+    </a>
+    <a href="{% url 'train_page' %}"
+      class="sidebar-link {% if request.resolver_match.url_name == 'train_page' %}active{% endif %}">
+      <i class="bi bi-sliders"></i> Pelatihan Model
     </a>
     {% endif %}
 
@@ -1105,12 +1201,41 @@
 
     <!-- ── Footer ── -->
     <footer class="footer-custom mt-5">
-      <div class="container-fluid px-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span><i class="bi bi-heart-pulse-fill me-1" style="color:var(--accent)"></i>
-          <span style="color:var(--text-main);font-weight:700;">Heart</span>Guard &copy; 2026 — Prediksi Penyakit
-          Jantung
-        </span>
-        <span>Random Forest + Multi-Holdout Validation &nbsp;|&nbsp; Proyek Akhir Pengembangan Sistem Informasi</span>
+      <div class="container-fluid px-4">
+        <div class="row align-items-center justify-content-between g-3">
+          
+          <!-- Left side: Copyright & Brand -->
+          <div class="col-lg-5 text-center text-lg-start order-2 order-lg-1">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start gap-2 gap-sm-3">
+              <span class="footer-brand-name">
+                <i class="bi bi-heart-pulse-fill me-1" style="color: var(--lime); filter: drop-shadow(0 0 4px rgba(170,255,0,0.5));"></i>
+                Heart<span>Guard</span>
+              </span>
+              <span class="footer-sep d-none d-sm-inline">|</span>
+              <span class="footer-copy">&copy; 2026. Hak Cipta Dilindungi</span>
+            </div>
+            <div class="mt-2 text-center text-lg-start" style="color: #444444; font-size: 0.72rem; font-weight: 500;">
+              Proyek Akhir Pengembangan Sistem Informasi &bull; Universitas Musamus Merauke
+            </div>
+          </div>
+
+          <!-- Right side: Systems Status & Tech Stack -->
+          <div class="col-lg-7 text-center text-lg-end order-1 order-lg-2">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end gap-3">
+              <!-- System Status -->
+              <div class="status-indicator">
+                <span class="status-dot"></span>
+                Sistem Aktif &amp; Optimal
+              </div>
+              <span class="footer-sep d-none d-sm-inline">|</span>
+              <!-- Tech stack pills -->
+              <span class="footer-tech-pill" title="Algoritma Klasifikasi Utama">Random Forest</span>
+              <span class="footer-tech-pill" title="Metode Evaluasi Model">Multi-Holdout</span>
+              <span class="footer-tech-pill" title="Dataset Sumber">UCI Dataset</span>
+            </div>
+          </div>
+
+        </div>
       </div>
     </footer>
   </div> <!-- /main-wrapper -->

@@ -5,12 +5,39 @@
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
+  /* ── Three.js Canvas Background ── */
+  #hero-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   @keyframes float {
     0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-12px); box-shadow: 0 15px 25px rgba(170,255,0,0.25); }
+    50%  { transform: translateY(-12px); box-shadow: 0 15px 25px rgba(170,255,0,0.35); }
     100% { transform: translateY(0px); }
   }
   .icon-float { animation: float 3s ease-in-out infinite; }
+
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.85); opacity: 0.6; }
+    70%  { transform: scale(1.3);  opacity: 0; }
+    100% { transform: scale(1.3);  opacity: 0; }
+  }
+  .pulse-ring {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 2px solid rgba(170,255,0,0.5);
+    animation: pulse-ring 2s ease-out infinite;
+  }
+  .pulse-ring-2 {
+    animation-delay: 0.6s;
+    inset: -22px;
+    border-color: rgba(170,255,0,0.25);
+  }
 
   /* Marquee */
   .marquee-container {
@@ -41,6 +68,37 @@
     background: var(--bg);
     padding: 5rem 0 7rem;
     position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Subtle grid overlay */
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(170,255,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(170,255,0,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Radial glow */
+  .hero-section::after {
+    content: '';
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(170,255,0,0.07) 0%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 50%;
   }
 
   .hero-badge {
@@ -55,6 +113,7 @@
     display: inline-block;
     margin-bottom: 1.5rem;
     border: 1px solid rgba(170,255,0,0.25);
+    backdrop-filter: blur(10px);
   }
 
   .hero-title {
@@ -80,14 +139,23 @@
 
   /* Hero card */
   .hero-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(20, 22, 20, 0.7);
+    border: 1px solid rgba(170,255,0,0.15);
     border-radius: 24px;
     padding: 2.5rem;
     text-align: center;
     position: relative;
     overflow: visible;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    box-shadow: 0 16px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(170,255,0,0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+  }
+
+  .hero-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(170,255,0,0.1);
+    border-color: rgba(170,255,0,0.3);
   }
 
   .hero-card-badge {
@@ -103,16 +171,24 @@
   }
 
   .hero-stat-box {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.04);
     border-radius: 16px;
     padding: 1rem .5rem;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(170,255,0,0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-stat-box:hover {
+    background: rgba(170,255,0,0.08);
+    border-color: rgba(170,255,0,0.3);
+    transform: scale(1.05);
   }
 
   .hero-stat-num {
     font-size: 1.5rem;
     font-weight: 900;
-    color: var(--text-main);
+    color: var(--lime);
   }
 
   .hero-stat-label {
@@ -122,6 +198,71 @@
     letter-spacing: .5px;
     font-weight: 700;
     margin-top: 4px;
+  }
+
+  /* ── 3D Rotating Orb ── */
+  .orb-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .orb-icon {
+    width: 80px; height: 80px;
+    background: var(--lime);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(170,255,0,0.5), 0 0 60px rgba(170,255,0,0.2);
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Orbit rings */
+  .orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(170,255,0,0.2);
+    animation: orbit-spin linear infinite;
+  }
+  .orbit-ring-1 {
+    width: 130px; height: 130px;
+    animation-duration: 6s;
+  }
+  .orbit-ring-2 {
+    width: 170px; height: 170px;
+    animation-duration: 10s;
+    animation-direction: reverse;
+    border-color: rgba(170,255,0,0.1);
+  }
+  .orbit-ring-3 {
+    width: 220px; height: 220px;
+    animation-duration: 15s;
+    border-color: rgba(170,255,0,0.06);
+  }
+
+  @keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* Orbit dots */
+  .orbit-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--lime);
+    border-radius: 50%;
+    top: -4px; left: 50%;
+    margin-left: -4px;
+    box-shadow: 0 0 10px rgba(170,255,0,0.8);
+  }
+  .orbit-dot-sm {
+    width: 5px; height: 5px;
+    top: -2.5px; margin-left: -2.5px;
+    background: rgba(170,255,0,0.6);
+    box-shadow: 0 0 6px rgba(170,255,0,0.5);
   }
 
   /* Feature cards */
@@ -146,18 +287,21 @@
     margin-bottom: 0;
   }
 
-  /* Animasi & Interaksi Premium untuk Feature Cards */
+  /* Feature Cards 3D */
   .feature-card {
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    background: rgba(18, 20, 18, 0.8) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .feature-card:hover {
-    transform: translateY(-10px) scale(1.03) !important;
     border-color: var(--lime) !important;
-    box-shadow: 0 20px 40px rgba(170, 255, 0, 0.15) !important;
+    box-shadow: 0 20px 60px rgba(170, 255, 0, 0.18), 0 0 0 1px rgba(170,255,0,0.15) !important;
   }
 
   /* Shimmer sweep effect */
@@ -171,19 +315,37 @@
     background: linear-gradient(
       120deg,
       transparent,
-      rgba(170, 255, 0, 0.1),
+      rgba(170, 255, 0, 0.08),
       transparent
     );
     transition: all 0.6s ease;
+    z-index: 1;
   }
 
   .feature-card:hover::before {
     left: 150%;
   }
 
+  /* Bottom glow line */
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--lime), transparent);
+    transition: transform 0.4s ease;
+    border-radius: 2px;
+  }
+
+  .feature-card:hover::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+
   .feature-card:hover .feature-icon-wrap {
     background: var(--lime) !important;
-    box-shadow: 0 0 20px rgba(170, 255, 0, 0.4);
+    box-shadow: 0 0 30px rgba(170, 255, 0, 0.5);
     transform: rotate(-5deg) scale(1.1);
   }
 
@@ -193,17 +355,102 @@
 
   .feature-card .feature-icon-wrap {
     transition: all 0.4s ease;
+    position: relative;
+    z-index: 2;
   }
 
   .feature-card .feature-icon-wrap i {
     transition: all 0.4s ease;
+  }
+
+  /* ── Floating Particles Canvas ── */
+  #particles-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Stats section */
+  .stats-section {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Counter animation */
+  .hero-stat-num[data-target] {
+    transition: color 0.3s;
+  }
+
+  /* Scan line effect on hero card */
+  @keyframes scan-line {
+    0%   { top: -5%; opacity: 0.6; }
+    100% { top: 110%; opacity: 0; }
+  }
+
+  .hero-card-scan {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(170,255,0,0.4), transparent);
+    pointer-events: none;
+    animation: scan-line 4s linear infinite;
+    z-index: 10;
+  }
+
+  /* ── Typing Cursor ── */
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--lime);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    border-radius: 2px;
+  }
+
+  /* ── Data nodes visualization ── */
+  .data-nodes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .data-node {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--lime);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 8px rgba(170,255,0,0.7);
+    animation: node-appear linear infinite;
+  }
+
+  @keyframes node-appear {
+    0%   { opacity: 0; transform: scale(0); }
+    20%  { opacity: 0.8; transform: scale(1); }
+    80%  { opacity: 0.4; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- ── Hero ── -->
-<section class="hero-section">
+<section class="hero-section" id="hero-section">
+  <!-- Three.js Canvas -->
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Data nodes decorative -->
+  <div class="data-nodes" id="data-nodes"></div>
+
   <div class="container">
     <div class="row align-items-center gy-5">
       <div class="col-lg-7" data-aos="fade-right">
@@ -213,7 +460,7 @@
         <h1 class="hero-title">
           Prediksi Penyakit Jantung<br>
           <span class="accent-lime">Lebih Akurat</span> Dengan<br>
-          <span class="accent-lt">Random Forest</span>
+          <span class="accent-lt" id="typing-target">Random Forest</span><span class="typing-cursor" id="typing-cursor"></span>
         </h1>
         <p class="hero-desc">
           Sistem Prediksi Berbasis <strong>Multi-Holdout Validation</strong> Dengan
@@ -223,29 +470,46 @@
       </div>
 
       <div class="col-lg-5 text-center" data-aos="fade-left" data-aos-delay="200">
-        <div class="hero-card">
+        <div class="hero-card" id="hero-card-3d">
+          <!-- Scan line -->
+          <div class="hero-card-scan"></div>
+
           <span class="hero-card-badge">
             <i class="bi bi-star-fill me-1"></i> Akurasi Tinggi
           </span>
-          <div class="icon-float" style="width:80px;height:80px;background:var(--lime);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 8px 24px rgba(170,255,0,0.4);">
-            <i class="bi bi-heart-pulse" style="font-size:3rem;color:#0A0A0A;"></i>
+
+          <!-- Orbit animation wrapper -->
+          <div class="orb-wrapper">
+            <div class="orbit-ring orbit-ring-3">
+              <div class="orbit-dot orbit-dot-sm"></div>
+            </div>
+            <div class="orbit-ring orbit-ring-2">
+              <div class="orbit-dot orbit-dot-sm"></div>
+            </div>
+            <div class="orbit-ring orbit-ring-1">
+              <div class="orbit-dot"></div>
+            </div>
+            <div class="orb-icon">
+              <i class="bi bi-heart-pulse" style="font-size:3rem;color:#0A0A0A;"></i>
+            </div>
           </div>
+
           <div class="row g-3">
             <div class="col-4">
               <div class="hero-stat-box">
-                <div class="hero-stat-num">{{ dataset_size }}</div>
+                <div class="hero-stat-num" data-target="{{ dataset_size }}" id="counter-samples">0</div>
                 <div class="hero-stat-label">Sampel</div>
               </div>
             </div>
             <div class="col-4">
               <div class="hero-stat-box">
-                <div class="hero-stat-num">13</div>
+                <div class="hero-stat-num" data-target="13" id="counter-features">0</div>
                 <div class="hero-stat-label">Fitur</div>
               </div>
             </div>
             <div class="col-4">
               <div class="hero-stat-box">
-                <div class="hero-stat-num">5×</div>
+                <div class="hero-stat-num" id="counter-holdout">5×</div>
                 <div class="hero-stat-label">Holdout</div>
               </div>
             </div>
@@ -291,7 +555,7 @@
 
 <!-- ── Fitur unggulan ── -->
 <section class="container mt-4 mb-5">
-  <div class="text-center mb-5">
+  <div class="text-center mb-5" data-aos="fade-up">
     <h2 class="section-title">Fitur Utama Sistem</h2>
     <p class="section-sub">Dibangun Dengan Teknologi Machine Learning Modern Untuk Hasil Yang Dapat Dipercaya</p>
   </div>
@@ -340,13 +604,267 @@
 {% block extra_js %}
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+<!-- Three.js for 3D background -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script>
+  // ── AOS Init ──
   AOS.init({ duration: 800, once: true, offset: 50 });
+
+  // ── Vanilla Tilt on Feature Cards ──
   VanillaTilt.init(document.querySelectorAll(".feature-card"), {
-    max: 10,
-    speed: 400,
+    max: 12,
+    speed: 500,
     glare: true,
-    "max-glare": 0.15,
+    "max-glare": 0.2,
+    perspective: 1000,
   });
+
+  // ── 3D Tilt on Hero Card (manual mouse tracking) ──
+  const heroCard = document.getElementById('hero-card-3d');
+  if (heroCard) {
+    heroCard.addEventListener('mousemove', (e) => {
+      const rect = heroCard.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      heroCard.style.transform = `perspective(900px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) translateY(-6px)`;
+    });
+    heroCard.addEventListener('mouseleave', () => {
+      heroCard.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) translateY(0)';
+      heroCard.style.transition = 'transform 0.6s ease';
+    });
+    heroCard.addEventListener('mouseenter', () => {
+      heroCard.style.transition = 'none';
+    });
+  }
+
+  // ── Three.js Neural Network Background (Red) ──
+  (function() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+    camera.position.z = 80;
+
+    // Resize
+    function resize() {
+      const section = document.getElementById('hero-section');
+      const w = section.clientWidth;
+      const h = section.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ── Particles ──
+    const PARTICLE_COUNT = 220;
+    const positions  = [];
+    const velocities = [];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      positions.push(
+        (Math.random() - 0.5) * 200,
+        (Math.random() - 0.5) * 120,
+        (Math.random() - 0.5) * 80
+      );
+      velocities.push(
+        (Math.random() - 0.5) * 0.05,
+        (Math.random() - 0.5) * 0.05,
+        (Math.random() - 0.5) * 0.02
+      );
+    }
+
+    const pGeo = new THREE.BufferGeometry();
+    const pArr = new Float32Array(positions);
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pArr, 3));
+
+    const pMat = new THREE.PointsMaterial({
+      color: 0xffffff,       // white
+      size: 1.3,
+      transparent: true,
+      opacity: 0.65,
+      sizeAttenuation: true,
+    });
+    const particles = new THREE.Points(pGeo, pMat);
+    scene.add(particles);
+
+    // ── Connection Lines ──
+    const LINE_THRESHOLD = 35;
+    const lineGeo = new THREE.BufferGeometry();
+    const lineArr  = new Float32Array(PARTICLE_COUNT * PARTICLE_COUNT * 6);
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(lineArr, 3));
+    const lineSegments = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+      color: 0xaaaaaa,       // light grey-white
+      transparent: true,
+      opacity: 0.18,
+    }));
+    scene.add(lineSegments);
+
+    // Mouse interaction
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    let frame = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      frame++;
+
+      const pos = pGeo.attributes.position.array;
+
+      // Move particles
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const i3 = i * 3;
+        pos[i3]     += velocities[i3];
+        pos[i3 + 1] += velocities[i3 + 1];
+        pos[i3 + 2] += velocities[i3 + 2];
+
+        // Bounce walls
+        if (Math.abs(pos[i3])     > 100) velocities[i3]     *= -1;
+        if (Math.abs(pos[i3 + 1]) > 60)  velocities[i3 + 1] *= -1;
+        if (Math.abs(pos[i3 + 2]) > 40)  velocities[i3 + 2] *= -1;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+
+      // Update connection lines (every 2 frames for performance)
+      if (frame % 2 === 0) {
+        const linePos = lineGeo.attributes.position.array;
+        let lineIdx = 0;
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const i3 = i * 3;
+          for (let j = i + 1; j < PARTICLE_COUNT; j++) {
+            const j3 = j * 3;
+            const dx = pos[i3]   - pos[j3];
+            const dy = pos[i3+1] - pos[j3+1];
+            const dz = pos[i3+2] - pos[j3+2];
+            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            if (dist < LINE_THRESHOLD && lineIdx + 5 < lineArr.length) {
+              linePos[lineIdx++] = pos[i3];
+              linePos[lineIdx++] = pos[i3+1];
+              linePos[lineIdx++] = pos[i3+2];
+              linePos[lineIdx++] = pos[j3];
+              linePos[lineIdx++] = pos[j3+1];
+              linePos[lineIdx++] = pos[j3+2];
+            }
+          }
+        }
+        // Zero out unused slots
+        for (let k = lineIdx; k < lineArr.length; k++) linePos[k] = 0;
+        lineGeo.attributes.position.needsUpdate = true;
+        lineGeo.setDrawRange(0, lineIdx / 3);
+      }
+
+      // Camera drift with mouse
+      camera.position.x += (mouseX * 10 - camera.position.x) * 0.03;
+      camera.position.y += (-mouseY * 5  - camera.position.y) * 0.03;
+
+      // Slow group rotation
+      particles.rotation.y     += 0.0008;
+      lineSegments.rotation.y  += 0.0008;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  })();
+
+
+  // ── Animated Counter ──
+  function animateCounter(el, target, duration) {
+    const start = performance.now();
+    const update = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(update);
+      else el.textContent = target;
+    };
+    requestAnimationFrame(update);
+  }
+
+  // Trigger counters when hero is visible
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const samplesEl = document.getElementById('counter-samples');
+        const featuresEl = document.getElementById('counter-features');
+        if (samplesEl) {
+          const target = parseInt(samplesEl.dataset.target) || 302;
+          animateCounter(samplesEl, target, 1800);
+        }
+        if (featuresEl) {
+          animateCounter(featuresEl, 13, 1200);
+        }
+        heroObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const heroSection = document.getElementById('hero-section');
+  if (heroSection) heroObserver.observe(heroSection);
+
+  // ── Dynamic Data Nodes ──
+  (function() {
+    const container = document.getElementById('data-nodes');
+    if (!container) return;
+    const NODES = 18;
+    for (let i = 0; i < NODES; i++) {
+      const node = document.createElement('div');
+      node.className = 'data-node';
+      node.style.left = (Math.random() * 100) + '%';
+      node.style.top = (Math.random() * 100) + '%';
+      const dur = 3 + Math.random() * 5;
+      const delay = Math.random() * 6;
+      node.style.animation = `node-appear ${dur}s ${delay}s linear infinite`;
+      container.appendChild(node);
+    }
+  })();
+
+  // ── Typing effect on subtitle ──
+  (function() {
+    const el = document.getElementById('typing-target');
+    const cursor = document.getElementById('typing-cursor');
+    if (!el) return;
+    const texts = ['Random Forest', 'Multi-Holdout', 'Akurasi Tinggi', 'Data Klinis'];
+    let textIdx = 0;
+    let charIdx = 0;
+    let deleting = false;
+
+    function type() {
+      const current = texts[textIdx];
+      if (!deleting) {
+        charIdx++;
+        el.textContent = current.slice(0, charIdx);
+        if (charIdx === current.length) {
+          setTimeout(() => { deleting = true; }, 2200);
+          setTimeout(type, 2400);
+          return;
+        }
+      } else {
+        charIdx--;
+        el.textContent = current.slice(0, charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          textIdx = (textIdx + 1) % texts.length;
+        }
+      }
+      const speed = deleting ? 50 : 90;
+      setTimeout(type, speed);
+    }
+
+    // Start after initial delay
+    setTimeout(type, 3000);
+  })();
 </script>
 {% endblock %}

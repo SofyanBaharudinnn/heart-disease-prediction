@@ -2,157 +2,424 @@
 {% block title %}Tentang – HeartGuard{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-9">
+    <div class="col-xl-9">
 
+      <!-- Hero Header -->
       <div class="text-center mb-5">
-        <h2 class="section-title"><i class="bi bi-info-circle me-2" style="color:var(--accent)"></i>Tentang Proyek</h2>
-        <p class="section-sub">Prediksi Penyakit Jantung Menggunakan Algoritma Random Forest<br>dengan Metode Multi-Holdout Validation</p>
+        <span class="badge-tech">
+          <i class="bi bi-shield-fill-plus me-1"></i>Sistem Pakar Medis
+        </span>
+        <h1 class="hero-title mb-3">Tentang Proyek <span class="highlight-text">HeartGuard</span></h1>
+        <p class="section-sub" style="max-width: 650px; margin: 0 auto; line-height: 1.6;">
+          Platform digital prediksi penyakit jantung berbasis kecerdasan buatan, dirancang untuk mendukung diagnosis klinis awal secara cepat, akurat, dan tepercaya.
+        </p>
       </div>
 
-      <!-- Tentang -->
-      <div class="card-custom mb-4">
-        <div class="card-header-custom"><i class="bi bi-journal-text"></i> Deskripsi Proyek</div>
-        <div class="p-4" style="line-height:1.8;color:#FFFFFF;">
-          <p>
-            Proyek ini merupakan tugas akhir mata kuliah <strong style="color:var(--lime);">Proyek Pengembangan Sistem Informasi</strong>
-            yang membangun sistem prediksi penyakit jantung berbasis machine learning.
-          </p>
-          <p>
-            Sistem menggunakan algoritma <strong style="color:var(--lime);">Random Forest</strong> metode ensemble yang membangun
-            banyak decision tree secara paralel dikombinasikan dengan metode evaluasi
-            <strong style="color:var(--lime);">Multi-Holdout Validation</strong> untuk mendapatkan estimasi performa model yang lebih
-            robust dan tidak bias.
-          </p>
-          <p>
-            Dataset yang digunakan adalah Heart Disease UCI Dataset dari Kaggle yang berisi
-            <strong style="color:var(--lime);">13 fitur klinis</strong> dan satu variabel target (ada/tidaknya penyakit jantung).
-          </p>
+      <!-- Core Pillars Highlight Grid -->
+      <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
+        <i class="bi bi-journal-medical me-2"></i>Pilar Utama Proyek
+      </h5>
+      <div class="row g-4 mb-5">
+        <!-- Pillar 1 -->
+        <div class="col-md-4">
+          <div class="desc-card">
+            <div class="desc-icon-wrapper">
+              <i class="bi bi-cpu-fill"></i>
+            </div>
+            <h4 class="desc-title">Random Forest</h4>
+            <p class="desc-text">
+              Algoritma Machine Learning ensemble yang membangun ratusan decision tree secara paralel untuk memprediksi tingkat probabilitas risiko penyakit jantung secara robust.
+            </p>
+          </div>
+        </div>
+        <!-- Pillar 2 -->
+        <div class="col-md-4">
+          <div class="desc-card">
+            <div class="desc-icon-wrapper">
+              <i class="bi bi-diagram-3-fill"></i>
+            </div>
+            <h4 class="desc-title">Multi-Holdout</h4>
+            <p class="desc-text">
+              Metode evaluasi silang bertahap yang membagi dataset berkali-kali untuk melatih model secara iteratif guna menghindari bias dan memastikan estimasi akurasi yang konsisten.
+            </p>
+          </div>
+        </div>
+        <!-- Pillar 3 -->
+        <div class="col-md-4">
+          <div class="desc-card">
+            <div class="desc-icon-wrapper">
+              <i class="bi bi-database-fill"></i>
+            </div>
+            <h4 class="desc-title">UCI Dataset</h4>
+            <p class="desc-text">
+              Menggunakan dataset klinis standar internasional dari UCI Machine Learning Repository yang mencakup 13 parameter kesehatan vital untuk evaluasi menyeluruh.
+            </p>
+          </div>
         </div>
       </div>
 
-      <!-- Teknologi -->
-      <div class="card-custom mb-4">
-        <div class="card-header-custom"><i class="bi bi-stack"></i> Teknologi Yang Digunakan</div>
-        <div class="p-4">
-          <div class="row g-3">
-            {% for icon, name, desc, color in tech_stack %}{% endfor %}
-            {% for item in tech_list %}{% endfor %}
-
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(255,100,100,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-globe2" style="color:#FF8080;"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Django 4.2</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Backend Framework (Python)</div>
-                </div>
-              </div>
+      <!-- Tech Stack Section -->
+      <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
+        <i class="bi bi-stack me-2"></i>Teknologi yang Digunakan
+      </h5>
+      <div class="row g-3 mb-5">
+        <!-- Django -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(230, 57, 70, 0.2); --border-hover: #E63946;">
+            <div class="tech-icon-box" style="background: rgba(230, 57, 70, 0.1); color: #E63946;">
+              <i class="bi bi-globe2"></i>
             </div>
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(170,255,0,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-cpu" style="color:var(--lime);"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Scikit-learn</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Machine Learning Library</div>
-                </div>
-              </div>
+            <div>
+              <div class="tech-title">Django 4.2</div>
+              <div class="tech-desc">Web Application Framework berbasis Python yang aman dan skalabel.</div>
             </div>
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(100,150,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-bar-chart" style="color:#80A0FF;"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Pandas + NumPy</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Data Processing</div>
-                </div>
-              </div>
+          </div>
+        </div>
+        <!-- Scikit-learn -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(170, 255, 0, 0.15); --border-hover: var(--lime);">
+            <div class="tech-icon-box" style="background: rgba(170, 255, 0, 0.1); color: var(--lime);">
+              <i class="bi bi-cpu"></i>
             </div>
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(255,170,0,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-pie-chart" style="color:#FFAA00;"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Matplotlib + Seaborn</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Data Visualization</div>
-                </div>
-              </div>
+            <div>
+              <div class="tech-title">Scikit-learn</div>
+              <div class="tech-desc">Pustaka Python utama untuk pelatihan dan evaluasi model Machine Learning.</div>
             </div>
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(121,82,179,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-bootstrap" style="color:#CC88FF;"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">Bootstrap 5</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Frontend CSS Framework</div>
-                </div>
-              </div>
+          </div>
+        </div>
+        <!-- Pandas + NumPy -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(79, 209, 197, 0.2); --border-hover: #4FD1C5;">
+            <div class="tech-icon-box" style="background: rgba(79, 209, 197, 0.1); color: #4FD1C5;">
+              <i class="bi bi-bar-chart-fill"></i>
             </div>
-            <div class="col-md-6">
-              <div style="display:flex;align-items:center;gap:12px;background:#0A0A0A;padding:1rem;border-radius:12px;border:1px solid #333333;">
-                <div style="width:42px;height:42px;background:rgba(100,255,100,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-database" style="color:#66FF66;"></i>
-                </div>
-                <div>
-                  <div style="font-weight:700;font-size:.9rem;color:#FFFFFF;">SQLite</div>
-                  <div style="font-size:.78rem;color:#BBBBBB;">Database (via Django ORM)</div>
-                </div>
-              </div>
+            <div>
+              <div class="tech-title">Pandas & NumPy</div>
+              <div class="tech-desc">Manipulasi struktur data berkinerja tinggi serta komputasi matriks numerik.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Matplotlib + Seaborn -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(255, 170, 0, 0.2); --border-hover: #FFAA00;">
+            <div class="tech-icon-box" style="background: rgba(255, 170, 0, 0.1); color: #FFAA00;">
+              <i class="bi bi-pie-chart-fill"></i>
+            </div>
+            <div>
+              <div class="tech-title">Matplotlib & Seaborn</div>
+              <div class="tech-desc">Pembuat grafik visualisasi analisis korelasi data medis dan metrik model.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Bootstrap 5 -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(204, 136, 255, 0.2); --border-hover: #CC88FF;">
+            <div class="tech-icon-box" style="background: rgba(204, 136, 255, 0.1); color: #CC88FF;">
+              <i class="bi bi-bootstrap-fill"></i>
+            </div>
+            <div>
+              <div class="tech-title">Bootstrap 5 & Icons</div>
+              <div class="tech-desc">Framework frontend responsive untuk tampilan tata letak antarmuka web modern.</div>
+            </div>
+          </div>
+        </div>
+        <!-- SQLite -->
+        <div class="col-md-6">
+          <div class="tech-card" style="--hover-color: rgba(102, 255, 102, 0.2); --border-hover: #66FF66;">
+            <div class="tech-icon-box" style="background: rgba(102, 255, 102, 0.1); color: #66FF66;">
+              <i class="bi bi-database-fill"></i>
+            </div>
+            <div>
+              <div class="tech-title">SQLite (Django ORM)</div>
+              <div class="tech-desc">Penyimpanan relasional lokal untuk manajemen data riwayat medis pasien.</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Alur Sistem -->
-      <div class="card-custom mb-4">
-        <div class="card-header-custom"><i class="bi bi-diagram-3"></i> Alur Sistem</div>
-        <div class="p-4">
-          <div class="d-flex flex-column gap-3">
-            {% for step, icon, title, desc in steps %}{% endfor %}
-            {% for i, icon, color, title, desc in workflow %}{% endfor %}
-
-            {% for item in "12345" %}{% endfor %}
-
-            <div style="display:flex;align-items:start;gap:14px;">
-              <div style="width:36px;height:36px;background:var(--lime);color:#0A0A0A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">1</div>
-              <div><strong style="color:#FFFFFF;">Persiapan Dataset</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Dataset heart.csv dari Kaggle dimuat, dibersihkan dari duplikat dan nilai null.</span></div>
+      <!-- System Workflow Timeline Section -->
+      <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
+        <i class="bi bi-bezier2 me-2"></i>Alur Aliran Sistem
+      </h5>
+      <div class="card-custom p-4 mb-5">
+        <div class="timeline-container">
+          <div class="timeline-line"></div>
+          
+          <!-- Step 1 -->
+          <div class="timeline-item" style="--theme-color: var(--lime);">
+            <div class="timeline-dot">1</div>
+            <div class="timeline-card">
+              <h4 class="timeline-title">Persiapan Dataset Medis</h4>
+              <p class="timeline-desc">Memuat file dataset <code style="color:var(--lime);">heart.csv</code> secara lokal, mendeteksi dan menangani missing values, duplikasi data, serta melakukan penyelarasan format.</p>
             </div>
-            <div style="display:flex;align-items:start;gap:14px;">
-              <div style="width:36px;height:36px;background:#FF6B6B;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">2</div>
-              <div><strong style="color:#FFFFFF;">Multi-Holdout Validation</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Data dibagi 80/20 sebanyak n kali dengan random state berbeda. Setiap iterasi melatih model Random Forest baru.</span></div>
+          </div>
+          
+          <!-- Step 2 -->
+          <div class="timeline-item" style="--theme-color: #FF6B6B;">
+            <div class="timeline-dot">2</div>
+            <div class="timeline-card">
+              <h4 class="timeline-title">Validasi Multi-Holdout</h4>
+              <p class="timeline-desc">Dataset dibagi menjadi porsi pelatihan (80%) dan pengujian (20%) secara acak sebanyak <em>N</em> iterasi untuk mengevaluasi konsistensi prediksi model secara acak.</p>
             </div>
-            <div style="display:flex;align-items:start;gap:14px;">
-              <div style="width:36px;height:36px;background:#4FD1C5;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">3</div>
-              <div><strong style="color:#FFFFFF;">Evaluasi Model</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Accuracy, Precision, Recall, F1-Score, dan ROC-AUC dihitung per holdout lalu dirata-ratakan.</span></div>
+          </div>
+          
+          <!-- Step 3 -->
+          <div class="timeline-item" style="--theme-color: #4FD1C5;">
+            <div class="timeline-dot">3</div>
+            <div class="timeline-card">
+              <h4 class="timeline-title">Evaluasi Kinerja Model</h4>
+              <p class="timeline-desc">Menghitung rata-rata metrik evaluasi model (Akurasi, Presisi, Sensitivitas, F1-Score, dan ROC-AUC) untuk menilai kehandalan performa model secara agregat.</p>
             </div>
-            <div style="display:flex;align-items:start;gap:14px;">
-              <div style="width:36px;height:36px;background:#FFAA00;color:#0A0A0A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">4</div>
-              <div><strong style="color:#FFFFFF;">Simpan Model Terbaik</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Model dengan F1-Score tertinggi disimpan menggunakan joblib untuk digunakan pada prediksi.</span></div>
+          </div>
+          
+          <!-- Step 4 -->
+          <div class="timeline-item" style="--theme-color: #FFAA00;">
+            <div class="timeline-dot">4</div>
+            <div class="timeline-card">
+              <h4 class="timeline-title">Persistensi Model Terbaik</h4>
+              <p class="timeline-desc">Model Random Forest dengan F1-Score optimal disimpan ke dalam format serialized file (<code style="color:#FFAA00;">.pkl</code>) menggunakan modul joblib agar siap digunakan secara real-time.</p>
             </div>
-            <div style="display:flex;align-items:start;gap:14px;">
-              <div style="width:36px;height:36px;background:#CC88FF;color:#FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">5</div>
-              <div><strong style="color:#FFFFFF;">Prediksi Real-Time</strong><br><span style="font-size:.88rem;color:#BBBBBB;">Pengguna memasukkan data klinis melalui form web, model menghasilkan probabilitas dan tingkat risiko.</span></div>
+          </div>
+          
+          <!-- Step 5 -->
+          <div class="timeline-item" style="--theme-color: #CC88FF;">
+            <div class="timeline-dot">5</div>
+            <div class="timeline-card">
+              <h4 class="timeline-title">Analisis Prediksi Real-Time</h4>
+              <p class="timeline-desc">Menerima parameter klinis yang diinputkan pengguna melalui halaman web, menormalkan data, dan menyajikan probabilitas penyakit jantung beserta tingkat risikonya.</p>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Action Button -->
+      {% if request.user.is_staff %}
       <div class="text-center">
-        {% if request.user.is_staff %}
-        <a href="{% url 'dashboard' %}" class="btn-outline-custom btn">
-          <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        <a href="{% url 'dashboard' %}" class="btn-outline-custom btn py-2.5 px-4" style="border-radius: 12px;">
+          <i class="bi bi-speedometer2 me-2"></i>Kembali ke Dashboard
         </a>
-        {% endif %}
       </div>
+      {% endif %}
 
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .badge-tech {
+    background: rgba(170, 255, 0, 0.1);
+    border: 1px solid rgba(170, 255, 0, 0.3);
+    color: var(--lime);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+  }
+
+  .highlight-text {
+    color: var(--lime);
+    text-shadow: 0 0 15px rgba(170, 255, 0, 0.25);
+  }
+
+  .desc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    height: 100%;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .desc-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(170, 255, 0, 0.35);
+    box-shadow: 0 15px 35px rgba(170, 255, 0, 0.08);
+  }
+
+  .desc-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(170, 255, 0, 0.08);
+    border: 1px solid rgba(170, 255, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lime);
+    margin-bottom: 1.5rem;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .desc-card:hover .desc-icon-wrapper {
+    background: var(--lime);
+    color: #0A0A0A;
+    transform: scale(1.05) rotate(5deg);
+  }
+
+  .desc-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+  }
+
+  .desc-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  /* Tech Cards */
+  .tech-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.2rem;
+    border-radius: 16px;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    height: 100%;
+  }
+
+  .tech-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hover, var(--lime));
+    box-shadow: 0 8px 24px var(--hover-color, rgba(170, 255, 0, 0.1));
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .tech-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+
+  .tech-card:hover .tech-icon-box {
+    transform: scale(1.1);
+  }
+
+  .tech-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #FFFFFF;
+    margin-bottom: 2px;
+  }
+
+  .tech-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+
+  /* Timeline */
+  .timeline-container {
+    position: relative;
+    padding-left: 2.5rem;
+    margin-top: 1rem;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 17px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -2.5rem;
+    top: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #1C1C1C;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    z-index: 5;
+    transition: all 0.3s ease;
+  }
+
+  .timeline-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .timeline-item:hover .timeline-dot {
+    border-color: var(--theme-color, var(--lime));
+    background: var(--theme-color, var(--lime));
+    color: #0A0A0A;
+    box-shadow: 0 0 15px var(--theme-color, rgba(170, 255, 0, 0.5));
+  }
+
+  .timeline-item:hover .timeline-card {
+    background: var(--surface);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateX(5px);
+  }
+
+  .timeline-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+  }
+
+  .timeline-item:hover .timeline-title {
+    color: var(--theme-color, var(--lime));
+  }
+
+  .timeline-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+</style>
 {% endblock %}
