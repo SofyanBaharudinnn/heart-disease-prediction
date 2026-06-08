@@ -1,5 +1,5 @@
 {% extends 'heart_disease/base.html' %}
-{% block title %}Form Prediksi – HeartGuard{% endblock %}
+{% block title %}{{ t.predict_title }} – HeartGuard{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -7,13 +7,13 @@
     <div class="col-xl-9">
 
       <div class="text-center mb-4">
-        <h2 class="section-title"><i class="bi bi-cpu me-2" style="color:var(--accent)"></i>Form Prediksi Penyakit Jantung</h2>
-        <p class="section-sub">Isi Data Klinis Pasien Di Bawah Ini Untuk Mendapatkan Hasil Prediksi</p>
+        <h2 class="section-title"><i class="bi bi-cpu me-2" style="color:var(--accent)"></i>{{ t.predict_title }}</h2>
+        <p class="section-sub">{{ t.predict_sub }}</p>
       </div>
 
       <div class="card-custom">
         <div class="card-header-custom">
-          <i class="bi bi-clipboard2-pulse"></i> Data Klinis Pasien
+          <i class="bi bi-clipboard2-pulse"></i> {{ t.predict_form_card_header }}
         </div>
         <div class="p-4">
           <form id="prediction-form" method="post" action="{% url 'predict' %}">
@@ -21,7 +21,7 @@
 
             <!-- Informasi Dasar -->
             <h6 style="font-weight:700;color:var(--primary);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin-bottom:1.2rem;">
-              <i class="bi bi-person-fill me-2" style="color:var(--teal)"></i>Informasi Dasar
+              <i class="bi bi-person-fill me-2" style="color:var(--teal)"></i>{{ t.predict_form_sec_basic }}
             </h6>
             <div class="row g-3 mb-4">
               <!-- age -->
@@ -29,13 +29,13 @@
                 <label class="form-label-custom">{{ feature_info.age.label }}</label>
                 <input type="number" name="age" class="form-control form-control-custom mt-auto"
                        min="{{ feature_info.age.min }}" max="{{ feature_info.age.max }}"
-                       placeholder="Contoh: 55" required>
+                       placeholder="{{ feature_info.age.placeholder }}" required>
               </div>
               <!-- sex -->
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.sex.label }}</label>
                 <select name="sex" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.sex.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -45,7 +45,7 @@
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.cp.label }}</label>
                 <select name="cp" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.cp.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -55,7 +55,7 @@
 
             <!-- Pengukuran Vital -->
             <h6 style="font-weight:700;color:var(--primary);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin-bottom:1.2rem;">
-              <i class="bi bi-heart-pulse-fill me-2" style="color:var(--accent)"></i>Pengukuran Vital
+              <i class="bi bi-heart-pulse-fill me-2" style="color:var(--accent)"></i>{{ t.predict_form_sec_vital }}
             </h6>
             <div class="row g-3 mb-4">
               <!-- trestbps -->
@@ -90,14 +90,14 @@
 
             <!-- Hasil Pemeriksaan -->
             <h6 style="font-weight:700;color:var(--primary);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin-bottom:1.2rem;">
-              <i class="bi bi-file-medical-fill me-2" style="color:#6f42c1"></i>Hasil Pemeriksaan
+              <i class="bi bi-file-medical-fill me-2" style="color:#6f42c1"></i>{{ t.predict_form_sec_exam }}
             </h6>
             <div class="row g-3 mb-4">
               <!-- fbs -->
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.fbs.label }}</label>
                 <select name="fbs" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.fbs.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -107,7 +107,7 @@
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.restecg.label }}</label>
                 <select name="restecg" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.restecg.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -117,7 +117,7 @@
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.exang.label }}</label>
                 <select name="exang" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.exang.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -127,7 +127,7 @@
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.slope.label }}</label>
                 <select name="slope" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.slope.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -143,7 +143,7 @@
               <div class="col-md-4 d-flex flex-column">
                 <label class="form-label-custom">{{ feature_info.thal.label }}</label>
                 <select name="thal" class="form-select form-select-custom mt-auto" required>
-                  <option value="" disabled selected>-- Pilih --</option>
+                  <option value="" disabled selected>-- {% if current_lang == 'en' %}Select{% else %}Pilih{% endif %} --</option>
                   {% for val, label in feature_info.thal.choices %}
                   <option value="{{ val }}">{{ label }}</option>
                   {% endfor %}
@@ -154,16 +154,15 @@
             <!-- Disclaimer -->
             <div class="alert alert-warning alert-custom mb-4" style="font-size:.85rem;">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              <strong>Perhatian:</strong> Hasil prediksi ini merupakan hasil analisis machine learning dan
-              <strong>bukan pengganti diagnosis medis</strong>. Selalu konsultasikan dengan dokter.
+              <strong>{{ t.predict_form_disclaimer_title }}</strong> {{ t.predict_form_disclaimer_text }}
             </div>
 
             <div class="d-flex flex-column flex-sm-row gap-3">
               <button type="submit" class="btn-primary-custom btn flex-grow-1 w-100 w-sm-auto text-center">
-                <i class="bi bi-cpu me-2"></i>Prediksi Sekarang
+                <i class="bi bi-cpu me-2"></i>{{ t.predict_form_btn_predict }}
               </button>
               <button type="reset" class="btn-outline-custom btn w-100 w-sm-auto text-center">
-                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                <i class="bi bi-arrow-clockwise me-1"></i>{{ t.predict_form_btn_reset }}
               </button>
             </div>
           </form>
@@ -205,8 +204,8 @@
     </div>
 
     <!-- Title -->
-    <h3 class="loading-title">Menganalisis Kesehatan Jantung</h3>
-    <p class="loading-sub" id="loading-status-text">Menghubungkan ke modul AI...</p>
+    <h3 class="loading-title">{{ t.predict_loading_title }}</h3>
+    <p class="loading-sub" id="loading-status-text">{{ t.predict_loading_sub_init }}</p>
 
     <!-- Progress -->
     <div class="prog-track">
@@ -214,15 +213,15 @@
       <div class="prog-shimmer"></div>
     </div>
     <div class="prog-footer">
-      <span id="loading-step-label">Memulai analisis</span>
+      <span id="loading-step-label">{{ t.predict_loading_step_label }}</span>
       <span id="loading-percentage-text" class="prog-pct">0%</span>
     </div>
 
     <!-- Stats chips -->
     <div class="stats-chips">
-      <div class="chip" id="chip-features"><span class="chip-num">0</span><span class="chip-lbl">Fitur</span></div>
-      <div class="chip" id="chip-trees"><span class="chip-num">0</span><span class="chip-lbl">Pohon</span></div>
-      <div class="chip" id="chip-conf"><span class="chip-num">0%</span><span class="chip-lbl">Konfiden</span></div>
+      <div class="chip" id="chip-features"><span class="chip-num">0</span><span class="chip-lbl">{{ t.predict_loading_chip_features }}</span></div>
+      <div class="chip" id="chip-trees"><span class="chip-num">0</span><span class="chip-lbl">{{ t.predict_loading_chip_trees }}</span></div>
+      <div class="chip" id="chip-conf"><span class="chip-num">0%</span><span class="chip-lbl">{{ t.predict_loading_chip_conf }}</span></div>
     </div>
   </div>
 </div>
@@ -666,11 +665,11 @@
     const targetConf = Math.floor(Math.random() * 8) + 90; // 90% - 97% random target
 
     const steps = [
-      { percentage: 15, status: 'Menghubungkan ke modul AI...', label: 'Inisialisasi', duration: 450 },
-      { percentage: 40, status: 'Membaca parameter klinis...', label: 'Ekstraksi fitur', duration: 650 },
-      { percentage: 70, status: 'Mengevaluasi dengan Random Forest...', label: 'Pemrosesan pohon keputusan', duration: 850 },
-      { percentage: 90, status: 'Menghitung probabilitas risiko...', label: 'Klasifikasi probabilitas', duration: 550 },
-      { percentage: 100, status: 'Menyusun hasil diagnosis...', label: 'Menyusun laporan', duration: 350 }
+      { percentage: 15, status: "{% if current_lang == 'en' %}Connecting to AI module...{% else %}Menghubungkan ke modul AI...{% endif %}", label: "{% if current_lang == 'en' %}Initialization{% else %}Inisialisasi{% endif %}", duration: 450 },
+      { percentage: 40, status: "{% if current_lang == 'en' %}Reading clinical parameters...{% else %}Membaca parameter klinis...{% endif %}", label: "{% if current_lang == 'en' %}Feature extraction{% else %}Ekstraksi fitur{% endif %}", duration: 650 },
+      { percentage: 70, status: "{% if current_lang == 'en' %}Evaluating with Random Forest...{% else %}Mengevaluasi dengan Random Forest...{% endif %}", label: "{% if current_lang == 'en' %}Decision tree processing{% else %}Pemrosesan pohon keputusan{% endif %}", duration: 850 },
+      { percentage: 90, status: "{% if current_lang == 'en' %}Calculating risk probability...{% else %}Menghitung probabilitas risiko...{% endif %}", label: "{% if current_lang == 'en' %}Probability classification{% else %}Klasifikasi probabilitas{% endif %}", duration: 550 },
+      { percentage: 100, status: "{% if current_lang == 'en' %}Compiling diagnostic results...{% else %}Menyusun hasil diagnosis...{% endif %}", label: "{% if current_lang == 'en' %}Generating report{% else %}Menyusun laporan{% endif %}", duration: 350 }
     ];
 
     form.addEventListener('submit', function(e) {
@@ -779,6 +778,22 @@
       }
       
       runSimulation();
+    });
+    // ── Auto-fill parameters from URL search parameters ──
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramsToFill = ['age', 'sex', 'cp', 'trestbps', 'chol', 'thalach'];
+    
+    paramsToFill.forEach(param => {
+      const val = urlParams.get(param);
+      if (val !== null) {
+        const input = form.querySelector(`[name="${param}"]`);
+        if (input) {
+          input.value = val;
+          if (input.tagName === 'SELECT') {
+            input.dispatchEvent(new Event('change'));
+          }
+        }
+      }
     });
   });
 </script>

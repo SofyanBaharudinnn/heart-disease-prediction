@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ t.consent_title }} – HeartGuard</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --lime:    #AAFF00;
+      --lime-lt: #C8FF4D;
+      --lime-dk: #88CC00;
+      --black:   #0A0A0A;
+      --near:    #111111;
+      --white:   #FFFFFF;
+      --gray:    #F7F7F7;
+      --muted:   #888888;
+      --border:  #222222;
+      --font:    'Plus Jakarta Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* ── Animated background ── */
+    .bg-canvas { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(170,255,0,0.15), transparent);
+      top: -200px; left: -150px;
+    }
+    .orb-2 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(170,255,0,0.06), transparent);
+      bottom: -100px; right: -80px;
+      animation-delay: -7s;
+    }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(25px, -20px) scale(1.05); }
+      100% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+
+    /* ── Consent Wrapper ── */
+    .consent-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      padding: 1.5rem 1rem;
+    }
+
+    .card-box {
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 28px;
+      padding: 2.5rem 2.2rem;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+      animation: cardIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(15px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Provider Branding ── */
+    .brand-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--lime);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(170,255,0,0.25);
+    }
+    .app-icon i { font-size: 1.4rem; color: var(--black); }
+
+    .conn-line {
+      height: 2px;
+      width: 30px;
+      background: #333;
+      position: relative;
+    }
+    .conn-line::after {
+      content: '\e3b8'; /* bi-arrow-right-short */
+      font-family: 'bootstrap-icons';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #666;
+      font-size: 1rem;
+    }
+
+    .provider-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .icon-google {
+      background: #ffffff;
+      color: #000;
+      box-shadow: 0 4px 16px rgba(255,255,255,0.1);
+    }
+    .icon-github {
+      background: #24292e;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(36,41,46,0.4);
+      border: 1px solid #333;
+    }
+
+    /* ── Typography ── */
+    .title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 1.6rem;
+      font-weight: 600;
+    }
+
+    .permission-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid #1a1a1a;
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.6rem;
+    }
+    .permission-text {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 0.8rem;
+    }
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .scope-item i {
+      color: var(--lime);
+      font-size: 1rem;
+    }
+
+    /* ── Account Cards ── */
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #666;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .account-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .account-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #181818;
+      border: 1px solid #282828;
+      border-radius: 14px;
+      padding: 0.85rem 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+      position: relative;
+    }
+
+    .account-card:hover {
+      border-color: var(--lime);
+      background: rgba(170,255,0,0.03);
+    }
+
+    .account-card.active {
+      border-color: var(--lime);
+      background: rgba(170,255,0,0.06);
+      box-shadow: 0 0 16px rgba(170,255,0,0.1);
+    }
+
+    .avatar-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .account-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .account-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .account-email {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .check-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .account-card.active .check-indicator {
+      border-color: var(--lime);
+      background: var(--lime);
+    }
+    .check-indicator i {
+      font-size: 0.75rem;
+      color: var(--black);
+      display: none;
+    }
+    .account-card.active .check-indicator i {
+      display: block;
+    }
+
+    /* ── Custom Field Form ── */
+    .custom-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--lime);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s;
+    }
+    .custom-trigger:hover {
+      color: var(--white);
+    }
+
+    .custom-fields {
+      display: none;
+      background: rgba(255,255,255,0.01);
+      border: 1px dashed #333;
+      border-radius: 16px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .field-group {
+      margin-bottom: 0.9rem;
+    }
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #666;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .field-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      font-family: var(--font);
+      font-size: 0.88rem;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-input:focus {
+      border-color: var(--lime);
+    }
+
+    /* ── Role Selection ── */
+    .role-section {
+      margin-bottom: 1.8rem;
+    }
+    .role-toggle {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .role-btn {
+      flex: 1;
+      padding: 0.5rem 0;
+      border: none;
+      border-radius: 9px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+      color: var(--muted);
+    }
+    .role-btn.active {
+      background: var(--lime);
+      color: var(--black);
+      box-shadow: 0 4px 12px rgba(170,255,0,0.2);
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 0.85rem;
+      border-radius: 14px;
+      font-family: var(--font);
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-allow {
+      background: var(--lime);
+      color: var(--black);
+      box-shadow: 0 8px 24px rgba(170,255,0,0.3);
+    }
+    .btn-allow:hover {
+      background: var(--lime-lt);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(170,255,0,0.4);
+    }
+    .btn-allow:active { transform: translateY(0); }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid #222;
+      color: #888;
+    }
+    .btn-cancel:hover {
+      border-color: #444;
+      color: var(--white);
+      background: rgba(255,255,255,0.02);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <div class="consent-wrapper">
+    <div class="card-box">
+
+      <div class="brand-bar">
+        <div class="app-icon">
+          <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <div class="conn-line"></div>
+        <div class="provider-icon icon-{{ provider }}">
+          {% if provider == 'google' %}
+          <i class="bi bi-google"></i>
+          {% else %}
+          <i class="bi bi-github"></i>
+          {% endif %}
+        </div>
+      </div>
+
+      <h1 class="title">{{ t.consent_title }}</h1>
+      <p class="subtitle">
+        HeartGuard {{ t.consent_request }}
+      </p>
+
+      <div class="permission-box">
+        <div class="scope-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>{{ t.consent_scope_profile }}</span>
+        </div>
+        <div class="scope-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>{{ t.consent_scope_email }}</span>
+        </div>
+      </div>
+
+      <form action="{% url 'social_login_callback' provider=provider %}" method="post" id="consent-form">
+        {% csrf_token %}
+        
+        <!-- Hidden Inputs for Submission -->
+        <input type="hidden" name="email" id="submit-email" value="">
+        <input type="hidden" name="name" id="submit-name" value="">
+        <input type="hidden" name="role" id="submit-role" value="User">
+
+        <div class="section-label">{{ t.consent_select_account }}</div>
+
+        <div class="account-list">
+          {% for acc in mock_accounts %}
+          <button type="button" class="account-card {% if forloop.first %}active{% endif %}" 
+                  onclick="selectAccount('{{ acc.email }}', '{{ acc.name }}', this)">
+            <div class="avatar-circle">
+              <img src="{{ acc.avatar }}" alt="{{ acc.name }}">
+            </div>
+            <div class="account-info">
+              <span class="account-name">{{ acc.name }}</span>
+              <span class="account-email">{{ acc.email }}</span>
+            </div>
+            <div class="check-indicator">
+              <i class="bi bi-check-lg"></i>
+            </div>
+          </button>
+          {% endfor %}
+        </div>
+
+        <!-- Custom Account Trigger -->
+        <button type="button" class="custom-trigger" id="custom-trigger-btn" onclick="toggleCustomForm()">
+          <i class="bi bi-plus-circle"></i> {{ t.consent_custom_account }}
+        </button>
+
+        <!-- Custom Account Input Fields -->
+        <div class="custom-fields" id="custom-fields-box">
+          <div class="field-group">
+            <label class="field-label">{{ t.consent_custom_name }}</label>
+            <input type="text" id="custom-name-input" class="field-input" placeholder="e.g. John Doe" oninput="updateCustomData()">
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ t.consent_custom_email }}</label>
+            <input type="email" id="custom-email-input" class="field-input" placeholder="e.g. john@example.com" oninput="updateCustomData()">
+          </div>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="role-section">
+          <div class="section-label">{{ t.consent_select_role }}</div>
+          <div class="role-toggle">
+            <button type="button" class="role-btn active" id="role-user-btn" onclick="setRole('User')">
+              <i class="bi bi-person-fill"></i> {{ t.consent_role_patient }}
+            </button>
+            <button type="button" class="role-btn" id="role-admin-btn" onclick="setRole('Admin')">
+              <i class="bi bi-shield-fill-check"></i> {{ t.consent_role_admin }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button type="button" class="btn-action btn-cancel" onclick="window.location.href='{% url 'login' %}'">
+            {{ t.consent_btn_cancel }}
+          </button>
+          <button type="submit" class="btn-action btn-allow">
+            <span>{{ t.consent_btn_allow }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    // Initialize defaults based on the first account
+    let selectedEmail = '';
+    let selectedName = '';
+    let usingCustom = false;
+
+    // Grab first mock account info
+    const firstCard = document.querySelector('.account-card');
+    if (firstCard) {
+      selectedEmail = firstCard.getAttribute('onclick').split("'")[1];
+      selectedName = firstCard.getAttribute('onclick').split("'")[3];
+      document.getElementById('submit-email').value = selectedEmail;
+      document.getElementById('submit-name').value = selectedName;
+    }
+
+    function selectAccount(email, name, cardElement) {
+      usingCustom = false;
+      document.getElementById('custom-fields-box').style.display = 'none';
+      
+      // Remove active class from all cards
+      document.querySelectorAll('.account-card').forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked card
+      cardElement.classList.add('active');
+      
+      selectedEmail = email;
+      selectedName = name;
+      
+      document.getElementById('submit-email').value = email;
+      document.getElementById('submit-name').value = name;
+    }
+
+    function toggleCustomForm() {
+      const box = document.getElementById('custom-fields-box');
+      if (box.style.display === 'block') {
+        // Switch back to selected card
+        box.style.display = 'none';
+        usingCustom = false;
+        
+        // Re-active card
+        const activeCard = document.querySelector('.account-card.active');
+        if (activeCard) {
+          selectAccount(selectedEmail, selectedName, activeCard);
+        }
+      } else {
+        box.style.display = 'block';
+        usingCustom = true;
+        
+        // Deactivate cards
+        document.querySelectorAll('.account-card').forEach(c => c.classList.remove('active'));
+        
+        updateCustomData();
+      }
+    }
+
+    function updateCustomData() {
+      if (!usingCustom) return;
+      
+      const customName = document.getElementById('custom-name-input').value.trim();
+      const customEmail = document.getElementById('custom-email-input').value.trim();
+      
+      document.getElementById('submit-email').value = customEmail;
+      document.getElementById('submit-name').value = customName ? customName : 'Custom User';
+    }
+
+    function setRole(role) {
+      document.getElementById('submit-role').value = role;
+      
+      const userBtn = document.getElementById('role-user-btn');
+      const adminBtn = document.getElementById('role-admin-btn');
+      
+      if (role === 'Admin') {
+        adminBtn.classList.add('active');
+        userBtn.classList.remove('active');
+      } else {
+        userBtn.classList.add('active');
+        adminBtn.classList.remove('active');
+      }
+    }
+
+    document.getElementById('consent-form').addEventListener('submit', function(e) {
+      const emailVal = document.getElementById('submit-email').value.trim();
+      if (!emailVal) {
+        alert('Please select or input an email address.');
+        e.preventDefault();
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.btn-allow');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;border-color:#000;border-right-color:transparent;"></span> <span>Connecting...</span>';
+    });
+  </script>
+</body>
+</html>

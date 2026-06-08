@@ -8,12 +8,16 @@ import os
 import io
 import base64
 import warnings
+# pyrefly: ignore [missing-import]
 import numpy as np
 import pandas as pd
+# pyrefly: ignore [missing-import]
 import matplotlib
 matplotlib.use('Agg')
+# pyrefly: ignore [missing-import]
 import matplotlib.pyplot as plt
 import seaborn as sns
+# pyrefly: ignore [missing-import]
 import joblib
 
 from sklearn.ensemble import RandomForestClassifier
@@ -98,7 +102,7 @@ def plot_to_base64(fig):
 
 
 # ─── Multi-Holdout Validation ────────────────────────────────────────────────
-def multi_holdout_validation(X, y, n_splits=5, test_size=0.2,
+def multi_holdout_validation(X, y, n_splits=5, test_size=0.3,
                               n_estimators=100, random_state=42):
     """
     Multi-Holdout Validation:
@@ -159,10 +163,23 @@ def multi_holdout_validation(X, y, n_splits=5, test_size=0.2,
         'roc_auc':   np.std([r['roc_auc']   for r in results]),
     }
 
-    # Simpan model terbaik (F1 tertinggi)
+    # Latih model final menggunakan keseluruhan dataset (100% data) agar prediksi real-time presisi
+    final_scaler = StandardScaler()
+    X_scaled = final_scaler.fit_transform(X)
+
+    final_model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        random_state=random_state,
+        n_jobs=-1
+    )
+    final_model.fit(X_scaled, y)
+
+    # Simpan model final dan scaler ke disk
+    joblib.dump(final_model, MODEL_PATH)
+    joblib.dump(final_scaler, SCALER_PATH)
+
+    # Dapatkan fold terbaik dari evaluasi Multi-Holdout untuk visualisasi dan detail metrik di UI
     best = max(results, key=lambda r: r['f1'])
-    joblib.dump(best['model'],  MODEL_PATH)
-    joblib.dump(best['scaler'], SCALER_PATH)
 
     return results, avg, std, all_y_test, all_y_pred, all_y_prob, best
 
@@ -260,6 +277,7 @@ def generate_distribution_plots(df):
     axes[1].set_xlabel('Usia', fontsize=11)
     axes[1].set_ylabel('Kolesterol', fontsize=11)
     axes[1].set_title('Usia vs Kolesterol', fontsize=13, fontweight='bold')
+    # pyrefly: ignore [missing-import]
     from matplotlib.patches import Patch
     legend_elements = [
         Patch(facecolor=COLORS['secondary'], label='Sakit Jantung'),
@@ -294,6 +312,7 @@ def train_and_evaluate(n_splits=5, n_estimators=100):
     X = df[feature_cols].values
     y = df['target'].values
 
+    # Run Multi-Holdout Validation
     results, avg, std, all_y_test, all_y_pred, all_y_prob, best = \
         multi_holdout_validation(X, y, n_splits=n_splits, n_estimators=n_estimators)
 

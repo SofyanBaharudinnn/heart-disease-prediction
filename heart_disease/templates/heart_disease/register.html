@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ current_lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar Akun – HeartGuard</title>
+  <title>{{ t.register_title }} – HeartGuard</title>
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -455,7 +455,7 @@
 
   <!-- Back button top-left -->
   <a href="{% url 'index' %}" class="back-top-btn">
-    <i class="bi bi-arrow-left"></i> Kembali
+    <i class="bi bi-arrow-left"></i> {% if current_lang == 'en' %}Back{% else %}Kembali{% endif %}
   </a>
 
   <div class="register-wrapper">
@@ -482,8 +482,10 @@
       </div>
 
       <!-- Title -->
-      <h1 class="card-title">Buat Akun Baru</h1>
-      <p class="card-sub">Daftar untuk mulai menggunakan sistem prediksi penyakit jantung</p>
+      <h1 class="card-title">{{ t.register_title }}</h1>
+      <p class="card-sub">
+        {% if current_lang == 'en' %}Register to start using the heart disease prediction system{% else %}Daftar untuk mulai menggunakan sistem prediksi penyakit jantung{% endif %}
+      </p>
 
       <!-- Form -->
       <div class="form-section">
@@ -501,25 +503,27 @@
           <!-- Username -->
           <div class="field-group">
             <label class="field-label" for="id_username">
-              <i class="bi bi-person"></i> Nama Pengguna
+              <i class="bi bi-person"></i> {% if current_lang == 'en' %}Username{% else %}Nama Pengguna{% endif %}
             </label>
             <div class="input-shell">
               <i class="bi bi-person-fill input-icon"></i>
               <input type="text" name="username" id="id_username" class="field-input"
-                placeholder="Pilih username unik Anda" required autofocus autocomplete="username">
+                placeholder="{% if current_lang == 'en' %}Choose your unique username{% else %}Pilih username unik Anda{% endif %}" required autofocus autocomplete="username">
             </div>
-            <div class="field-help-plain">Wajib. 150 karakter atau sedikit. Hanya huruf, angka, dan @/./+/-/_.</div>
+            <div class="field-help-plain">
+              {% if current_lang == 'en' %}Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.{% else %}Wajib. 150 karakter atau sedikit. Hanya huruf, angka, dan @/./+/-/_.{% endif %}
+            </div>
           </div>
 
           <!-- Password 1 -->
           <div class="field-group">
             <label class="field-label" for="id_password1">
-              <i class="bi bi-key"></i> Kata Sandi
+              <i class="bi bi-key"></i> {% if current_lang == 'en' %}Password{% else %}Kata Sandi{% endif %}
             </label>
             <div class="input-shell">
               <i class="bi bi-key-fill input-icon"></i>
               <input type="password" name="password1" id="id_password1" class="field-input"
-                placeholder="Buat kata sandi yang kuat" required autocomplete="new-password"
+                placeholder="{% if current_lang == 'en' %}Create a strong password{% else %}Buat kata sandi yang kuat{% endif %}" required autocomplete="new-password"
                 style="padding-right: 2.8rem;" oninput="checkStrength(this.value)">
               <button type="button" class="eye-btn" onclick="togglePwd('id_password1','eye1')">
                 <i class="bi bi-eye-fill" id="eye1"></i>
@@ -533,33 +537,35 @@
               <div class="strength-seg" id="seg4"></div>
             </div>
             <div class="field-help mt-2">
-              <div class="help-item"><i class="bi bi-dot"></i> Tidak boleh terlalu mirip informasi pribadi Anda</div>
-              <div class="help-item"><i class="bi bi-dot"></i> Minimal 8 karakter</div>
-              <div class="help-item"><i class="bi bi-dot"></i> Tidak boleh kata sandi yang umum digunakan</div>
-              <div class="help-item"><i class="bi bi-dot"></i> Tidak boleh sepenuhnya angka</div>
+              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be too similar to your personal information{% else %}Tidak boleh terlalu mirip informasi pribadi Anda{% endif %}</div>
+              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}At least 8 characters{% else %}Minimal 8 karakter{% endif %}</div>
+              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be a commonly used password{% else %}Tidak boleh kata sandi yang umum digunakan{% endif %}</div>
+              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be entirely numeric{% else %}Tidak boleh sepenuhnya angka{% endif %}</div>
             </div>
           </div>
 
           <!-- Password 2 -->
           <div class="field-group">
             <label class="field-label" for="id_password2">
-              <i class="bi bi-shield-lock"></i> Konfirmasi Sandi
+              <i class="bi bi-shield-lock"></i> {% if current_lang == 'en' %}Confirm Password{% else %}Konfirmasi Sandi{% endif %}
             </label>
             <div class="input-shell">
               <i class="bi bi-shield-lock-fill input-icon"></i>
               <input type="password" name="password2" id="id_password2" class="field-input"
-                placeholder="Ulangi kata sandi Anda" required autocomplete="new-password"
+                placeholder="{% if current_lang == 'en' %}Repeat your password{% else %}Ulangi kata sandi Anda{% endif %}" required autocomplete="new-password"
                 style="padding-right: 2.8rem;">
               <button type="button" class="eye-btn" onclick="togglePwd('id_password2','eye2')">
                 <i class="bi bi-eye-fill" id="eye2"></i>
               </button>
             </div>
-            <div class="field-help-plain">Masukkan sandi yang sama seperti sebelumnya, untuk verifikasi.</div>
+            <div class="field-help-plain">
+              {% if current_lang == 'en' %}Enter the same password as before, for verification.{% else %}Masukkan sandi yang sama seperti sebelumnya, untuk verifikasi.{% endif %}
+            </div>
           </div>
 
           <!-- Submit -->
           <button type="submit" class="btn-submit" id="submit-btn">
-            <span>Daftar Sekarang</span>
+            <span>{{ t.register_btn }}</span>
             <i class="bi bi-check-circle-fill btn-icon"></i>
           </button>
         </form>
@@ -569,10 +575,10 @@
 
       <div class="card-footer-links">
         <div class="footer-link-row">
-          Sudah punya akun? <a href="{% url 'login' %}">Masuk di sini</a>
+          {% if current_lang == 'en' %}Already have an account? <a href="{% url 'login' %}">Sign in here</a>{% else %}Sudah punya akun? <a href="{% url 'login' %}">Masuk di sini</a>{% endif %}
         </div>
         <a href="{% url 'index' %}" class="bottom-back-link">
-          <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+          <i class="bi bi-arrow-left"></i> {% if current_lang == 'en' %}Back to Home{% else %}Kembali ke Beranda{% endif %}
         </a>
       </div>
 
@@ -603,7 +609,7 @@
 
     document.getElementById('register-form').addEventListener('submit', function () {
       const btn = document.getElementById('submit-btn');
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;"></span> <span>Mendaftarkan...</span>';
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;"></span> <span>{% if current_lang == 'en' %}Registering...{% else %}Mendaftarkan...{% endif %}</span>';
       btn.disabled  = true;
     });
   </script>

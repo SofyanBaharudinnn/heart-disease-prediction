@@ -3,8 +3,57 @@
 {% block title %}HeartGuard – Beranda{% endblock %}
 
 {% block extra_css %}
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
+  /* ── Pure CSS Load Animations ── */
+  @keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .animate-fade-in-left {
+    opacity: 0;
+    animation: fadeInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  }
+  .animate-fade-in-right {
+    opacity: 0;
+    animation: fadeInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+  }
+
+  /* ── Interactive Anatomy Styles ── */
+  .heart-part {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.4));
+  }
+  .heart-part:hover {
+    filter: drop-shadow(0 0 10px var(--highlight-color, var(--lime))) !important;
+    opacity: 1 !important;
+    transform: scale(1.03);
+  }
+  .heart-part.active {
+    filter: drop-shadow(0 0 16px var(--highlight-color, var(--lime))) !important;
+    opacity: 1 !important;
+  }
+  /* For paths acting as highlight strokes */
+  path.heart-part[stroke].active {
+    stroke-width: var(--active-stroke-width, 30px) !important;
+  }
+  /* For SVG filled elements */
+  path.heart-part[fill].active {
+    stroke: var(--highlight-color, var(--lime)) !important;
+    stroke-width: 2.5px !important;
+  }
+  .anatomy-svg-wrapper {
+    position: relative;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
+  }
+  #anatomy-info-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   /* ── Three.js Canvas Background ── */
   #hero-canvas {
     position: absolute;
@@ -439,6 +488,8 @@
     80%  { opacity: 0.4; transform: scale(1); }
     100% { opacity: 0; transform: scale(0); }
   }
+
+  /* Simulator Styles Removed */
 </style>
 {% endblock %}
 
@@ -453,29 +504,38 @@
 
   <div class="container">
     <div class="row align-items-center gy-5">
-      <div class="col-lg-7" data-aos="fade-right">
+      <div class="col-lg-7 animate-fade-in-left">
         <span class="hero-badge">
           🔬 Machine Learning &amp; Data Science
         </span>
         <h1 class="hero-title">
-          Prediksi Penyakit Jantung<br>
-          <span class="accent-lime">Lebih Akurat</span> Dengan<br>
+          {% if current_lang == 'en' %}
+            Heart Disease Prediction<br>
+            <span class="accent-lime">More Accurate</span> With<br>
+          {% else %}
+            Prediksi Penyakit Jantung<br>
+            <span class="accent-lime">Lebih Akurat</span> Dengan<br>
+          {% endif %}
           <span class="accent-lt" id="typing-target">Random Forest</span><span class="typing-cursor" id="typing-cursor"></span>
         </h1>
         <p class="hero-desc">
-          Sistem Prediksi Berbasis <strong>Multi-Holdout Validation</strong> Dengan
-          Algoritma Random Forest Untuk Mendeteksi Risiko Penyakit Jantung Secara Akurat Dan
-          Transparan Berdasarkan Data Klinis.
+          {% if current_lang == 'en' %}
+            Prediction System Based on <strong>Multi-Holdout Validation</strong> Using Random Forest Algorithm to Detect Heart Disease Risk Accurately and Transparently Based on Clinical Data.
+          {% else %}
+            Sistem Prediksi Berbasis <strong>Multi-Holdout Validation</strong> Dengan
+            Algoritma Random Forest Untuk Mendeteksi Risiko Penyakit Jantung Secara Akurat Dan
+            Transparan Berdasarkan Data Klinis.
+          {% endif %}
         </p>
       </div>
 
-      <div class="col-lg-5 text-center" data-aos="fade-left" data-aos-delay="200">
+      <div class="col-lg-5 text-center animate-fade-in-right">
         <div class="hero-card" id="hero-card-3d">
           <!-- Scan line -->
           <div class="hero-card-scan"></div>
 
           <span class="hero-card-badge">
-            <i class="bi bi-star-fill me-1"></i> Akurasi Tinggi
+            <i class="bi bi-star-fill me-1"></i> {% if current_lang == 'en' %}High Accuracy{% else %}Akurasi Tinggi{% endif %}
           </span>
 
           <!-- Orbit animation wrapper -->
@@ -498,13 +558,13 @@
             <div class="col-4">
               <div class="hero-stat-box">
                 <div class="hero-stat-num" data-target="{{ dataset_size }}" id="counter-samples">0</div>
-                <div class="hero-stat-label">Sampel</div>
+                <div class="hero-stat-label">{% if current_lang == 'en' %}Samples{% else %}Sampel{% endif %}</div>
               </div>
             </div>
             <div class="col-4">
               <div class="hero-stat-box">
                 <div class="hero-stat-num" data-target="13" id="counter-features">0</div>
-                <div class="hero-stat-label">Fitur</div>
+                <div class="hero-stat-label">{% if current_lang == 'en' %}Features{% else %}Fitur{% endif %}</div>
               </div>
             </div>
             <div class="col-4">
@@ -555,69 +615,171 @@
 
 <!-- ── Fitur unggulan ── -->
 <section class="container mt-4 mb-5">
-  <div class="text-center mb-5" data-aos="fade-up">
-    <h2 class="section-title">Fitur Utama Sistem</h2>
-    <p class="section-sub">Dibangun Dengan Teknologi Machine Learning Modern Untuk Hasil Yang Dapat Dipercaya</p>
+  <div class="text-center mb-5">
+    <h2 class="section-title">{% if current_lang == 'en' %}Key System Features{% else %}Fitur Utama Sistem{% endif %}</h2>
+    <p class="section-sub">{% if current_lang == 'en' %}Built with modern machine learning technology for reliable results{% else %}Dibangun Dengan Teknologi Machine Learning Modern Untuk Hasil Yang Dapat Dipercaya{% endif %}</p>
   </div>
   <div class="row g-4">
 
-    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+    <div class="col-md-4">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-tree-fill fs-3" style="color:var(--lime);"></i>
         </div>
         <h5 class="feature-title">Random Forest</h5>
         <p class="feature-desc">
-          Ensemble Learning Yang Menggabungkan Ratusan Decision Tree Untuk Menghasilkan Prediksi Yang Kuat Dan Tahan Terhadap Overfitting.
+          {% if current_lang == 'en' %}
+            Ensemble Learning that combines hundreds of Decision Trees to generate robust predictions resistant to overfitting.
+          {% else %}
+            Ensemble Learning Yang Menggabungkan Ratusan Decision Tree Untuk Menghasilkan Prediksi Yang Kuat Dan Tahan Terhadap Overfitting.
+          {% endif %}
         </p>
       </div>
     </div>
 
-    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="col-md-4">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-layers-fill fs-3" style="color:var(--lime);"></i>
         </div>
         <h5 class="feature-title">Multi-Holdout Validation</h5>
         <p class="feature-desc">
-          Validasi Model Dilakukan 5× Dengan Pembagian Data Berbeda Untuk Menghasilkan Estimasi Performa Yang Lebih Stabil Dan Representatif.
+          {% if current_lang == 'en' %}
+            Model validation run 5 times with different data splits to produce a more stable and representative performance estimate.
+          {% else %}
+            Validasi Model Dilakukan 5× Dengan Pembagian Data Berbeda Untuk Menghasilkan Estimasi Performa Yang Lebih Stabil Dan Representatif.
+          {% endif %}
         </p>
       </div>
     </div>
 
-    <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+    <div class="col-md-4">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-bar-chart-fill fs-3" style="color:var(--lime);"></i>
         </div>
-        <h5 class="feature-title">Visualisasi Lengkap</h5>
+        <h5 class="feature-title">{% if current_lang == 'en' %}Comprehensive Visualization{% else %}Visualisasi Lengkap{% endif %}</h5>
         <p class="feature-desc">
-          Confusion Matrix, ROC Curve, Feature Importance, Dan Perbandingan Holdout Tersedia Secara Interaktif Dan Informatif.
+          {% if current_lang == 'en' %}
+            Confusion Matrix, ROC Curve, Feature Importance, and Holdout Comparison are available interactively and informatively.
+          {% else %}
+            Confusion Matrix, ROC Curve, Feature Importance, Dan Perbandingan Holdout Tersedia Secara Interaktif Dan Informatif.
+          {% endif %}
         </p>
       </div>
     </div>
 
   </div>
 </section>
+
+<!-- ── Interactive Heart Anatomy Infographic ── -->
+<section class="container mb-5 mt-5" id="anatomy-section">
+  <div class="text-center mb-5">
+    <h2 class="section-title">{% if current_lang == 'en' %}Interactive Heart Anatomy{% else %}Anatomi Jantung Interaktif{% endif %}</h2>
+    <p class="section-sub">{% if current_lang == 'en' %}Click on the parts of the heart to learn about their functions and connection to cardiovascular diseases.{% else %}Klik Pada Bagian Anatomi Jantung Untuk Mempelajari Fungsinya Serta Hubungannya Dengan Penyakit Kardiovaskular.{% endif %}</p>
+  </div>
+
+  <div class="card-custom p-4 p-md-5" style="background: rgba(18, 20, 18, 0.6); border: 1px solid rgba(170,255,0,0.15); border-radius: 28px; backdrop-filter: blur(20px);">
+    <div class="row align-items-center gy-4">
+      
+      <!-- Left: SVG Diagram -->
+      <div class="col-lg-6 text-center">
+        <div class="anatomy-svg-wrapper p-3" style="background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;">
+          <!-- Grid background -->
+          <div class="anatomy-grid-bg" style="position:absolute; inset:0; opacity:0.04; background-image: linear-gradient(rgba(170,255,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(170,255,0,0.5) 1px, transparent 1px); background-size: 20px 20px;"></div>
+          
+          <svg viewBox="0 0 400 400" width="100%" height="320" style="position:relative; z-index:2; overflow:visible;">
+            <!-- Background shadow for heart -->
+            <circle cx="200" cy="220" r="130" fill="rgba(0,0,0,0.15)" filter="blur(20px)" />
+            
+            <!-- Aorta -->
+            <path id="svg-aorta" class="heart-part" d="M180,110 C180,60 250,50 250,100 C250,110 240,140 240,160" stroke="#ff4d4d" stroke-width="26" fill="none" stroke-linecap="round" cursor="pointer" style="--highlight-color: #ff4d4d; --active-stroke-width: 30px;" onclick="selectHeartPart('aorta')" />
+            <path d="M200,66 L200,45" stroke="#ff4d4d" stroke-width="8" stroke-linecap="round" pointer-events="none" />
+            <path d="M218,62 L218,41" stroke="#ff4d4d" stroke-width="8" stroke-linecap="round" pointer-events="none" />
+            <path d="M236,65 L236,44" stroke="#ff4d4d" stroke-width="8" stroke-linecap="round" pointer-events="none" />
+            
+            <!-- Pulmonary Artery -->
+            <path id="svg-pulmonary-artery" class="heart-part" d="M150,160 L180,130 C190,120 200,120 210,125 C220,130 220,150 200,160 C180,170 170,190 170,210" stroke="#4a90e2" stroke-width="22" fill="none" stroke-linecap="round" cursor="pointer" style="--highlight-color: #00bcff; --active-stroke-width: 26px;" onclick="selectHeartPart('pulmonary-artery')" />
+            <path d="M180,130 L152,116" stroke="#4a90e2" stroke-width="10" stroke-linecap="round" pointer-events="none" />
+            <path d="M180,130 L205,110" stroke="#4a90e2" stroke-width="10" stroke-linecap="round" pointer-events="none" />
+
+            <!-- Right Atrium -->
+            <path id="svg-right-atrium" class="heart-part" d="M125,170 C105,170 95,200 105,230 C115,250 145,250 155,220 C155,190 145,170 125,170 Z" fill="#2d78c8" opacity="0.85" cursor="pointer" style="--highlight-color: #00bcff; --active-stroke-width: 8px;" onclick="selectHeartPart('right-atrium')" />
+            
+            <!-- Left Atrium -->
+            <path id="svg-left-atrium" class="heart-part" d="M275,180 C295,180 305,210 295,235 C285,255 255,255 245,225 C245,195 255,180 275,180 Z" fill="#d94b4b" opacity="0.85" cursor="pointer" style="--highlight-color: #ff4d4d; --active-stroke-width: 8px;" onclick="selectHeartPart('left-atrium')" />
+
+            <!-- Right Ventricle -->
+            <path id="svg-right-ventricle" class="heart-part" d="M140,240 C140,240 120,320 200,360 C205,340 200,270 170,250 C160,240 150,240 140,240 Z" fill="#1e5fa8" opacity="0.9" cursor="pointer" style="--highlight-color: #00bcff; --active-stroke-width: 8px;" onclick="selectHeartPart('right-ventricle')" />
+            
+            <!-- Left Ventricle -->
+            <path id="svg-left-ventricle" class="heart-part" d="M260,240 C260,240 280,330 198,361 C200,330 210,270 250,250 C260,240 270,240 260,240 Z" fill="#b83232" opacity="0.9" cursor="pointer" style="--highlight-color: #ff4d4d; --active-stroke-width: 8px;" onclick="selectHeartPart('left-ventricle')" />
+
+            <!-- Coronary Arteries (placed over ventricles) -->
+            <path id="svg-coronary-artery" class="heart-part" d="M200,248 Q205,280 175,310 M200,248 Q225,290 235,330 M180,270 Q160,290 155,310 M215,290 Q240,300 255,290" stroke="#f5a623" stroke-width="4.5" fill="none" stroke-linecap="round" cursor="pointer" style="--highlight-color: #ffaa00; --active-stroke-width: 6.5px;" onclick="selectHeartPart('coronary-artery')" />
+          </svg>
+        </div>
+        <!-- Interactive tips -->
+        <div class="mt-3 text-muted" style="font-size:0.8rem; font-weight:600;">
+          <i class="bi bi-info-circle me-1" style="color:var(--lime);"></i>
+          {% if current_lang == 'en' %}Tip: Click on the colored regions of the heart to examine them.{% else %}Tip: Klik Pada Area Berwarna Pada Ilustrasi Jantung Untuk Memeriksa.{% endif %}
+        </div>
+      </div>
+
+      <!-- Right: Details Card -->
+      <div class="col-lg-6">
+        <div id="anatomy-info-card" class="p-4 h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; min-height: 280px; transition: all 0.3s ease;">
+          
+          <!-- Default State -->
+          <div id="anatomy-default-state" class="text-center py-4">
+            <i class="bi bi-heart-pulse icon-float d-block fs-1 mb-3 text-lime"></i>
+            <h4 style="font-weight: 800; color: #fff;">
+              {% if current_lang == 'en' %}Explore Heart Anatomy{% else %}Jelajahi Anatomi Jantung{% endif %}
+            </h4>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+              {% if current_lang == 'en' %}Click any anatomical part on the left diagram to view detailed medical descriptions and its correlation with cardiovascular diseases.{% else %}Klik Bagian Anatomi Manapun Pada Diagram Di Sebelah Kiri Untuk Melihat Penjelasan Medis Mendalam Dan Hubungannya Dengan Penyakit Kardiovaskular.{% endif %}
+            </p>
+          </div>
+
+          <!-- Content State (hidden initially) -->
+          <div id="anatomy-content-state" style="display:none;">
+            <span id="anatomy-pill" class="badge mb-2 py-2 px-3" style="font-size:0.72rem; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; border-radius:20px;"></span>
+            <h3 id="anatomy-title" style="font-weight:900; color:#fff; letter-spacing:-0.5px; margin-bottom:12px;"></h3>
+            
+            <h6 class="text-uppercase text-muted font-weight-800 mb-2" style="font-size:0.68rem; letter-spacing:1px;">
+              {% if current_lang == 'en' %}Physiological Function{% else %}Fungsi Fisiologis{% endif %}
+            </h6>
+            <p id="anatomy-function" class="text-white mb-3" style="font-size:0.88rem; line-height:1.6;"></p>
+            
+            <h6 class="text-uppercase text-danger font-weight-800 mb-2" style="font-size:0.68rem; letter-spacing:1px;">
+              {% if current_lang == 'en' %}Disease Connection{% else %}Kaitan Dengan Penyakit{% endif %}
+            </h6>
+            <div id="anatomy-disease" class="p-3 border-start border-danger border-2" style="background:rgba(220,53,69,0.04); border-radius: 0 12px 12px 0; font-size:0.88rem; line-height:1.6; color:#ffb3b8;"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
 <!-- Three.js for 3D background -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script>
-  // ── AOS Init ──
-  AOS.init({ duration: 800, once: true, offset: 50 });
-
   // ── Vanilla Tilt on Feature Cards ──
-  VanillaTilt.init(document.querySelectorAll(".feature-card"), {
-    max: 12,
-    speed: 500,
-    glare: true,
-    "max-glare": 0.2,
-    perspective: 1000,
-  });
+  if (typeof VanillaTilt !== 'undefined') {
+    VanillaTilt.init(document.querySelectorAll(".feature-card"), {
+      max: 12,
+      speed: 500,
+      glare: true,
+      "max-glare": 0.2,
+      perspective: 1000,
+    });
+  }
 
   // ── 3D Tilt on Hero Card (manual mouse tracking) ──
   const heroCard = document.getElementById('hero-card-3d');
@@ -836,7 +998,7 @@
     const el = document.getElementById('typing-target');
     const cursor = document.getElementById('typing-cursor');
     if (!el) return;
-    const texts = ['Random Forest', 'Multi-Holdout', 'Akurasi Tinggi', 'Data Klinis'];
+    const texts = {% if current_lang == 'en' %}['Random Forest', 'Multi-Holdout', 'High Accuracy', 'Clinical Data']{% else %}['Random Forest', 'Multi-Holdout', 'Akurasi Tinggi', 'Data Klinis']{% endif %};
     let textIdx = 0;
     let charIdx = 0;
     let deleting = false;
@@ -866,5 +1028,108 @@
     // Start after initial delay
     setTimeout(type, 3000);
   })();
+
+  // ── Heart Anatomy Data ──
+  const anatomyData = {
+    'aorta': {
+      title: {% if current_lang == 'en' %}"Aorta"{% else %}"Aorta"{% endif %},
+      type: {% if current_lang == 'en' %}"Main Artery"{% else %}"Arteri Utama"{% endif %},
+      pillClass: 'bg-danger text-white',
+      color: '#ff4d4d',
+      function: {% if current_lang == 'en' %}"The largest artery in the human body, carrying highly oxygenated blood from the left ventricle and distributing it to the rest of the body through branching systemic circulation."{% else %}"Arteri terbesar dalam tubuh manusia, membawa darah kaya oksigen dari bilik kiri dan mendistribusikannya ke seluruh bagian tubuh melalui sirkulasi sistemik."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Atherosclerosis (Artery Narrowing):</strong> Cholesterol buildup forms plaques that stiffen and restrict flow. <br><strong>Aortic Aneurysm:</strong> Bulging of the aortic wall which can rupture under high blood pressure, leading to catastrophic internal bleeding."{% else %}"<strong>Aterosklerosis (Penyempitan Arteri):</strong> Penumpukan kolesterol membentuk plak yang mengeraskan dinding arteri. <br><strong>Aneurisma Aorta:</strong> Pelebaran dinding aorta yang rentan pecah akibat tekanan darah tinggi, menyebabkan perdarahan internal fatal."{% endif %}
+    },
+    'pulmonary-artery': {
+      title: {% if current_lang == 'en' %}"Pulmonary Artery"{% else %}"Arteri Pulmonalis"{% endif %},
+      type: {% if current_lang == 'en' %}"Artery (Deoxygenated)"{% else %}"Arteri (Deoksigenasi)"{% endif %},
+      pillClass: 'bg-primary text-white',
+      color: '#00bcff',
+      function: {% if current_lang == 'en' %}"Carries oxygen-depleted blood from the right ventricle into the lungs for gas exchange (CO2 release and fresh oxygen uptake)."{% else %}"Membawa darah miskin oksigen dari bilik kanan ke paru-paru untuk pertukaran gas (pelepasan karbon dioksida dan penyerapan oksigen baru)."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Pulmonary Embolism:</strong> A blockage (often from deep vein blood clots) that lodges in the artery, cutting off pulmonary blood flow. <br><strong>Pulmonary Hypertension:</strong> High blood pressure in the pulmonary arteries which strains the right side of the heart."{% else %}"<strong>Emboli Paru:</strong> Penyumbatan (seringkali dari gumpalan darah kaki) yang menyumbat arteri ini. <br><strong>Hipertensi Pulmonal:</strong> Tekanan darah tinggi di arteri paru yang memberatkan kerja jantung bagian kanan."{% endif %}
+    },
+    'right-atrium': {
+      title: {% if current_lang == 'en' %}"Right Atrium"{% else %}"Serambi Kanan"{% endif %},
+      type: {% if current_lang == 'en' %}"Chamber (Deoxygenated)"{% else %}"Ruang Jantung (Deoksigenasi)"{% endif %},
+      pillClass: 'bg-primary text-white',
+      color: '#00bcff',
+      function: {% if current_lang == 'en' %}"Receives deoxygenated blood returning from the upper and lower body via the superior and inferior vena cava, then directs it into the right ventricle."{% else %}"Menerima darah miskin oksigen yang kembali dari seluruh tubuh bagian atas dan bawah melalui vena kava superior dan inferior, lalu menyalurkannya ke bilik kanan."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Atrial Enlargement:</strong> Dilated chamber caused by pressure backup from pulmonic valve stenosis or pulmonary hypertension. <br><strong>Tricuspid Valve Disease:</strong> Backflow of blood from the right ventricle into the atrium during contraction."{% else %}"<strong>Pembesaran Atrium:</strong> Dilatasi ruang jantung akibat penumpukan tekanan dari katup pulmonal atau hipertensi paru. <br><strong>Penyakit Katup Trikuspid:</strong> Kebocoran darah kembali ke serambi dari bilik kanan."{% endif %}
+    },
+    'left-atrium': {
+      title: {% if current_lang == 'en' %}"Left Atrium"{% else %}"Serambi Kiri"{% endif %},
+      type: {% if current_lang == 'en' %}"Chamber (Oxygenated)"{% else %}"Ruang Jantung (Oksigenasi)"{% endif %},
+      pillClass: 'bg-danger text-white',
+      color: '#ff4d4d',
+      function: {% if current_lang == 'en' %}"Collects oxygen-rich blood coming back from the lungs via the pulmonary veins and funnels it into the left ventricle."{% else %}"Mengumpulkan darah kaya oksigen yang kembali dari paru-paru melalui vena pulmonalis dan menyalurkannya ke bilik kiri."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Atrial Fibrillation (AFib):</strong> Irregular heart rhythm originating here, leading to poor blood flow and risk of blood pooling, which can cause clots and strokes. <br><strong>Mitral Valve Stenosis:</strong> Narrowing of the exit valve, obstructing blood flow into the left ventricle."{% else %}"<strong>Fibrilasi Atrium (AFib):</strong> Gangguan irama jantung yang berpusat di sini, meningkatkan risiko stagnasi darah yang memicu gumpalan darah penyebab stroke. <br><strong>Stenosis Katup Mitral:</strong> Penyempitan katup keluar, menghambat aliran darah ke bilik kiri."{% endif %}
+    },
+    'right-ventricle': {
+      title: {% if current_lang == 'en' %}"Right Ventricle"{% else %}"Bilik Kanan"{% endif %},
+      type: {% if current_lang == 'en' %}"Pump (Deoxygenated)"{% else %}"Pompa Jantung (Deoksigenasi)"{% endif %},
+      pillClass: 'bg-primary text-white',
+      color: '#00bcff',
+      function: {% if current_lang == 'en' %}"Receives deoxygenated blood from the right atrium and pumps it under lower pressure to the lungs through the pulmonary artery."{% else %}"Menerima darah miskin oksigen dari serambi kanan dan memompanya dengan tekanan rendah menuju paru-paru melalui arteri pulmonalis."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Right-sided Heart Failure:</strong> Inability to pump blood forward, leading to congestion and swelling in the abdomen, liver, and lower extremities. <br><strong>Arrhythmogenic Right Ventricular Dysplasia (ARVD):</strong> Replacement of muscle tissue with fat/fibrous tissue, causing arrhythmias."{% else %}"<strong>Gagal Jantung Kanan:</strong> Ketidakmampuan memompa darah ke paru-paru dengan efektif, memicu pembengkakan cairan pada kaki dan perut. <br><strong>Displasia Bilik Kanan Aritmogenik:</strong> Penggantian otot jantung dengan jaringan lemak/ikat yang memicu gangguan irama parah."{% endif %}
+    },
+    'left-ventricle': {
+      title: {% if current_lang == 'en' %}"Left Ventricle"{% else %}"Bilik Kiri"{% endif %},
+      type: {% if current_lang == 'en' %}"Main Pump (Oxygenated)"{% else %}"Pompa Utama (Oksigenasi)"{% endif %},
+      pillClass: 'bg-danger text-white',
+      color: '#ff4d4d',
+      function: {% if current_lang == 'en' %}"The thickest muscular chamber, generating high pressure to pump oxygenated blood throughout the systemic arteries of the entire body."{% else %}"Ruang jantung dengan dinding otot tertebal, menghasilkan tekanan tinggi untuk memompa darah kaya oksigen ke seluruh arteri sistemik tubuh."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Left-sided Heart Failure (HFrEF/HFpEF):</strong> Inability to sustain body perfusion, leading to pulmonary congestion (fluid in lungs) and fatigue. <br><strong>Left Ventricular Hypertrophy (LVH):</strong> Muscle thickening due to chronic overwork from untreated hypertension."{% else %}"<strong>Gagal Jantung Kiri:</strong> Ketidakmampuan memompa darah bersih ke seluruh tubuh secara memadai, memicu akumulasi cairan di paru-paru (sesak napas). <br><strong>Hipertrofi Bilik Kiri (LVH):</strong> Penebalan dinding otot akibat hipertensi kronis."{% endif %}
+    },
+    'coronary-artery': {
+      title: {% if current_lang == 'en' %}"Coronary Arteries"{% else %}"Arteri Koroner"{% endif %},
+      type: {% if current_lang == 'en' %}"Cardiac Supply Network"{% else %}"Jaringan Suplai Jantung"{% endif %},
+      pillClass: 'bg-warning text-dark',
+      color: '#ffaa00',
+      function: {% if current_lang == 'en' %}"A branch of arteries running over the surface of the heart, supplying the cardiac muscle itself with oxygen-rich blood and vital nutrients."{% else %}"Cabang pembuluh darah yang mengalir di permukaan luar jantung, bertugas menyuplai oksigen dan nutrisi langsung ke otot-otot jantung."{% endif %},
+      disease: {% if current_lang == 'en' %}"<strong>Coronary Artery Disease (CAD):</strong> Deposition of cholesterol plaques narrowing the artery lumen, leading to angina (chest pain). <br><strong>Myocardial Infarction (Heart Attack):</strong> Complete block of a coronary branch, causing immediate damage or death of heart muscle tissues."{% else %}"<strong>Penyakit Jantung Koroner (PJK):</strong> Penyempitan pembuluh darah akibat plak kolesterol yang mengurangi suplai darah ke otot jantung. <br><strong>Serangan Jantung (Infark Miokard):</strong> Sumbatan total arteri koroner yang menyebabkan kematian jaringan otot jantung secara mendadak."{% endif %}
+    }
+  };
+
+  function selectHeartPart(partKey) {
+    // 1. Remove active class from all parts
+    document.querySelectorAll('.heart-part').forEach(el => {
+      el.classList.remove('active');
+    });
+
+    const data = anatomyData[partKey];
+    if (!data) return;
+
+    // 2. Add active class to clicked SVG element
+    const svgEl = document.getElementById('svg-' + partKey);
+    if (svgEl) {
+      svgEl.classList.add('active');
+    }
+
+    // 3. Switch card visibility
+    document.getElementById('anatomy-default-state').style.display = 'none';
+    const contentState = document.getElementById('anatomy-content-state');
+    contentState.style.display = 'block';
+
+    // 4. Update texts and classes
+    const pill = document.getElementById('anatomy-pill');
+    pill.className = 'badge mb-2 py-2 px-3 ' + data.pillClass;
+    pill.textContent = data.type;
+    pill.style.backgroundColor = data.color;
+
+    document.getElementById('anatomy-title').textContent = data.title;
+    document.getElementById('anatomy-function').innerHTML = data.function;
+    document.getElementById('anatomy-disease').innerHTML = data.disease;
+
+    // 5. Apply outline highlight to info card border
+    const infoCard = document.getElementById('anatomy-info-card');
+    infoCard.style.borderColor = data.color;
+    infoCard.style.boxShadow = `0 10px 30px rgba(${hexToRgb(data.color)}, 0.15)`;
+  }
+
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? 
+      `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` 
+      : '170, 255, 0';
+  }
 </script>
 {% endblock %}

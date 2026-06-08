@@ -9,17 +9,21 @@
       <!-- Hero Header -->
       <div class="text-center mb-5">
         <span class="badge-tech">
-          <i class="bi bi-shield-fill-plus me-1"></i>Sistem Pakar Medis
+          <i class="bi bi-shield-fill-plus me-1"></i>{% if current_lang == 'en' %}Medical Expert System{% else %}Sistem Pakar Medis{% endif %}
         </span>
-        <h1 class="hero-title mb-3">Tentang Proyek <span class="highlight-text">HeartGuard</span></h1>
+        <h1 class="hero-title mb-3">{% if current_lang == 'en' %}About the <span class="highlight-text">HeartGuard</span> Project{% else %}Tentang Proyek <span class="highlight-text">HeartGuard</span>{% endif %}</h1>
         <p class="section-sub" style="max-width: 650px; margin: 0 auto; line-height: 1.6;">
-          Platform digital prediksi penyakit jantung berbasis kecerdasan buatan, dirancang untuk mendukung diagnosis klinis awal secara cepat, akurat, dan tepercaya.
+          {% if current_lang == 'en' %}
+            Artificial intelligence-based heart disease prediction digital platform, designed to support rapid, accurate, and reliable initial clinical diagnosis.
+          {% else %}
+            Platform digital prediksi penyakit jantung berbasis kecerdasan buatan, dirancang untuk mendukung diagnosis klinis awal secara cepat, akurat, dan tepercaya.
+          {% endif %}
         </p>
       </div>
 
       <!-- Core Pillars Highlight Grid -->
       <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
-        <i class="bi bi-journal-medical me-2"></i>Pilar Utama Proyek
+        <i class="bi bi-journal-medical me-2"></i>{% if current_lang == 'en' %}Project Core Pillars{% else %}Pilar Utama Proyek{% endif %}
       </h5>
       <div class="row g-4 mb-5">
         <!-- Pillar 1 -->
@@ -30,7 +34,11 @@
             </div>
             <h4 class="desc-title">Random Forest</h4>
             <p class="desc-text">
-              Algoritma Machine Learning ensemble yang membangun ratusan decision tree secara paralel untuk memprediksi tingkat probabilitas risiko penyakit jantung secara robust.
+              {% if current_lang == 'en' %}
+                Machine Learning ensemble algorithm that builds hundreds of decision trees in parallel to predict heart disease risk probability robustly.
+              {% else %}
+                Algoritma Machine Learning ensemble yang membangun ratusan decision tree secara paralel untuk memprediksi tingkat probabilitas risiko penyakit jantung secara robust.
+              {% endif %}
             </p>
           </div>
         </div>
@@ -42,7 +50,11 @@
             </div>
             <h4 class="desc-title">Multi-Holdout</h4>
             <p class="desc-text">
-              Metode evaluasi silang bertahap yang membagi dataset berkali-kali untuk melatih model secara iteratif guna menghindari bias dan memastikan estimasi akurasi yang konsisten.
+              {% if current_lang == 'en' %}
+                Iterative cross-validation split method to evaluate model performance stability and ensure consistent accuracy estimates.
+              {% else %}
+                Metode evaluasi silang bertahap yang membagi dataset berkali-kali untuk melatih model secara iteratif guna menghindari bias dan memastikan estimasi akurasi yang konsisten.
+              {% endif %}
             </p>
           </div>
         </div>
@@ -54,7 +66,11 @@
             </div>
             <h4 class="desc-title">UCI Dataset</h4>
             <p class="desc-text">
-              Menggunakan dataset klinis standar internasional dari UCI Machine Learning Repository yang mencakup 13 parameter kesehatan vital untuk evaluasi menyeluruh.
+              {% if current_lang == 'en' %}
+                Uses the internationally standard clinical dataset from the UCI Machine Learning Repository, covering 13 vital health parameters.
+              {% else %}
+                Menggunakan dataset klinis standar internasional dari UCI Machine Learning Repository yang mencakup 13 parameter kesehatan vital untuk evaluasi menyeluruh.
+              {% endif %}
             </p>
           </div>
         </div>
@@ -62,7 +78,7 @@
 
       <!-- Tech Stack Section -->
       <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
-        <i class="bi bi-stack me-2"></i>Teknologi yang Digunakan
+        <i class="bi bi-stack me-2"></i>{% if current_lang == 'en' %}Technologies Used{% else %}Teknologi yang Digunakan{% endif %}
       </h5>
       <div class="row g-3 mb-5">
         <!-- Django -->
@@ -73,7 +89,13 @@
             </div>
             <div>
               <div class="tech-title">Django 4.2</div>
-              <div class="tech-desc">Web Application Framework berbasis Python yang aman dan skalabel.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  Secure and scalable Python-based Web Application Framework.
+                {% else %}
+                  Web Application Framework berbasis Python yang aman dan skalabel.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -85,7 +107,13 @@
             </div>
             <div>
               <div class="tech-title">Scikit-learn</div>
-              <div class="tech-desc">Pustaka Python utama untuk pelatihan dan evaluasi model Machine Learning.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  Primary Python library for training and evaluating Machine Learning models.
+                {% else %}
+                  Pustaka Python utama untuk pelatihan dan evaluasi model Machine Learning.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -97,7 +125,13 @@
             </div>
             <div>
               <div class="tech-title">Pandas & NumPy</div>
-              <div class="tech-desc">Manipulasi struktur data berkinerja tinggi serta komputasi matriks numerik.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  High-performance data manipulation and numerical matrix computation.
+                {% else %}
+                  Manipulasi struktur data berkinerja tinggi serta komputasi matriks numerik.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -109,7 +143,13 @@
             </div>
             <div>
               <div class="tech-title">Matplotlib & Seaborn</div>
-              <div class="tech-desc">Pembuat grafik visualisasi analisis korelasi data medis dan metrik model.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  Plot generation library for medical data correlation heatmaps and model metrics.
+                {% else %}
+                  Pembuat grafik visualisasi analisis korelasi data medis dan metrik model.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -121,7 +161,13 @@
             </div>
             <div>
               <div class="tech-title">Bootstrap 5 & Icons</div>
-              <div class="tech-desc">Framework frontend responsive untuk tampilan tata letak antarmuka web modern.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  Responsive frontend framework for modern layout web interfaces.
+                {% else %}
+                  Framework frontend responsive untuk tampilan tata letak antarmuka web modern.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -133,15 +179,23 @@
             </div>
             <div>
               <div class="tech-title">SQLite (Django ORM)</div>
-              <div class="tech-desc">Penyimpanan relasional lokal untuk manajemen data riwayat medis pasien.</div>
+              <div class="tech-desc">
+                {% if current_lang == 'en' %}
+                  Local relational storage for management of patient medical history.
+                {% else %}
+                  Penyimpanan relasional lokal untuk manajemen data riwayat medis pasien.
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+
+
       <!-- System Workflow Timeline Section -->
       <h5 class="mb-3" style="font-weight:800; color:var(--lime); letter-spacing:0.5px;">
-        <i class="bi bi-bezier2 me-2"></i>Alur Aliran Sistem
+        <i class="bi bi-bezier2 me-2"></i>{% if current_lang == 'en' %}System Workflow Timeline{% else %}Alur Aliran Sistem{% endif %}
       </h5>
       <div class="card-custom p-4 mb-5">
         <div class="timeline-container">
@@ -151,8 +205,14 @@
           <div class="timeline-item" style="--theme-color: var(--lime);">
             <div class="timeline-dot">1</div>
             <div class="timeline-card">
-              <h4 class="timeline-title">Persiapan Dataset Medis</h4>
-              <p class="timeline-desc">Memuat file dataset <code style="color:var(--lime);">heart.csv</code> secara lokal, mendeteksi dan menangani missing values, duplikasi data, serta melakukan penyelarasan format.</p>
+              <h4 class="timeline-title">{% if current_lang == 'en' %}Medical Dataset Preparation{% else %}Persiapan Dataset Medis{% endif %}</h4>
+              <p class="timeline-desc">
+                {% if current_lang == 'en' %}
+                  Load dataset file <code style="color:var(--lime);">heart.csv</code> locally, detect and handle missing values, duplicates, and format alignment.
+                {% else %}
+                  Memuat file dataset <code style="color:var(--lime);">heart.csv</code> secara lokal, mendeteksi dan menangani missing values, duplikasi data, serta melakukan penyelarasan format.
+                {% endif %}
+              </p>
             </div>
           </div>
           
@@ -160,8 +220,14 @@
           <div class="timeline-item" style="--theme-color: #FF6B6B;">
             <div class="timeline-dot">2</div>
             <div class="timeline-card">
-              <h4 class="timeline-title">Validasi Multi-Holdout</h4>
-              <p class="timeline-desc">Dataset dibagi menjadi porsi pelatihan (80%) dan pengujian (20%) secara acak sebanyak <em>N</em> iterasi untuk mengevaluasi konsistensi prediksi model secara acak.</p>
+              <h4 class="timeline-title">{% if current_lang == 'en' %}Multi-Holdout Validation{% else %}Validasi Multi-Holdout{% endif %}</h4>
+              <p class="timeline-desc">
+                {% if current_lang == 'en' %}
+                  Dataset is split into training (70%) and testing (30%) portions randomly for <em>N</em> iterations to evaluate prediction consistency.
+                {% else %}
+                  Dataset dibagi menjadi porsi pelatihan (70%) dan pengujian (30%) secara acak sebanyak <em>N</em> iterasi untuk mengevaluasi konsistensi prediksi model secara acak.
+                {% endif %}
+              </p>
             </div>
           </div>
           
@@ -169,8 +235,14 @@
           <div class="timeline-item" style="--theme-color: #4FD1C5;">
             <div class="timeline-dot">3</div>
             <div class="timeline-card">
-              <h4 class="timeline-title">Evaluasi Kinerja Model</h4>
-              <p class="timeline-desc">Menghitung rata-rata metrik evaluasi model (Akurasi, Presisi, Sensitivitas, F1-Score, dan ROC-AUC) untuk menilai kehandalan performa model secara agregat.</p>
+              <h4 class="timeline-title">{% if current_lang == 'en' %}Model Performance Evaluation{% else %}Evaluasi Kinerja Model{% endif %}</h4>
+              <p class="timeline-desc">
+                {% if current_lang == 'en' %}
+                  Calculate average evaluation metrics (Accuracy, Precision, Recall, F1-Score, and ROC-AUC) to assess aggregate model reliability.
+                {% else %}
+                  Menghitung rata-rata metrik evaluasi model (Akurasi, Presisi, Sensitivitas, F1-Score, dan ROC-AUC) untuk menilai kehandalan performa model secara agregat.
+                {% endif %}
+              </p>
             </div>
           </div>
           
@@ -178,8 +250,14 @@
           <div class="timeline-item" style="--theme-color: #FFAA00;">
             <div class="timeline-dot">4</div>
             <div class="timeline-card">
-              <h4 class="timeline-title">Persistensi Model Terbaik</h4>
-              <p class="timeline-desc">Model Random Forest dengan F1-Score optimal disimpan ke dalam format serialized file (<code style="color:#FFAA00;">.pkl</code>) menggunakan modul joblib agar siap digunakan secara real-time.</p>
+              <h4 class="timeline-title">{% if current_lang == 'en' %}Best Model Persistence{% else %}Persistensi Model Terbaik{% endif %}</h4>
+              <p class="timeline-desc">
+                {% if current_lang == 'en' %}
+                  Random Forest model with optimal F1-Score is saved as a serialized file (<code style="color:#FFAA00;">.pkl</code>) using joblib for real-time predictions.
+                {% else %}
+                  Model Random Forest dengan F1-Score optimal disimpan ke dalam format serialized file (<code style="color:#FFAA00;">.pkl</code>) menggunakan modul joblib agar siap digunakan secara real-time.
+                {% endif %}
+              </p>
             </div>
           </div>
           
@@ -187,8 +265,14 @@
           <div class="timeline-item" style="--theme-color: #CC88FF;">
             <div class="timeline-dot">5</div>
             <div class="timeline-card">
-              <h4 class="timeline-title">Analisis Prediksi Real-Time</h4>
-              <p class="timeline-desc">Menerima parameter klinis yang diinputkan pengguna melalui halaman web, menormalkan data, dan menyajikan probabilitas penyakit jantung beserta tingkat risikonya.</p>
+              <h4 class="timeline-title">{% if current_lang == 'en' %}Real-Time Prediction Analysis{% else %}Analisis Prediksi Real-Time{% endif %}</h4>
+              <p class="timeline-desc">
+                {% if current_lang == 'en' %}
+                  Accept clinical parameters from user web inputs, normalize data, and display heart disease probability and risk levels.
+                {% else %}
+                  Menerima parameter klinis yang diinputkan pengguna melalui halaman web, menormalkan data, dan menyajikan probabilitas penyakit jantung beserta tingkat risikonya.
+                {% endif %}
+              </p>
             </div>
           </div>
         </div>
@@ -210,6 +294,8 @@
 
 {% block extra_css %}
 <style>
+
+  
   .badge-tech {
     background: rgba(170, 255, 0, 0.1);
     border: 1px solid rgba(170, 255, 0, 0.3);
@@ -236,6 +322,8 @@
     color: var(--lime);
     text-shadow: 0 0 15px rgba(170, 255, 0, 0.25);
   }
+
+
 
   .desc-card {
     background: var(--surface);
@@ -423,3 +511,6 @@
   }
 </style>
 {% endblock %}
+
+
+

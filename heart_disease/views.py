@@ -19,7 +19,7 @@ from django.views.decorators.http import require_POST
 # pyrefly: ignore [missing-import]
 from django.contrib.auth.forms import UserCreationForm
 # pyrefly: ignore [missing-import]
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 # pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
 
@@ -172,7 +172,6 @@ def train_model(request):
                 'f1':        round(r['f1']        * 100, 2),
                 'roc_auc':   round(r['roc_auc']   * 100, 2),
             })
-
         context = {
             'data': {
                 'plots': data['plots'],
@@ -190,6 +189,9 @@ def train_model(request):
         os.makedirs(model_dir, exist_ok=True)
         with open(os.path.join(model_dir, f'results_{metrics_obj.id}.json'), 'w') as f:
             json.dump(context, f)
+
+        # Copy to last_results.json for PDF report generator
+        shutil.copy2(os.path.join(model_dir, f'results_{metrics_obj.id}.json'), os.path.join(model_dir, 'last_results.json'))
 
         return render(request, 'heart_disease/training_result.html', context)
 
@@ -298,6 +300,9 @@ def predict_view(request):
 
             qr_b64 = generate_qr_base64(detail_url_qr)
 
+            current_lang = request.session.get('lang', 'id')
+            recs = get_lifestyle_recommendations(input_data, lang=current_lang)
+
             context = {
                 'result':             result,
                 'input_data':         input_data,
@@ -307,6 +312,7 @@ def predict_view(request):
                 'detail_url':         detail_url_qr,   # URL versi LAN untuk QR
                 'detail_url_browser': detail_url_browser,  # URL browser untuk tombol "Buka Halaman"
                 'local_ip':           local_ip,
+                'lifestyle_recommendations': recs,
             }
             return render(request, 'heart_disease/result.html', context)
 
@@ -338,9 +344,14 @@ def prediction_detail_view(request, id):
     if not request.user.is_staff and record.user != request.user:
         messages.error(request, 'Anda tidak memiliki akses ke rekam medis ini.')
         return redirect('history')
+
+    current_lang = request.session.get('lang', 'id')
+    recs = get_lifestyle_recommendations(record, lang=current_lang)
+
     context = {
         'record':       record,
         'feature_info': FEATURE_INFO,
+        'lifestyle_recommendations': recs,
     }
     return render(request, 'heart_disease/prediction_detail.html', context)
 
@@ -378,6 +389,86 @@ def register_view(request):
         form = UserCreationForm()
         
     return render(request, 'heart_disease/register.html', {'form': form})
+
+
+def social_login_view(request, provider):
+    if request.user.is_authenticated:
+        return redirect('predict')
+    
+    provider = provider.lower()
+    if provider not in ('google', 'github'):
+        messages.error(request, 'Provider tidak didukung / Provider not supported.')
+        return redirect('login')
+        
+    if provider == 'google':
+        mock_accounts = [
+            {'name': 'Sofyan Baharudin', 'email': 'sofyan.baharudin@gmail.com', 'avatar': 'https://api.dicebear.com/7.x/bottts/svg?seed=sofyan'},
+            {'name': 'Budi Santoso', 'email': 'budi.santoso@gmail.com', 'avatar': 'https://api.dicebear.com/7.x/bottts/svg?seed=budi'},
+        ]
+    else:
+        mock_accounts = [
+            {'name': 'Sofyan Baharudin', 'email': 'sofyanb-dev@github.com', 'username': 'sofyanb-dev', 'avatar': 'https://api.dicebear.com/7.x/identicon/svg?seed=sofyanb'},
+            {'name': 'Octocat Developer', 'email': 'octocat@github.com', 'username': 'octocat', 'avatar': 'https://api.dicebear.com/7.x/identicon/svg?seed=octocat'},
+        ]
+        
+    context = {
+        'provider': provider,
+        'mock_accounts': mock_accounts,
+    }
+    return render(request, 'heart_disease/social_consent.html', context)
+
+
+def social_login_callback(request, provider):
+    if request.method != 'POST':
+        return redirect('login')
+        
+    provider = provider.lower()
+    email = request.POST.get('email', '').strip()
+    name = request.POST.get('name', '').strip()
+    role = request.POST.get('role', 'User')
+    
+    if not email:
+        messages.error(request, 'Email tidak boleh kosong / Email is required.')
+        return redirect('social_login', provider=provider)
+        
+    email_prefix = email.split('@')[0].lower()
+    username = f"{provider}_{email_prefix}"
+    
+    user = User.objects.filter(email=email).first()
+    if not user:
+        user = User.objects.filter(username=username).first()
+        
+    if not user:
+        user = User(username=username, email=email)
+        name_parts = name.split(' ', 1)
+        user.first_name = name_parts[0]
+        if len(name_parts) > 1:
+            user.last_name = name_parts[1]
+        user.is_staff = (role == 'Admin')
+        user.save()
+    else:
+        name_parts = name.split(' ', 1)
+        user.first_name = name_parts[0]
+        if len(name_parts) > 1:
+            user.last_name = name_parts[1]
+        user.is_staff = (role == 'Admin')
+        user.save()
+        
+    login(request, user)
+    
+    lang = request.session.get('lang', 'id')
+    from heart_disease.translations import TRANSLATIONS
+    t = TRANSLATIONS.get(lang, TRANSLATIONS['id'])
+    success_msg_template = t.get('social_login_success', '{} authentication successful! Welcome, {}.')
+    
+    provider_name = 'Google' if provider == 'google' else 'GitHub'
+    display_name = name if name else username
+    messages.success(request, success_msg_template.format(provider_name, display_name))
+    
+    if user.is_staff:
+        return redirect('dashboard')
+    return redirect('predict')
+
 
 # ─── User Management ─────────────────────────────────────────────────────────
 @user_passes_test(is_admin, login_url='login')
@@ -556,3 +647,149 @@ def dataset_info_api(request):
         'columns':  list(df.columns),
     }
     return JsonResponse(info)
+
+
+def toggle_language(request):
+    """View to toggle system language between English and Indonesian."""
+    current_lang = request.session.get('lang', 'id')
+    new_lang = 'en' if current_lang == 'id' else 'id'
+    request.session['lang'] = new_lang
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def logout_view(request):
+    """Custom logout view to preserve language settings across session flushes."""
+    lang = request.session.get('lang', 'id')
+    logout(request)
+    request.session['lang'] = lang
+    return redirect('/')
+
+
+def get_lifestyle_recommendations(data, lang='id'):
+    """
+    Generate personalized lifestyle recommendations based on clinical inputs.
+    `data` can be a dictionary (for predict view) or a model object (for history detail).
+    """
+    def get_val(key, default=0):
+        if hasattr(data, key):
+            val = getattr(data, key)
+        else:
+            val = data.get(key, default)
+        
+        try:
+            return float(val) if key == 'oldpeak' else int(val)
+        except (ValueError, TypeError):
+            return default
+
+    chol = get_val('chol')
+    trestbps = get_val('trestbps')
+    fbs = get_val('fbs')
+    exang = get_val('exang')
+    age = get_val('age')
+
+    recs = []
+
+    # 1. Cholesterol Recommendation
+    if chol > 200:
+        if lang == 'en':
+            recs.append({
+                'title': 'Dietary Adjustments (High Cholesterol)',
+                'icon': 'bi-egg-fried',
+                'color': '#FFA800',
+                'desc': f'Your cholesterol level is {chol} mg/dl (Target: < 200 mg/dl). It is recommended to reduce intake of saturated fats, trans fats, and high-cholesterol foods (red meat, fried food, butter). Increase soluble fiber consumption (oats, legumes, fruits) and healthy fats like olive oil or omega-3 fatty acids.'
+            })
+        else:
+            recs.append({
+                'title': 'Penyesuaian Pola Makan (Kolesterol Tinggi)',
+                'icon': 'bi-egg-fried',
+                'color': '#FFA800',
+                'desc': f'Kadar kolesterol Anda adalah {chol} mg/dl (Target: < 200 mg/dl). Direkomendasikan untuk membatasi konsumsi lemak jenuh, lemak trans, dan makanan tinggi kolesterol (daging merah, gorengan, mentega). Tingkatkan konsumsi serat larut (oatmeal, kacang-kacangan, buah-buahan) serta lemak sehat seperti minyak zaitun atau asam lemak omega-3.'
+            })
+
+    # 2. Blood Pressure Recommendation
+    if trestbps > 120:
+        if lang == 'en':
+            recs.append({
+                'title': 'Exercise & Sodium Control (High Blood Pressure)',
+                'icon': 'bi-activity',
+                'color': '#FFA800',
+                'desc': f'Your resting blood pressure is {trestbps} mmHg (Target: < 120 mmHg). Engage in moderate-intensity aerobic exercise (brisk walking, cycling, swimming) for 30 minutes a day, at least 5 days a week. Additionally, limit dietary sodium (salt) to under 2,000 mg per day and practice stress-reduction techniques.'
+            })
+        else:
+            recs.append({
+                'title': 'Olahraga & Kontrol Natrium (Tekanan Darah Tinggi)',
+                'icon': 'bi-activity',
+                'color': '#FFA800',
+                'desc': f'Tekanan darah istirahat Anda adalah {trestbps} mmHg (Target: < 120 mmHg). Lakukan olahraga aerobik dengan intensitas sedang (jalan cepat, bersepeda, berenang) selama 30 menit sehari, minimal 5 hari seminggu. Batasi juga konsumsi natrium (garam dapur) di bawah 2.000 mg per hari serta terapkan teknik manajemen stres.'
+            })
+
+    # 3. Blood Sugar Recommendation
+    if fbs == 1:
+        if lang == 'en':
+            recs.append({
+                'title': 'Carbohydrate Control (High Fasting Blood Sugar)',
+                'icon': 'bi-droplet-half',
+                'color': '#F64E60',
+                'desc': 'Your fasting blood sugar is indicated above 120 mg/dl. Limit refined sugars, sweetened drinks, and processed carbohydrates (white bread, white rice). Focus on low-glycemic index food options like whole grains, brown rice, vegetables, and lean proteins to stabilize glucose levels.'
+            })
+        else:
+            recs.append({
+                'title': 'Kontrol Karbohidrat (Gula Darah Puasa Tinggi)',
+                'icon': 'bi-droplet-half',
+                'color': '#F64E60',
+                'desc': 'Gula darah puasa Anda terindikasi di atas 120 mg/dl. Batasi konsumsi gula olahan, minuman manis, dan karbohidrat sederhana (roti putih, nasi putih). Prioritaskan makanan dengan indeks glikemik rendah seperti gandum utuh, beras merah, sayuran, dan protein tanpa lemak guna menjaga kestabilan glukosa.'
+            })
+
+    # 4. Exercise-induced Angina Recommendation
+    if exang == 1:
+        if lang == 'en':
+            recs.append({
+                'title': 'Cardiovascular Exercise Caution (Exercise Angina)',
+                'icon': 'bi-exclamation-octagon-fill',
+                'color': '#F64E60',
+                'desc': 'You have exercise-induced angina (chest pain triggered by physical exertion). Avoid sudden, high-intensity workouts. Always warm up for 10-15 minutes before activity and cool down afterward. Stop exercise immediately and rest if you feel chest pain, tightness, or shortness of breath.'
+            })
+        else:
+            recs.append({
+                'title': 'Kewaspadaan Aktivitas Fisik (Angina Akibat Olahraga)',
+                'icon': 'bi-exclamation-octagon-fill',
+                'color': '#F64E60',
+                'desc': 'Anda mengalami angina akibat olahraga (nyeri dada yang dipicu aktivitas fisik). Hindari olahraga berat yang mendadak. Selalu lakukan pemanasan 10-15 menit sebelum beraktivitas dan pendinginan setelahnya. Segera hentikan aktivitas jika merasakan nyeri, sesak, atau ketidaknyamanan di dada.'
+            })
+
+    # 5. Age Recommendation
+    if age > 60:
+        if lang == 'en':
+            recs.append({
+                'title': 'Activity & Bone Health (Seniors aged 60+)',
+                'icon': 'bi-person-walking',
+                'color': '#2a9d8f',
+                'desc': 'For patients over 60 years old, physical activity should focus on maintaining muscle strength, joint flexibility, and balance to prevent falls (e.g., low-impact yoga, stretching, light walking). Ensure adequate calcium and Vitamin D intake, and consult a doctor before starting any new fitness routine.'
+            })
+        else:
+            recs.append({
+                'title': 'Kesehatan Aktivitas & Tulang (Lansia usia 60+)',
+                'icon': 'bi-person-walking',
+                'color': '#2a9d8f',
+                'desc': 'Untuk pasien di atas 60 tahun, aktivitas fisik sebaiknya difokuskan pada kekuatan otot, fleksibilitas sendi, dan keseimbangan untuk mencegah risiko jatuh (seperti yoga low-impact, peregangan, jalan santai). Pastikan asupan kalsium dan Vitamin D tercukupi, serta konsultasikan program latihan ke dokter.'
+            })
+
+    # If no specific risk triggers, provide a general health maintenance advice
+    if not recs:
+        if lang == 'en':
+            recs.append({
+                'title': 'Lifestyle Maintenance (Standard Metrics)',
+                'icon': 'bi-heart-fill',
+                'color': '#AAFF00',
+                'desc': 'All clinical metrics analyzed (cholesterol, blood pressure, fasting blood sugar, exercise tolerance) are within standard ranges. Maintain this state by continuing a balanced nutrition plan, sleeping 7-8 hours per night, exercising regularly, and scheduling regular annual medical check-ups.'
+            })
+        else:
+            recs.append({
+                'title': 'Pemeliharaan Pola Hidup Sehat (Indikator Normal)',
+                'icon': 'bi-heart-fill',
+                'color': '#AAFF00',
+                'desc': 'Seluruh indikator klinis Anda (kolesterol, tekanan darah, gula darah puasa, toleransi olahraga) berada dalam rentang normal. Pertahankan kondisi ini dengan melanjutkan diet gizi seimbang, tidur 7-8 jam per malam, rutin berolahraga, serta melakukan pemeriksaan kesehatan tahunan.'
+            })
+
+    return recs
+

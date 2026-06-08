@@ -25,6 +25,7 @@ from reportlab.graphics.shapes import Drawing, Rect, String, Line
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.graphics.charts.lineplots import LinePlot
 from reportlab.graphics import renderPDF
+# pyrefly: ignore [missing-import]
 from PIL import Image as PILImage
 
 # ===========================================================================
@@ -69,6 +70,7 @@ def load_data():
     plots      = inner.get('plots', {})
 
     return avg, std, fold_data, dataset_info, best_fold, plots
+
 
 
 # ===========================================================================
@@ -902,6 +904,7 @@ def build_conclusion(styles, avg, std, best_fold, dataset_info):
 
     elems.append(Spacer(1, 0.4*cm))
     elems.append(Paragraph('5.4 Rekomendasi', styles['sub_title']))
+
     recs = [
         '1. Lakukan pengumpulan data lebih besar (minimal 1000+ sampel) untuk meningkatkan generalisasi model.',
         '2. Terapkan teknik oversampling (SMOTE) atau class weighting untuk mengatasi ketidakseimbangan kelas.',
@@ -996,6 +999,7 @@ def build_pdf():
     print(f"\nOUTPUT: {OUTPUT_PATH}")
     print(f"Ukuran: {os.path.getsize(OUTPUT_PATH) / 1024:.1f} KB")
     print("=" * 60)
+
 
 
 if __name__ == '__main__':

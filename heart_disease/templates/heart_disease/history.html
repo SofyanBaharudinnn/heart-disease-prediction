@@ -1,5 +1,5 @@
 {% extends 'heart_disease/base.html' %}
-{% block title %}Riwayat Prediksi – HeartGuard{% endblock %}
+{% block title %}{% if current_lang == 'en' %}Prediction History{% else %}Riwayat Prediksi{% endif %} – HeartGuard{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -35,11 +35,11 @@
 <div class="container py-4">
   <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
     <div>
-      <h2 class="section-title mb-1"><i class="bi bi-clock-history me-2" style="color:var(--accent)"></i>Riwayat Prediksi</h2>
-      <p class="section-sub mb-0">Semua Riwayat Prediksi Yang Telah Dilakukan</p>
+      <h2 class="section-title mb-1"><i class="bi bi-clock-history me-2" style="color:var(--accent)"></i>{% if current_lang == 'en' %}Prediction History{% else %}Riwayat Prediksi{% endif %}</h2>
+      <p class="section-sub mb-0">{% if current_lang == 'en' %}All prediction history records{% else %}Semua Riwayat Prediksi Yang Telah Dilakukan{% endif %}</p>
     </div>
     <a href="{% url 'predict' %}" class="btn-primary-custom btn w-100 w-sm-auto text-center">
-      <i class="bi bi-plus-circle me-2"></i>Prediksi Baru
+      <i class="bi bi-plus-circle me-2"></i>{{ t.result_btn_new }}
     </a>
   </div>
 
@@ -49,9 +49,17 @@
       <table class="table table-custom mb-0">
         <thead>
           <tr>
-            <th style="min-width:155px;">No. Rekam Medis</th><th>Usia</th><th>Jenis Kelamin</th><th>Nyeri Dada</th>
-            <th>Tekanan Darah</th><th>Kolesterol</th><th>Hasil</th>
-            <th>Prob. +</th><th>Tingkat Risiko</th><th>Waktu</th><th class="text-end">Aksi</th>
+            <th style="min-width:155px;">{% if current_lang == 'en' %}Med. Record No.{% else %}No. Rekam Medis{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Age{% else %}Usia{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Gender{% else %}Jenis Kelamin{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Chest Pain{% else %}Nyeri Dada{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Blood Press.{% else %}Tekanan Darah{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Cholesterol{% else %}Kolesterol{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Result{% else %}Hasil{% endif %}</th>
+            <th>Prob. +</th>
+            <th>{% if current_lang == 'en' %}Risk Level{% else %}Tingkat Risiko{% endif %}</th>
+            <th>{% if current_lang == 'en' %}Time{% else %}Waktu{% endif %}</th>
+            <th class="text-end">{% if current_lang == 'en' %}Actions{% else %}Aksi{% endif %}</th>
           </tr>
         </thead>
         <tbody>
@@ -64,8 +72,8 @@
               <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);">#{{ h.id }}</span>
               {% endif %}
             </td>
-            <td><strong>{{ h.age }}</strong> thn</td>
-            <td>{% if h.sex == 1 %}<i class="bi bi-gender-male text-primary me-1"></i>L{% else %}<i class="bi bi-gender-female text-danger me-1"></i>P{% endif %}</td>
+            <td><strong>{{ h.age }}</strong> {% if current_lang == 'en' %}y/o{% else %}thn{% endif %}</td>
+            <td>{% if h.sex == 1 %}<i class="bi bi-gender-male text-primary me-1"></i>{% if current_lang == 'en' %}M{% else %}L{% endif %}{% else %}<i class="bi bi-gender-female text-danger me-1"></i>{% if current_lang == 'en' %}F{% else %}P{% endif %}{% endif %}</td>
             <td>
               {% if h.cp == 0 %}Typical
               {% elif h.cp == 1 %}Atypical
@@ -76,9 +84,9 @@
             <td>{{ h.chol }} mg/dl</td>
             <td>
               {% if h.prediction == 1 %}
-              <span class="badge-positive"><i class="bi bi-exclamation-circle me-1"></i>Positif</span>
+              <span class="badge-positive"><i class="bi bi-exclamation-circle me-1"></i>{% if current_lang == 'en' %}Positive{% else %}Positif{% endif %}</span>
               {% else %}
-              <span class="badge-negative"><i class="bi bi-check-circle me-1"></i>Negatif</span>
+              <span class="badge-negative"><i class="bi bi-check-circle me-1"></i>{% if current_lang == 'en' %}Negative{% else %}Negatif{% endif %}</span>
               {% endif %}
             </td>
             <td>
@@ -94,20 +102,24 @@
               </div>
             </td>
             <td>
-              {% if h.risk_level == 'Tinggi' %}<span class="badge-risk-high">{{ h.risk_level }}</span>
-              {% elif h.risk_level == 'Sedang' %}<span class="badge-risk-medium">{{ h.risk_level }}</span>
-              {% else %}<span class="badge-risk-low">{{ h.risk_level }}</span>{% endif %}
+              {% if h.risk_level == 'Tinggi' %}
+                <span class="badge-risk-high">{% if current_lang == 'en' %}High{% else %}Tinggi{% endif %}</span>
+              {% elif h.risk_level == 'Sedang' %}
+                <span class="badge-risk-medium">{% if current_lang == 'en' %}Medium{% else %}Sedang{% endif %}</span>
+              {% else %}
+                <span class="badge-risk-low">{% if current_lang == 'en' %}Low{% else %}Rendah{% endif %}</span>
+              {% endif %}
             </td>
             <td style="font-size:.82rem;color:var(--muted);">{{ h.created_at|date:"d/m/Y H:i" }}</td>
             <td>
               <div class="d-flex justify-content-end gap-2">
                 <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal{{ h.id }}" style="padding: 0.15rem 0.5rem; font-size: 0.75rem; border-radius: 6px;">
-                  <i class="bi bi-eye"></i> Detail
+                  <i class="bi bi-eye"></i> {% if current_lang == 'en' %}Details{% else %}Detail{% endif %}
                 </button>
-                <form action="{% url 'delete_history' h.id %}" method="post" onsubmit="return confirm('Yakin ingin menghapus riwayat prediksi ini?');" style="margin:0;">
+                <form action="{% url 'delete_history' h.id %}" method="post" onsubmit="return confirm('{% if current_lang == 'en' %}Are you sure you want to delete this prediction history?{% else %}Yakin ingin menghapus riwayat prediksi ini?{% endif %}');" style="margin:0;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-sm btn-outline-danger" style="padding: 0.15rem 0.5rem; font-size: 0.75rem; border-radius: 6px;">
-                    <i class="bi bi-trash"></i> Hapus
+                    <i class="bi bi-trash"></i> {% if current_lang == 'en' %}Delete{% else %}Hapus{% endif %}
                   </button>
                 </form>
               </div>
@@ -121,7 +133,7 @@
                 <div class="modal-header" style="background:#0A0A0A; border-radius: 15px 15px 0 0; padding:1.5rem; border-bottom:1px solid #333;">
                   <h5 class="modal-title" id="detailModalLabel{{ h.id }}" style="color:var(--lime);">
                     <i class="bi bi-file-earmark-medical me-2"></i>
-                    {% if h.serial_number %}{{ h.serial_number }}{% else %}Detail Prediksi #{{ h.id }}{% endif %}
+                    {% if h.serial_number %}{{ h.serial_number }}{% else %}{% if current_lang == 'en' %}Prediction Details #{{ h.id }}{% else %}Detail Prediksi #{{ h.id }}{% endif %}{% endif %}
                   </h5>
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -135,12 +147,12 @@
                         </div>
                         <div>
                           <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard</h4>
-                          <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">Prediction System Report</span>
+                          <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">{% if current_lang == 'en' %}Prediction System Report{% else %}Laporan Sistem Prediksi{% endif %}</span>
                         </div>
                       </div>
                       <div class="text-end">
-                        <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">Laporan Hasil Analisis Jantung</div>
-                        <div style="font-size:0.65rem; color:var(--muted);">Dicetak pada: <span id="pdfPrintDate{{ h.id }}"></span></div>
+                        <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">{% if current_lang == 'en' %}Heart Analysis Report{% else %}Laporan Hasil Analisis Jantung{% endif %}</div>
+                        <div style="font-size:0.65rem; color:var(--muted);">{% if current_lang == 'en' %}Printed at:{% else %}Dicetak pada:{% endif %} <span id="pdfPrintDate{{ h.id }}"></span></div>
                       </div>
                     </div>
 
@@ -154,17 +166,17 @@
                           <div class="d-flex align-items-center gap-3 flex-grow-1">
                             <i class="bi bi-upc-scan" style="color:var(--lime);font-size:1.2rem;flex-shrink:0;"></i>
                             <div>
-                              <div style="font-size:0.6rem;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Nomor Rekam Medis</div>
+                              <div style="font-size:0.6rem;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:700;">{{ t.result_serial }}</div>
                               <div style="font-family:var(--mono);font-size:1rem;font-weight:800;color:var(--lime);">{{ h.serial_number }}</div>
-                              <div style="font-size:0.75rem;color:#888;margin-top:2px;"><i class="bi bi-clock me-1"></i>{{ h.created_at|date:"d M Y, H:i" }} WIB</div>
+                              <div style="font-size:0.75rem;color:#888;margin-top:2px;"><i class="bi bi-clock me-1"></i>{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}</div>
                               <!-- Share Actions -->
                               <div class="d-flex gap-2 mt-2">
-                                <button onclick="shareHistoryToWhatsApp('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} WIB', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                                <button onclick="shareHistoryToWhatsApp('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
                                   class="btn btn-success btn-sm d-flex align-items-center gap-1 share-wa-btn"
                                   style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: #25D366; border: none; color: #FFF; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
                                   <i class="bi bi-whatsapp"></i> WhatsApp
                                 </button>
-                                <button onclick="shareHistoryToEmail('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} WIB', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                                <button onclick="shareHistoryToEmail('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
                                   class="btn btn-warning btn-sm d-flex align-items-center gap-1 share-email-btn"
                                   style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: transparent; border: 1px solid rgba(255,193,7,0.4); color: #FFC107; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
                                   <i class="bi bi-envelope"></i> Email
@@ -192,18 +204,18 @@
 
                       <!-- Data Pasien -->
                       <div class="col-md-6">
-                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>Data Profil</h6>
+                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>{% if current_lang == 'en' %}Profile Data{% else %}Data Profil{% endif %}</h6>
                         <ul class="list-group list-group-flush" style="font-size:0.9rem;">
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Usia</span>
-                            <strong>{{ h.age }} Tahun</strong>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Age{% else %}Usia{% endif %}</span>
+                            <strong>{{ h.age }} {% if current_lang == 'en' %}Years{% else %}Tahun{% endif %}</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Jenis Kelamin</span>
-                            <strong>{% if h.sex == 1 %}Laki-laki{% else %}Perempuan{% endif %}</strong>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Gender{% else %}Jenis Kelamin{% endif %}</span>
+                            <strong>{% if h.sex == 1 %}{% if current_lang == 'en' %}Male{% else %}Laki-laki{% endif %}{% else %}{% if current_lang == 'en' %}Female{% else %}Perempuan{% endif %}{% endif %}</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Jenis Nyeri Dada (cp)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Chest Pain Type (cp){% else %}Jenis Nyeri Dada (cp){% endif %}</span>
                             <strong>
                               {% if h.cp == 0 %}Typical Angina
                               {% elif h.cp == 1 %}Atypical Angina
@@ -212,15 +224,15 @@
                             </strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Tekanan Darah Istirahat (trestbps)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting Blood Pressure (trestbps){% else %}Tekanan Darah Istirahat (trestbps){% endif %}</span>
                             <strong>{{ h.trestbps }} mmHg</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Kolesterol (chol)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Cholesterol (chol){% else %}Kolesterol (chol){% endif %}</span>
                             <strong>{{ h.chol }} mg/dl</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Gula Darah Puasa (fbs)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Fasting Blood Sugar (fbs){% else %}Gula Darah Puasa (fbs){% endif %}</span>
                             <strong>{% if h.fbs == 1 %}> 120 mg/dl{% else %}< 120 mg/dl{% endif %}</strong>
                           </li>
                         </ul>
@@ -228,10 +240,10 @@
                       
                       <!-- Data Medis Tambahan -->
                       <div class="col-md-6">
-                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>Data Klinis</h6>
+                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>{% if current_lang == 'en' %}Clinical Data{% else %}Data Klinis{% endif %}</h6>
                         <ul class="list-group list-group-flush" style="font-size:0.9rem;">
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">EKG Istirahat (restecg)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting EKG (restecg){% else %}EKG Istirahat (restecg){% endif %}</span>
                             <strong>
                               {% if h.restecg == 0 %}Normal
                               {% elif h.restecg == 1 %}ST-T Wave Abnormality
@@ -239,19 +251,19 @@
                             </strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Detak Jantung Maksimal (thalach)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Maximum Heart Rate (thalach){% else %}Detak Jantung Maksimal (thalach){% endif %}</span>
                             <strong>{{ h.thalach }} bpm</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Angina karena Olahraga (exang)</span>
-                            <strong>{% if h.exang == 1 %}Ya{% else %}Tidak{% endif %}</strong>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Exercise-induced Angina (exang){% else %}Angina karena Olahraga (exang){% endif %}</span>
+                            <strong>{% if h.exang == 1 %}{% if current_lang == 'en' %}Yes{% else %}Ya{% endif %}{% else %}{% if current_lang == 'en' %}No{% else %}Tidak{% endif %}{% endif %}</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">ST Depresi (oldpeak)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Depression (oldpeak){% else %}ST Depresi (oldpeak){% endif %}</span>
                             <strong>{{ h.oldpeak }}</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Kemiringan ST (slope)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Slope (slope){% else %}Kemiringan ST (slope){% endif %}</span>
                             <strong>
                               {% if h.slope == 0 %}Upsloping
                               {% elif h.slope == 1 %}Flat
@@ -259,11 +271,11 @@
                             </strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Pembuluh Darah (ca)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Vessels (ca){% else %}Pembuluh Darah (ca){% endif %}</span>
                             <strong>{{ h.ca }}</strong>
                           </li>
                           <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">Thalassemia (thal)</span>
+                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Thalassemia (thal){% else %}Thalassemia (thal){% endif %}</span>
                             <strong>
                               {% if h.thal == 0 %}Normal
                               {% elif h.thal == 1 %}Fixed Defect
@@ -280,22 +292,26 @@
                     <div class="p-3" style="background:#0A0A0A; border-radius:12px; border:1px solid rgba(170,255,0,0.2);">
                       <div class="row align-items-center text-center gy-3">
                         <div class="col-12 col-sm-4">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Hasil Akhir</div>
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Final Result{% else %}Hasil Akhir{% endif %}</div>
                           {% if h.prediction == 1 %}
-                          <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">POSITIF</div>
+                          <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}POSITIVE{% else %}POSITIF{% endif %}</div>
                           {% else %}
-                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">NEGATIF</div>
+                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}NEGATIVE{% else %}NEGATIF{% endif %}</div>
                           {% endif %}
                         </div>
                         <div class="col-12 col-sm-4 modal-stat-divider">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Probabilitas (+)</div>
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Probability (+){% else %}Probabilitas (+){% endif %}</div>
                           <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{{ h.probability_pos|floatformat:1 }}%</div>
                         </div>
                         <div class="col-12 col-sm-4">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">Tingkat Risiko</div>
-                          {% if h.risk_level == 'Tinggi' %}<div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">TINGGI</div>
-                          {% elif h.risk_level == 'Sedang' %}<div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">SEDANG</div>
-                          {% else %}<div style="color:var(--lime);font-weight:800;font-size:1.2rem;">RENDAH</div>{% endif %}
+                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Risk Level{% else %}Tingkat Risiko{% endif %}</div>
+                          {% if h.risk_level == 'Tinggi' %}
+                            <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}HIGH{% else %}TINGGI{% endif %}</div>
+                          {% elif h.risk_level == 'Sedang' %}
+                            <div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}MEDIUM{% else %}SEDANG{% endif %}</div>
+                          {% else %}
+                            <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}LOW{% else %}RENDAH{% endif %}</div>
+                          {% endif %}
                         </div>
                       </div>
                     </div>
@@ -303,9 +319,9 @@
                 </div>
                 <div class="modal-footer" style="background:#0A0A0A; border-radius: 0 0 15px 15px; padding:1rem 1.5rem; border-top:1px solid #333; display:flex; justify-content:space-between; align-items:center; width:100%;">
                   <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2 btn-sm" onclick="downloadModalPdf('{{ h.id }}', '{{ h.age }}', '{{ h.risk_level }}')" id="downloadPdfBtn{{ h.id }}">
-                    <i class="bi bi-file-earmark-pdf-fill"></i> Unduh PDF
+                    <i class="bi bi-file-earmark-pdf-fill"></i> {% if current_lang == 'en' %}Download PDF{% else %}Unduh PDF{% endif %}
                   </button>
-                  <button type="button" class="btn btn-secondary-custom btn-sm" data-bs-dismiss="modal">Tutup</button>
+                  <button type="button" class="btn btn-secondary-custom btn-sm" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
                 </div>
               </div>
             </div>
@@ -316,10 +332,10 @@
       {% else %}
       <div class="p-5 text-center">
         <i class="bi bi-inbox" style="font-size:3.5rem;color:var(--muted);display:block;margin-bottom:1rem;"></i>
-        <h5 style="color:var(--muted);">Belum Ada Riwayat</h5>
-        <p style="color:var(--muted);font-size:.9rem;">Lakukan prediksi pertama Anda!</p>
+        <h5 style="color:var(--muted);">{% if current_lang == 'en' %}No History Yet{% else %}Belum Ada Riwayat{% endif %}</h5>
+        <p style="color:var(--muted);font-size:.9rem;">{% if current_lang == 'en' %}Perform your first prediction!{% else %}Lakukan prediksi pertama Anda!{% endif %}</p>
         <a href="{% url 'predict' %}" class="btn-primary-custom btn mt-2">
-          <i class="bi bi-cpu me-2"></i>Mulai Prediksi
+          <i class="bi bi-cpu me-2"></i>{% if current_lang == 'en' %}Start Prediction{% else %}Mulai Prediksi{% endif %}
         </a>
       </div>
       {% endif %}
@@ -336,18 +352,47 @@
 <script>
   // ── Share History via WhatsApp ──
   function shareHistoryToWhatsApp(serial, time, prediction, probPos, risk, age, sex, trestbps, chol, id) {
-    const predictionText = prediction === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
-    const sexText = sex === "1" ? "Laki-laki" : "Perempuan";
+    const isEn = "{{ current_lang }}" === "en";
+    const predictionText = prediction === "1"
+      ? (isEn ? "POSITIVE FOR HEART DISEASE" : "POSITIF PENYAKIT JANTUNG")
+      : (isEn ? "NEGATIVE FOR HEART DISEASE" : "NEGATIF PENYAKIT JANTUNG");
+    const sexText = sex === "1"
+      ? (isEn ? "Male" : "Laki-laki")
+      : (isEn ? "Female" : "Perempuan");
+    const riskText = isEn
+      ? (risk === "Tinggi" ? "High" : (risk === "Sedang" ? "Medium" : "Low"))
+      : risk;
     const detailUrl = window.location.origin + `/prediction/${id}/`;
 
-    const text = `*Hasil Prediksi Rekam Medis - HeartGuard*
+    let text = "";
+    if (isEn) {
+      text = `*Medical Record Prediction Result - HeartGuard*
+======================================
+*Medical Record Number:* ${serial}
+*Analysis Time:* ${time}
+
+*Prediction Result:* *${predictionText}*
+*Positive Probability:* ${probPos}
+*Risk Level:* ${riskText}
+
+*Patient Profile:*
+- Age: ${age} Years
+- Gender: ${sexText}
+- Blood Pressure: ${trestbps} mmHg
+- Cholesterol: ${chol} mg/dl
+
+*More Details:* ${detailUrl}
+--------------------------------------
+*Note:* This prediction result is generated by a Machine Learning model and does not replace doctor's diagnosis.`;
+    } else {
+      text = `*Hasil Prediksi Rekam Medis - HeartGuard*
 ======================================
 *Nomor Rekam Medis:* ${serial}
 *Waktu Analisis:* ${time}
 
 *Hasil Prediksi:* *${predictionText}*
 *Probabilitas Positif:* ${probPos}
-*Tingkat Risiko:* ${risk}
+*Tingkat Risiko:* ${riskText}
 
 *Profil Singkat Pasien:*
 - Usia: ${age} Tahun
@@ -358,6 +403,7 @@
 *Detail Selengkapnya:* ${detailUrl}
 --------------------------------------
 *Catatan:* Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+    }
 
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
@@ -366,19 +412,49 @@
 
   // ── Share History via Email ──
   function shareHistoryToEmail(serial, time, prediction, probPos, risk, age, sex, trestbps, chol, id) {
-    const predictionText = prediction === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
-    const sexText = sex === "1" ? "Laki-laki" : "Perempuan";
+    const isEn = "{{ current_lang }}" === "en";
+    const predictionText = prediction === "1"
+      ? (isEn ? "POSITIVE FOR HEART DISEASE" : "POSITIF PENYAKIT JANTUNG")
+      : (isEn ? "NEGATIVE FOR HEART DISEASE" : "NEGATIF PENYAKIT JANTUNG");
+    const sexText = sex === "1"
+      ? (isEn ? "Male" : "Laki-laki")
+      : (isEn ? "Female" : "Perempuan");
+    const riskText = isEn
+      ? (risk === "Tinggi" ? "High" : (risk === "Sedang" ? "Medium" : "Low"))
+      : risk;
     const detailUrl = window.location.origin + `/prediction/${id}/`;
 
-    const subject = `Laporan Hasil Analisis HeartGuard - ${serial}`;
-    const body = `Hasil Prediksi Rekam Medis - HeartGuard
+    const subject = isEn ? `HeartGuard Analysis Report - ${serial}` : `Laporan Hasil Analisis HeartGuard - ${serial}`;
+    
+    let body = "";
+    if (isEn) {
+      body = `Medical Record Prediction Result - HeartGuard
+======================================
+Medical Record Number: ${serial}
+Analysis Time: ${time}
+
+Prediction Result: ${predictionText}
+Positive Probability: ${probPos}
+Risk Level: ${riskText}
+
+Patient Profile:
+- Age: ${age} Years
+- Gender: ${sexText}
+- Blood Pressure: ${trestbps} mmHg
+- Cholesterol: ${chol} mg/dl
+
+More Details: ${detailUrl}
+--------------------------------------
+Note: This prediction result is generated by a Machine Learning model and does not replace doctor's diagnosis.`;
+    } else {
+      body = `Hasil Prediksi Rekam Medis - HeartGuard
 ======================================
 Nomor Rekam Medis: ${serial}
 Waktu Analisis: ${time}
 
 Hasil Prediksi: ${predictionText}
 Probabilitas Positif: ${probPos}
-Tingkat Risiko: ${risk}
+Tingkat Risiko: ${riskText}
 
 Profil Singkat Pasien:
 - Usia: ${age} Tahun
@@ -389,6 +465,7 @@ Profil Singkat Pasien:
 Detail Selengkapnya: ${detailUrl}
 --------------------------------------
 Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+    }
 
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoUrl;
@@ -422,16 +499,19 @@ Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak men
   function downloadModalPdf(historyId, age, riskLevel) {
     const btn = document.getElementById(`downloadPdfBtn${historyId}`);
     const originalText = btn.innerHTML;
+    const isEn = "{{ current_lang }}" === "en";
     
     // Show spinner
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan...';
+    btn.innerHTML = isEn
+      ? '<span class="spinner-border spinner-border-sm me-2"></span>Preparing...'
+      : '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan...';
     btn.disabled = true;
     
     const printHeader = document.getElementById(`pdfPrintHeader${historyId}`);
     const printDateSpan = document.getElementById(`pdfPrintDate${historyId}`);
     
     if (printHeader && printDateSpan) {
-      printDateSpan.textContent = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+      printDateSpan.textContent = new Date().toLocaleString(isEn ? 'en-US' : 'id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + (isEn ? '' : ' WIB');
       printHeader.classList.remove('d-none');
       printHeader.classList.add('d-flex');
     }

@@ -1,6 +1,6 @@
 {% extends 'heart_disease/base.html' %}
 {% load custom_filters %}
-{% block title %}Hasil Prediksi – HeartGuard{% endblock %}
+{% block title %}{{ t.result_title }} – HeartGuard{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -17,13 +17,19 @@
             </div>
             <div>
               <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard</h4>
-              <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">Prediction System Report</span>
+              <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">
+                {% if current_lang == 'en' %}Prediction System Report{% else %}Laporan Sistem Prediksi{% endif %}
+              </span>
             </div>
           </div>
           <div class="text-end">
-            <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">Laporan Hasil Analisis Jantung</div>
+            <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">
+              {% if current_lang == 'en' %}Heart Analysis Report{% else %}Laporan Hasil Analisis Jantung{% endif %}
+            </div>
             {% if prediction_record.serial_number %}<div style="font-size:0.65rem; color:var(--lime); font-family:var(--mono); font-weight:700; margin-bottom:2px;">{{ prediction_record.serial_number }}</div>{% endif %}
-            <div style="font-size:0.65rem; color:var(--muted);">Dicetak pada: <span id="pdfPrintDate"></span></div>
+            <div style="font-size:0.65rem; color:var(--muted);">
+              {% if current_lang == 'en' %}Printed at:{% else %}Dicetak pada:{% endif %} <span id="pdfPrintDate"></span>
+            </div>
           </div>
         </div>
 
@@ -36,7 +42,7 @@
             <i class="bi bi-file-earmark-medical-fill" style="color:var(--lime);font-size:1.2rem;"></i>
           </div>
           <div>
-            <div style="font-size:0.65rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">Nomor Rekam Medis</div>
+            <div style="font-size:0.65rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">{{ t.result_serial }}</div>
             <div style="font-family:var(--mono);font-size:1.15rem;font-weight:800;color:var(--lime);letter-spacing:1px;" id="serialNumberDisplay">{{ prediction_record.serial_number }}</div>
           </div>
         </div>
@@ -44,12 +50,14 @@
         <!-- Timestamp & Copy Button -->
         <div class="d-flex align-items-center gap-3 flex-wrap">
           <div class="text-sm-end">
-            <div style="font-size:0.65rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">Waktu Analisis</div>
-            <div style="font-size:0.88rem;color:#CCCCCC;font-weight:600;"><i class="bi bi-clock me-1" style="color:var(--lime);"></i>{{ prediction_record.created_at|date:"d M Y, H:i" }} WIB</div>
+            <div style="font-size:0.65rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">
+              {% if current_lang == 'en' %}Analysis Time{% else %}Waktu Analisis{% endif %}
+            </div>
+            <div style="font-size:0.88rem;color:#CCCCCC;font-weight:600;"><i class="bi bi-clock me-1" style="color:var(--lime);"></i>{{ prediction_record.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}</div>
           </div>
-          <button id="copySerialBtn" onclick="copySerial()" title="Salin Nomor Rekam Medis"
+          <button id="copySerialBtn" onclick="copySerial()" title="{% if current_lang == 'en' %}Copy Medical Record Number{% else %}Salin Nomor Rekam Medis{% endif %}"
             style="background:rgba(170,255,0,0.1);border:1px solid rgba(170,255,0,0.3);color:var(--lime);border-radius:10px;padding:0.45rem 0.9rem;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s ease;white-space:nowrap;">
-            <i class="bi bi-clipboard me-1"></i>Salin
+            <i class="bi bi-clipboard me-1"></i>{% if current_lang == 'en' %}Copy{% else %}Salin{% endif %}
           </button>
         </div>
       </div>
@@ -60,14 +68,22 @@
           {% if result.prediction == 1 %}
           <div style="background:linear-gradient(135deg,#e63946,#c1121f);padding:2.5rem;color:#fff;">
             <i class="bi bi-exclamation-triangle-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
-            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">POSITIF PENYAKIT JANTUNG</h2>
-            <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung</p>
+            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">
+              {% if current_lang == 'en' %}POSITIVE FOR HEART DISEASE{% else %}POSITIF PENYAKIT JANTUNG{% endif %}
+            </h2>
+            <p style="opacity:.85;font-size:1rem;margin:0;">
+              {% if current_lang == 'en' %}Based on clinical data, the patient is indicated to be at risk of heart disease{% else %}Berdasarkan data klinis, pasien terindikasi berisiko penyakit jantung{% endif %}
+            </p>
           </div>
           {% else %}
           <div style="background:linear-gradient(135deg,#2a9d8f,#1b7a70);padding:2.5rem;color:#fff;">
             <i class="bi bi-shield-check-fill" style="font-size:4rem;display:block;margin-bottom:1rem;"></i>
-            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">NEGATIF PENYAKIT JANTUNG</h2>
-            <p style="opacity:.85;font-size:1rem;margin:0;">Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung</p>
+            <h2 style="font-weight:800;font-size:1.8rem;margin-bottom:.5rem;">
+              {% if current_lang == 'en' %}NEGATIVE FOR HEART DISEASE{% else %}NEGATIF PENYAKIT JANTUNG{% endif %}
+            </h2>
+            <p style="opacity:.85;font-size:1rem;margin:0;">
+              {% if current_lang == 'en' %}Based on clinical data, the patient is not indicated for heart disease{% else %}Berdasarkan data klinis, pasien tidak terindikasi penyakit jantung{% endif %}
+            </p>
           </div>
           {% endif %}
 
@@ -78,13 +94,17 @@
                   <div class="val {% if result.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
                     {{ result.probability.positive }}%
                   </div>
-                  <div class="lbl">Prob. Positif</div>
+                  <div class="lbl">
+                    {% if current_lang == 'en' %}Prob. Positive{% else %}Prob. Positif{% endif %}
+                  </div>
                 </div>
               </div>
               <div class="col-sm-4">
                 <div class="metric-box">
                   <div class="val" style="color:var(--teal);">{{ result.probability.negative }}%</div>
-                  <div class="lbl">Prob. Negatif</div>
+                  <div class="lbl">
+                    {% if current_lang == 'en' %}Prob. Negative{% else %}Prob. Negatif{% endif %}
+                  </div>
                 </div>
               </div>
               <div class="col-sm-4">
@@ -93,9 +113,17 @@
                     {% if result.risk_level == 'Tinggi' %}text-danger
                     {% elif result.risk_level == 'Sedang' %}text-warning
                     {% else %}text-success{% endif %}">
-                    {{ result.risk_level }}
+                    {% if result.risk_level == 'Tinggi' %}
+                      {% if current_lang == 'en' %}High{% else %}Tinggi{% endif %}
+                    {% elif result.risk_level == 'Sedang' %}
+                      {% if current_lang == 'en' %}Medium{% else %}Sedang{% endif %}
+                    {% else %}
+                      {% if current_lang == 'en' %}Low{% else %}Rendah{% endif %}
+                    {% endif %}
                   </div>
-                  <div class="lbl">Tingkat Risiko</div>
+                  <div class="lbl">
+                    {% if current_lang == 'en' %}Risk Level{% else %}Tingkat Risiko{% endif %}
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,8 +131,8 @@
             <!-- Probability bar -->
             <div class="mt-4">
               <div class="d-flex justify-content-between mb-1" style="font-size:.82rem;font-weight:600;">
-                <span style="color:var(--teal);">Negatif {{ result.probability.negative }}%</span>
-                <span style="color:var(--accent);">Positif {{ result.probability.positive }}%</span>
+                <span style="color:var(--teal);">{% if current_lang == 'en' %}Negative{% else %}Negatif{% endif %} {{ result.probability.negative }}%</span>
+                <span style="color:var(--accent);">{% if current_lang == 'en' %}Positive{% else %}Positif{% endif %} {{ result.probability.positive }}%</span>
               </div>
               <div class="progress" style="height:14px;border-radius:8px;background:#333333;">
                 {% if result.prediction == 1 %}
@@ -118,25 +146,57 @@
             {% if result.risk_level == 'Tinggi' %}
             <div class="alert alert-danger alert-custom mt-3 text-start" style="font-size:.88rem;">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              <strong>Risiko Tinggi:</strong> Sangat disarankan untuk segera berkonsultasi dengan dokter spesialis jantung.
+              <strong>{{ t.result_high_risk_title }}:</strong> {{ t.result_high_risk_desc }}
             </div>
             {% elif result.risk_level == 'Sedang' %}
             <div class="alert alert-warning alert-custom mt-3 text-start" style="font-size:.88rem;">
               <i class="bi bi-exclamation-circle-fill me-2"></i>
-              <strong>Risiko Sedang:</strong> Disarankan untuk melakukan pemeriksaan lebih lanjut dengan dokter.
+              <strong>{{ t.result_med_risk_title }}:</strong> {{ t.result_med_risk_desc }}
             </div>
             {% else %}
             <div class="alert alert-success alert-custom mt-3 text-start" style="font-size:.88rem;">
               <i class="bi bi-check-circle-fill me-2"></i>
-              <strong>Risiko Rendah:</strong> Tetap jaga pola hidup sehat dan lakukan pemeriksaan rutin.
+              <strong>{{ t.result_low_risk_title }}:</strong> {{ t.result_low_risk_desc }}
             </div>
             {% endif %}
           </div>
         </div>
 
+        <!-- ── Rekomendasi Gaya Hidup Personal ── -->
+        <div class="card-custom mb-4">
+          <div class="card-header-custom" style="background:#0A0A0A; border-bottom:1px solid rgba(170,255,0,0.15); color:var(--lime);">
+            <i class="bi bi-heart-pulse-fill"></i>
+            {% if current_lang == 'en' %}Personalized Lifestyle Recommendations{% else %}Rekomendasi Gaya Hidup Personal{% endif %}
+          </div>
+          <div class="p-4">
+            <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1.2rem;">
+              {% if current_lang == 'en' %}
+                Based on your clinical inputs, our system has generated the following tailored lifestyle recommendations:
+              {% else %}
+                Berdasarkan data klinis yang Anda masukkan, sistem kami merekomendasikan penyesuaian gaya hidup berikut:
+              {% endif %}
+            </p>
+            <div class="row g-3">
+              {% for rec in lifestyle_recommendations %}
+              <div class="col-12">
+                <div style="background:#0A0A0A; border-left:4px solid {{ rec.color }}; border-radius:12px; padding:1.2rem; border-top:1px solid #2E2E2E; border-right:1px solid #2E2E2E; border-bottom:1px solid #2E2E2E; display:flex; gap:16px; align-items:flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  <div style="width:40px; height:40px; background:{{ rec.color }}15; border:1px solid {{ rec.color }}40; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <i class="bi {{ rec.icon }}" style="color:{{ rec.color }}; font-size:1.15rem;"></i>
+                  </div>
+                  <div>
+                    <h6 style="font-weight:700; color:#FFFFFF; margin-bottom:4px; font-size:0.95rem;">{{ rec.title }}</h6>
+                    <p style="font-size:0.85rem; color:#BBBBBB; margin:0; line-height:1.6;">{{ rec.desc }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
         <!-- ── Data Input ── -->
         <div class="card-custom mb-4">
-          <div class="card-header-custom"><i class="bi bi-clipboard-data"></i> Data Klinis yang Diinput</div>
+          <div class="card-header-custom"><i class="bi bi-clipboard-data"></i> {% if current_lang == 'en' %}Inputted Clinical Data{% else %}Data Klinis yang Diinput{% endif %}</div>
           <div class="p-4">
             <div class="row g-2">
               {% for key, info in feature_info.items %}
@@ -163,7 +223,7 @@
         {% if qr_code_b64 %}
         <div class="card-custom mb-4">
           <div class="card-header-custom">
-            <i class="bi bi-qr-code"></i> QR Code Rekam Medis
+            <i class="bi bi-qr-code"></i> {{ t.result_qr_title }}
           </div>
           <div class="p-4">
             <div class="row align-items-center g-4">
@@ -178,73 +238,49 @@
                          style="width:168px;height:168px;display:block;border-radius:8px;">
                   </div>
                   <div style="margin-top:10px;font-size:0.7rem;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:1px;">
-                    <i class="bi bi-qr-code-scan me-1" style="color:var(--lime);"></i>Scan dari HP
+                    <i class="bi bi-qr-code-scan me-1" style="color:var(--lime);"></i>{% if current_lang == 'en' %}Scan from Mobile{% else %}Scan dari HP{% endif %}
                   </div>
                 </div>
               </div>
 
               <!-- QR Info -->
               <div class="col-md-8">
-                <h5 style="font-weight:800;color:#fff;margin-bottom:0.4rem;">
-                  <i class="bi bi-wifi me-2" style="color:var(--lime);"></i>Akses via Jaringan Lokal
-                </h5>
-
-                <!-- LAN IP Notice -->
-                {% if local_ip %}
-                <div style="background:rgba(170,255,0,0.08);border:1px solid rgba(170,255,0,0.25);border-radius:10px;padding:0.65rem 1rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:10px;">
-                  <i class="bi bi-info-circle-fill" style="color:var(--lime);margin-top:2px;flex-shrink:0;"></i>
-                  <div style="font-size:0.82rem;color:#CCC;line-height:1.6;">
-                    QR code sudah dikonfigurasi dengan <strong style="color:var(--lime);font-family:var(--mono);">{{ local_ip }}</strong> (IP jaringan laptop).
-                    Pastikan HP dan laptop terhubung ke <strong style="color:#fff;">WiFi yang sama</strong>, lalu scan.
-                    <br>
-                    <span style="color:#888;font-size:0.77rem;">Jika server baru dijalankan dengan <code style="color:var(--lime);">127.0.0.1</code>, restart dengan perintah di bawah.</span>
-                  </div>
-                </div>
-                {% else %}
-                <div style="background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.3);border-radius:10px;padding:0.65rem 1rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:10px;">
-                  <i class="bi bi-exclamation-triangle-fill" style="color:#FFD166;margin-top:2px;flex-shrink:0;"></i>
-                  <div style="font-size:0.82rem;color:#CCC;line-height:1.6;">
-                    Tidak dapat mendeteksi IP jaringan. Pastikan server dijalankan dengan:
-                    <code style="color:var(--lime);display:block;margin-top:4px;">python manage.py runserver 0.0.0.0:8000</code>
-                  </div>
-                </div>
-                {% endif %}
-
-                <!-- URL yang di-encode ke QR -->
-                <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px;">URL dalam QR Code</div>
-                <div style="background:#0A0A0A;border:1px solid #333;border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:10px;overflow:hidden;">
-                  <i class="bi bi-link-45deg" style="color:var(--lime);font-size:1.1rem;flex-shrink:0;"></i>
-                  <span style="font-family:var(--mono);font-size:0.72rem;color:#888;word-break:break-all;flex:1;" id="detailUrlText">{{ detail_url }}</span>
-                </div>
-
                 <!-- Action Buttons -->
-                <div class="d-flex flex-wrap gap-2">
-                  <button onclick="downloadQRCode()" id="downloadQRBtn"
-                    style="background:var(--lime);border:none;color:#0A0A0A;font-weight:800;border-radius:10px;padding:0.55rem 1.2rem;font-size:0.85rem;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(170,255,0,0.35);">
-                    <i class="bi bi-download"></i> Unduh QR
+                <div class="d-flex flex-column gap-3 w-100">
+                  
+                  <!-- Primary Action -->
+                  <button onclick="downloadQRCode()" id="downloadQRBtn" class="btn btn-primary-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.88rem; font-weight: 800; border-radius: 12px;">
+                    <i class="bi bi-download"></i> {% if current_lang == 'en' %}Download QR Code{% else %}Unduh QR Code{% endif %}
                   </button>
-                  <button onclick="copyDetailUrl()" id="copyUrlBtn"
-                    style="background:transparent;border:1px solid rgba(170,255,0,0.4);color:var(--lime);font-weight:700;border-radius:10px;padding:0.55rem 1.2rem;font-size:0.85rem;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:6px;">
-                    <i class="bi bi-clipboard"></i> Salin URL
-                  </button>
-                  <a href="{{ detail_url_browser }}" target="_blank"
-                    style="background:transparent;border:1px solid #333;color:#888;font-weight:700;border-radius:10px;padding:0.55rem 1.2rem;font-size:0.85rem;text-decoration:none;transition:all .25s ease;display:flex;align-items:center;gap:6px;">
-                    <i class="bi bi-box-arrow-up-right"></i> Buka Halaman
-                  </a>
-                  <button onclick="shareToWhatsApp()" id="shareWABtn"
-                    style="background:#25D366;border:none;color:#FFFFFF;font-weight:800;border-radius:10px;padding:0.55rem 1.2rem;font-size:0.85rem;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(37,211,102,0.35);">
-                    <i class="bi bi-whatsapp"></i> WhatsApp
-                  </button>
-                  <button onclick="shareToEmail()" id="shareEmailBtn"
-                    style="background:transparent;border:1px solid rgba(255,193,7,0.4);color:#FFC107;font-weight:700;border-radius:10px;padding:0.55rem 1.2rem;font-size:0.85rem;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:6px;">
-                    <i class="bi bi-envelope"></i> Email
-                  </button>
-                </div>
+                  
+                  <!-- Link Actions -->
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <button onclick="copyDetailUrl()" id="copyUrlBtn" class="btn btn-outline-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.85rem; border-radius: 12px;">
+                        <i class="bi bi-clipboard"></i> {% if current_lang == 'en' %}Copy URL{% else %}Salin URL{% endif %}
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <a href="{{ detail_url_browser }}" target="_blank" class="btn btn-secondary-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="font-size: 0.85rem; border-radius: 12px; text-decoration: none;">
+                        <i class="bi bi-box-arrow-up-right"></i> {% if current_lang == 'en' %}Open Page{% else %}Buka Halaman{% endif %}
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <!-- Share Actions -->
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <button onclick="shareToWhatsApp()" id="shareWABtn" class="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="background:#25D366; border:none; color:#FFFFFF; font-weight:800; border-radius:12px; font-size: 0.85rem; box-shadow:0 4px 14px rgba(37,211,102,0.25);">
+                        <i class="bi bi-whatsapp"></i> WhatsApp
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button onclick="shareToEmail()" id="shareEmailBtn" class="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2" style="background:rgba(255,193,7,0.1); border:1px solid rgba(255,193,7,0.3); color:#FFC107; font-weight:700; border-radius:12px; font-size: 0.85rem;">
+                        <i class="bi bi-envelope"></i> Email
+                      </button>
+                    </div>
+                  </div>
 
-                <!-- Run server guide -->
-                <div style="margin-top:1rem;padding:0.65rem 1rem;background:#111;border-radius:10px;border-left:3px solid rgba(170,255,0,0.4);">
-                  <div style="font-size:0.65rem;color:#555;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px;">Perintah Server (agar HP bisa akses)</div>
-                  <code style="font-family:var(--mono);font-size:0.78rem;color:var(--lime);">python manage.py runserver 0.0.0.0:8000</code>
                 </div>
               </div>
 
@@ -256,21 +292,26 @@
         <!-- ── Disclaimer ── -->
         <div class="alert alert-warning alert-custom mb-4" style="font-size:.85rem;">
           <i class="bi bi-shield-exclamation me-2"></i>
-          <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan <strong>tidak menggantikan diagnosis dokter</strong>.
-          Hasil ini hanya untuk tujuan akademik dan penelitian.
+          {% if current_lang == 'en' %}
+            <strong>Disclaimer:</strong> This prediction is generated by a machine learning model and <strong>does not replace doctor's diagnosis</strong>.
+            This result is for academic and research purposes only.
+          {% else %}
+            <strong>Disclaimer:</strong> Prediksi ini dihasilkan oleh model machine learning dan <strong>tidak menggantikan diagnosis dokter</strong>.
+            Hasil ini hanya untuk tujuan akademik dan penelitian.
+          {% endif %}
         </div>
       </div> <!-- /pdfReportContainer -->
 
 
       <div class="d-flex flex-column flex-sm-row gap-3">
         <button id="downloadPdfBtn" class="btn-primary-custom btn w-100 w-sm-auto text-center d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-file-earmark-pdf-fill"></i> Unduh PDF
+          <i class="bi bi-file-earmark-pdf-fill"></i> {% if current_lang == 'en' %}Download PDF{% else %}Unduh PDF{% endif %}
         </button>
         <a href="{% url 'predict' %}" class="btn-secondary-custom btn w-100 w-sm-auto text-center">
-          <i class="bi bi-arrow-repeat me-2"></i>Prediksi Baru
+          <i class="bi bi-arrow-repeat me-2"></i>{{ t.result_btn_new }}
         </a>
         <a href="{% url 'history' %}" class="btn-secondary-custom btn w-100 w-sm-auto text-center">
-          <i class="bi bi-clock-history me-2"></i>Lihat Riwayat
+          <i class="bi bi-clock-history me-2"></i>{{ t.result_btn_history }}
         </a>
         <a href="{% url 'dashboard' %}" class="btn-outline-custom btn w-100 w-sm-auto text-center">
           <i class="bi bi-speedometer2 me-2"></i>Dashboard
@@ -315,10 +356,10 @@
     const btn = document.getElementById('copySerialBtn');
     if (!serial || !btn) return;
     navigator.clipboard.writeText(serial.textContent.trim()).then(() => {
-      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Tersalin!';
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>{% if current_lang == 'en' %}Copied!{% else %}Tersalin!{% endif %}';
       btn.style.background = 'rgba(170,255,0,0.25)';
       setTimeout(() => {
-        btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>Salin';
+        btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>{% if current_lang == 'en' %}Copy{% else %}Salin{% endif %}';
         btn.style.background = '';
       }, 2000);
     }).catch(() => {
@@ -329,8 +370,8 @@
       window.getSelection().addRange(range);
       document.execCommand('copy');
       window.getSelection().removeAllRanges();
-      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Tersalin!';
-      setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>Salin'; }, 2000);
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>{% if current_lang == 'en' %}Copied!{% else %}Tersalin!{% endif %}';
+      setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>{% if current_lang == 'en' %}Copy{% else %}Salin{% endif %}'; }, 2000);
     });
   }
 
@@ -341,7 +382,7 @@
     if (!img || !btn) return;
 
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="bi bi-check-lg"></i> Tersimpan!';
+    btn.innerHTML = '<i class="bi bi-check-lg"></i> {% if current_lang == 'en' %}Saved!{% else %}Tersimpan!{% endif %}';
     setTimeout(() => { btn.innerHTML = originalText; }, 2000);
 
     const link = document.createElement('a');
@@ -355,41 +396,69 @@
 
   // ── Copy Detail URL to Clipboard ──
   function copyDetailUrl() {
-    const urlText = document.getElementById('detailUrlText');
     const btn = document.getElementById('copyUrlBtn');
-    if (!urlText || !btn) return;
+    if (!btn) return;
     const originalText = btn.innerHTML;
-    navigator.clipboard.writeText(urlText.textContent.trim()).then(() => {
-      btn.innerHTML = '<i class="bi bi-check-lg"></i> Tersalin!';
+    navigator.clipboard.writeText("{{ detail_url }}").then(() => {
+      btn.innerHTML = '<i class="bi bi-check-lg"></i> {% if current_lang == 'en' %}Copied!{% else %}Tersalin!{% endif %}';
       setTimeout(() => { btn.innerHTML = originalText; }, 2000);
     }).catch(() => {
-      const range = document.createRange();
-      range.selectNode(urlText);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
+      // Fallback
+      const el = document.createElement('textarea');
+      el.value = "{{ detail_url }}";
+      document.body.appendChild(el);
+      el.select();
       document.execCommand('copy');
-      window.getSelection().removeAllRanges();
-      btn.innerHTML = '<i class="bi bi-check-lg"></i> Tersalin!';
+      document.body.removeChild(el);
+      btn.innerHTML = '<i class="bi bi-check-lg"></i> {% if current_lang == 'en' %}Copied!{% else %}Tersalin!{% endif %}';
       setTimeout(() => { btn.innerHTML = originalText; }, 2000);
     });
   }
 
   // ── Share via WhatsApp ──
   function shareToWhatsApp() {
+    const isEn = "{{ current_lang }}" === "en";
     const serial = "{{ prediction_record.serial_number|default:'-' }}";
-    const time = "{{ prediction_record.created_at|date:'d M Y, H:i' }} WIB";
-    const predictionText = "{{ result.prediction }}" === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
+    const time = isEn ? "{{ prediction_record.created_at|date:'d M Y, H:i' }}" : "{{ prediction_record.created_at|date:'d M Y, H:i' }} WIB";
+    const predictionText = "{{ result.prediction }}" === "1"
+      ? (isEn ? "POSITIVE FOR HEART DISEASE" : "POSITIF PENYAKIT JANTUNG")
+      : (isEn ? "NEGATIVE FOR HEART DISEASE" : "NEGATIF PENYAKIT JANTUNG");
     const probPos = "{{ result.probability.positive }}%";
-    const risk = "{{ result.risk_level }}";
+    const risk = isEn
+      ? ("{{ result.risk_level }}" === "Tinggi" ? "High" : ("{{ result.risk_level }}" === "Sedang" ? "Medium" : "Low"))
+      : "{{ result.risk_level }}";
     
     const age = "{{ input_data.age|default:'-' }}";
-    const sex = "{{ input_data.sex }}" === "1" ? "Laki-laki" : "Perempuan";
+    const sex = "{{ input_data.sex }}" === "1"
+      ? (isEn ? "Male" : "Laki-laki")
+      : (isEn ? "Female" : "Perempuan");
     const trestbps = "{{ input_data.trestbps|default:'-' }}";
     const chol = "{{ input_data.chol|default:'-' }}";
     
     const detailUrl = window.location.origin + "{% url 'prediction_detail' prediction_record.id %}";
 
-    const text = `*Hasil Prediksi Rekam Medis - HeartGuard*
+    let text = "";
+    if (isEn) {
+      text = `*Medical Record Prediction Result - HeartGuard*
+======================================
+*Medical Record Number:* ${serial}
+*Analysis Time:* ${time}
+
+*Prediction Result:* *${predictionText}*
+*Positive Probability:* ${probPos}
+*Risk Level:* ${risk}
+
+*Patient Profile:*
+- Age: ${age} Years
+- Gender: ${sex}
+- Blood Pressure: ${trestbps} mmHg
+- Cholesterol: ${chol} mg/dl
+
+*More Details:* ${detailUrl}
+--------------------------------------
+*Note:* This prediction result is generated by a Machine Learning model and does not replace doctor's diagnosis.`;
+    } else {
+      text = `*Hasil Prediksi Rekam Medis - HeartGuard*
 ======================================
 *Nomor Rekam Medis:* ${serial}
 *Waktu Analisis:* ${time}
@@ -407,6 +476,7 @@
 *Detail Selengkapnya:* ${detailUrl}
 --------------------------------------
 *Catatan:* Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+    }
 
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
@@ -415,21 +485,50 @@
 
   // ── Share via Email ──
   function shareToEmail() {
+    const isEn = "{{ current_lang }}" === "en";
     const serial = "{{ prediction_record.serial_number|default:'-' }}";
-    const time = "{{ prediction_record.created_at|date:'d M Y, H:i' }} WIB";
-    const predictionText = "{{ result.prediction }}" === "1" ? "POSITIF PENYAKIT JANTUNG" : "NEGATIF PENYAKIT JANTUNG";
+    const time = isEn ? "{{ prediction_record.created_at|date:'d M Y, H:i' }}" : "{{ prediction_record.created_at|date:'d M Y, H:i' }} WIB";
+    const predictionText = "{{ result.prediction }}" === "1"
+      ? (isEn ? "POSITIVE FOR HEART DISEASE" : "POSITIF PENYAKIT JANTUNG")
+      : (isEn ? "NEGATIVE FOR HEART DISEASE" : "NEGATIF PENYAKIT JANTUNG");
     const probPos = "{{ result.probability.positive }}%";
-    const risk = "{{ result.risk_level }}";
+    const risk = isEn
+      ? ("{{ result.risk_level }}" === "Tinggi" ? "High" : ("{{ result.risk_level }}" === "Sedang" ? "Medium" : "Low"))
+      : "{{ result.risk_level }}";
     
     const age = "{{ input_data.age|default:'-' }}";
-    const sex = "{{ input_data.sex }}" === "1" ? "Laki-laki" : "Perempuan";
+    const sex = "{{ input_data.sex }}" === "1"
+      ? (isEn ? "Male" : "Laki-laki")
+      : (isEn ? "Female" : "Perempuan");
     const trestbps = "{{ input_data.trestbps|default:'-' }}";
     const chol = "{{ input_data.chol|default:'-' }}";
     
     const detailUrl = window.location.origin + "{% url 'prediction_detail' prediction_record.id %}";
 
-    const subject = `Laporan Hasil Analisis HeartGuard - ${serial}`;
-    const body = `Hasil Prediksi Rekam Medis - HeartGuard
+    const subject = isEn ? `HeartGuard Analysis Report - ${serial}` : `Laporan Hasil Analisis HeartGuard - ${serial}`;
+    
+    let body = "";
+    if (isEn) {
+      body = `Medical Record Prediction Result - HeartGuard
+======================================
+Medical Record Number: ${serial}
+Analysis Time: ${time}
+
+Prediction Result: ${predictionText}
+Positive Probability: ${probPos}
+Risk Level: ${risk}
+
+Patient Profile:
+- Age: ${age} Years
+- Gender: ${sex}
+- Blood Pressure: ${trestbps} mmHg
+- Cholesterol: ${chol} mg/dl
+
+More Details: ${detailUrl}
+--------------------------------------
+Note: This prediction result is generated by a Machine Learning model and does not replace doctor's diagnosis.`;
+    } else {
+      body = `Hasil Prediksi Rekam Medis - HeartGuard
 ======================================
 Nomor Rekam Medis: ${serial}
 Waktu Analisis: ${time}
@@ -447,6 +546,7 @@ Profil Singkat Pasien:
 Detail Selengkapnya: ${detailUrl}
 --------------------------------------
 Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak menggantikan diagnosis dokter.`;
+    }
 
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoUrl;
@@ -455,16 +555,19 @@ Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak men
   document.getElementById('downloadPdfBtn').addEventListener('click', function() {
     const btn = this;
     const originalText = btn.innerHTML;
+    const isEn = "{{ current_lang }}" === "en";
     
     // Show spinner
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan PDF...';
+    btn.innerHTML = isEn
+      ? '<span class="spinner-border spinner-border-sm me-2"></span>Preparing PDF...'
+      : '<span class="spinner-border spinner-border-sm me-2"></span>Menyiapkan PDF...';
     btn.disabled = true;
     
     const printHeader = document.getElementById('pdfPrintHeader');
     const printDateSpan = document.getElementById('pdfPrintDate');
     
     if (printHeader && printDateSpan) {
-      printDateSpan.textContent = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+      printDateSpan.textContent = new Date().toLocaleString(isEn ? 'en-US' : 'id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + (isEn ? '' : ' WIB');
       printHeader.classList.remove('d-none');
       printHeader.classList.add('d-flex');
     }

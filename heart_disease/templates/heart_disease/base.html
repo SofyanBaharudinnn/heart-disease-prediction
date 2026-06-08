@@ -1,7 +1,33 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ current_lang }}">
 
 <head>
+  <script>
+    window.onerror = function(msg, url, line, col, error) {
+      var div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '10px';
+      div.style.left = '10px';
+      div.style.right = '10px';
+      div.style.background = '#FF3B30';
+      div.style.color = '#FFFFFF';
+      div.style.padding = '20px';
+      div.style.zIndex = '999999';
+      div.style.fontSize = '14px';
+      div.style.fontFamily = 'monospace';
+      div.style.borderRadius = '10px';
+      div.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+      div.style.border = '2px solid #FF8080';
+      div.innerHTML = '<h3>[CLIENT-SIDE JAVASCRIPT ERROR]</h3>' +
+                      '<strong>Message:</strong> ' + msg + '<br>' +
+                      '<strong>File:</strong> ' + url + '<br>' +
+                      '<strong>Line:</strong> ' + line + ':' + col + '<br>' +
+                      '<pre style="margin-top:10px; padding:10px; background:rgba(0,0,0,0.2); border-radius:5px; white-space:pre-wrap; word-break:break-all;">' + 
+                      (error ? error.stack : 'No stack trace') + '</pre>';
+      document.body.appendChild(div);
+      return false;
+    };
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}HeartGuard – Prediksi Penyakit Jantung{% endblock %}</title>
@@ -488,6 +514,65 @@
       height: 100vh;
       overflow-y: auto;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Top Right Language Toggle for Desktop ── */
+    .desktop-lang-toggle {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      z-index: 1001;
+    }
+    
+    @media (max-width: 767.98px) {
+      .desktop-lang-toggle {
+        display: none !important;
+      }
+    }
+
+    /* ── Desktop & Mobile Flat Language Toggle ── */
+    .btn-lang-toggle {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(170, 255, 0, 0.25);
+      border-radius: 12px;
+      padding: 0.55rem 0.95rem;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-lang-toggle:hover {
+      background: rgba(170, 255, 0, 0.08);
+      border-color: var(--lime);
+      box-shadow: 0 4px 15px rgba(170, 255, 0, 0.25);
+      transform: translateY(-1px);
+    }
+    
+    .btn-lang-toggle .lang-icon {
+      font-size: 0.75rem;
+      color: var(--lime);
+      transition: transform 0.25s ease;
+    }
+    
+    .btn-lang-toggle:hover .lang-icon {
+      transform: rotate(180deg);
+    }
+
+    @media (max-width: 767.98px) {
+      .btn-lang-toggle {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.72rem;
+        border-radius: 10px;
+      }
     }
 
     /* ── Cards ── */
@@ -1021,7 +1106,7 @@
         font-size: 1.4rem;
       }
     }
-    
+
     @media (min-width: 768px) {
       .mobile-header {
         display: none !important;
@@ -1029,6 +1114,11 @@
       .sidebar-overlay {
         display: none !important;
       }
+    }
+
+    /* Global Bootstrap override for high contrast dark-mode readability */
+    .text-muted {
+      color: var(--muted) !important;
     }
   </style>
 
@@ -1047,7 +1137,18 @@
       </div>
       <span class="text-white fw-bold" style="font-size:1.1rem; letter-spacing:-0.5px;">HeartGuard</span>
     </a>
-    <div style="width: 32px;"></div> <!-- Spacer to center the brand -->
+    <!-- Mobile Language Toggle -->
+    {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
+    <form method="post" action="{% url 'toggle_language' %}" style="margin:0;">
+      {% csrf_token %}
+      <button type="submit" class="btn-lang-toggle" aria-label="Change Language">
+        <span>{% if current_lang == 'en' %}ENGLISH{% else %}INDONESIA{% endif %}</span>
+        <i class="bi bi-arrow-left-right lang-icon"></i>
+      </button>
+    </form>
+    {% else %}
+    <div style="width: 32px;"></div> <!-- Spacer to center the brand on other pages -->
+    {% endif %}
   </header>
 
   <!-- Sidebar Overlay Backdrop -->
@@ -1066,55 +1167,55 @@
     </a>
 
   <div class="sidebar-menu">
-    <div class="menu-category">Menu Utama</div>
+    <div class="menu-category">{{ t.menu_main }}</div>
     
     {% if not request.user.is_authenticated %}
     <a href="{% url 'index' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
-      <i class="bi bi-house-door"></i> Beranda
+      <i class="bi bi-house-door"></i> {{ t.menu_home }}
     </a>
     {% endif %}
     
     {% if request.user.is_authenticated and request.user.is_staff %}
     <a href="{% url 'dashboard' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-      <i class="bi bi-bar-chart-line"></i> Dashboard
+      <i class="bi bi-bar-chart-line"></i> {{ t.menu_dashboard }}
     </a>
     <a href="{% url 'dataset_management' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'dataset_management' %}active{% endif %}">
-      <i class="bi bi-database-fill-gear"></i> Dataset
+      <i class="bi bi-database-fill-gear"></i> {{ t.menu_dataset }}
     </a>
     <a href="{% url 'train_page' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'train_page' %}active{% endif %}">
-      <i class="bi bi-sliders"></i> Pelatihan Model
+      <i class="bi bi-sliders"></i> {{ t.menu_training }}
     </a>
     {% endif %}
 
     {% if request.user.is_authenticated %}
     <a href="{% url 'predict' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
-      <i class="bi bi-cpu"></i> Prediksi
+      <i class="bi bi-cpu"></i> {{ t.menu_predict }}
     </a>
     {% endif %}
 
-    <div class="menu-category">Data & Info</div>
+    <div class="menu-category">{{ t.menu_data_info }}</div>
     
     {% if request.user.is_authenticated %}
     <a href="{% url 'history' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'history' %}active{% endif %}">
-      <i class="bi bi-clock-history"></i> Riwayat
+      <i class="bi bi-clock-history"></i> {{ t.menu_history }}
     </a>
     {% if request.user.is_staff %}
     <a href="{% url 'manage_users' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
-      <i class="bi bi-people-fill"></i> Kelola Pengguna
+      <i class="bi bi-people-fill"></i> {{ t.menu_users }}
     </a>
     {% endif %}
     {% endif %}
 
     <a href="{% url 'about' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
-      <i class="bi bi-info-circle"></i> Tentang
+      <i class="bi bi-info-circle"></i> {{ t.menu_about }}
     </a>
   </div>
 
@@ -1135,7 +1236,7 @@
             {% if request.user.is_staff %}
               <i class="bi bi-shield-fill-check"></i> Admin
             {% else %}
-              <i class="bi bi-person-fill"></i> Pasien
+              <i class="bi bi-person-fill"></i> {% if current_lang == 'en' %}Patient{% else %}Pasien{% endif %}
             {% endif %}
           </div>
         </div>
@@ -1152,8 +1253,8 @@
           <span class="btn-logout-inner">
             <i class="bi bi-box-arrow-right btn-logout-icon"></i>
             <span class="btn-logout-text">
-              <span class="btn-logout-label">Keluar</span>
-              <span class="btn-logout-sub">Akhiri Sesi</span>
+              <span class="btn-logout-label">{{ t.logout }}</span>
+              <span class="btn-logout-sub">{{ t.logout_sub }}</span>
             </span>
           </span>
         </button>
@@ -1167,8 +1268,8 @@
         <span class="btn-login-dot"></span>
         <i class="bi bi-shield-lock-fill btn-login-icon"></i>
         <span class="btn-login-text">
-          <span class="btn-login-label">Masuk ke Sistem</span>
-          <span class="btn-login-sub">Autentikasi Aman</span>
+          <span class="btn-login-label">{{ t.login }}</span>
+          <span class="btn-login-sub">{{ t.login_sub }}</span>
         </span>
         <i class="bi bi-arrow-right btn-login-arrow"></i>
       </span>
@@ -1181,6 +1282,19 @@
 
   <!-- ── Main Content Wrapper ── -->
   <div class="main-wrapper">
+
+    <!-- Desktop Top Right Language Toggle -->
+    {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
+    <div class="desktop-lang-toggle">
+      <form method="post" action="{% url 'toggle_language' %}" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="btn-lang-toggle" aria-label="Change Language">
+          <span>{% if current_lang == 'en' %}ENGLISH{% else %}INDONESIA{% endif %}</span>
+          <i class="bi bi-arrow-left-right lang-icon"></i>
+        </button>
+      </form>
+    </div>
+    {% endif %}
 
     <!-- ── Messages ── -->
     {% if messages %}
@@ -1212,10 +1326,10 @@
                 Heart<span>Guard</span>
               </span>
               <span class="footer-sep d-none d-sm-inline">|</span>
-              <span class="footer-copy">&copy; 2026. Hak Cipta Dilindungi</span>
+              <span class="footer-copy">&copy; 2026. {{ t.footer_rights }}</span>
             </div>
             <div class="mt-2 text-center text-lg-start" style="color: #444444; font-size: 0.72rem; font-weight: 500;">
-              Proyek Akhir Pengembangan Sistem Informasi &bull; Universitas Musamus Merauke
+              {% if current_lang == 'en' %}Information System Development Final Project{% else %}Proyek Akhir Pengembangan Sistem Informasi{% endif %} &bull; {{ t.univ_name }}
             </div>
           </div>
 
@@ -1225,7 +1339,7 @@
               <!-- System Status -->
               <div class="status-indicator">
                 <span class="status-dot"></span>
-                Sistem Aktif &amp; Optimal
+                {{ t.footer_status }}
               </div>
               <span class="footer-sep d-none d-sm-inline">|</span>
               <!-- Tech stack pills -->

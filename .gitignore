@@ -19,3 +19,4 @@ dataset/heart_backup.csv
 .idea/
 .DS_Store
 *.log
+scratch/
