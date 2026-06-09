@@ -87,6 +87,7 @@
       --btn-secondary-hover-bg: #2A2A2A;
       --btn-secondary-hover-border: #444444;
       --btn-secondary-hover-text: #FFFFFF;
+      --btn-close-filter:    invert(1) grayscale(1) brightness(2);
     }
 
     [data-theme="light"] {
@@ -112,6 +113,7 @@
       --btn-secondary-hover-bg: #F1F5F9;
       --btn-secondary-hover-border: #CBD5E1;
       --btn-secondary-hover-text: #0F172A;
+      --btn-close-filter:    none;
     }
 
     body, .sidebar-custom, .card-custom, .table-custom td, .form-control-custom, .form-select-custom, .modal-content, a, span, p, h1, h2, h3, h4, h5, h6 {
@@ -221,7 +223,7 @@
 
     .sidebar-link:hover {
       background: var(--sidebar-hover-bg);
-      color: #FFFFFF;
+      color: var(--text-main);
     }
 
     .sidebar-link.active {
@@ -1290,10 +1292,56 @@
       color: #b0b0b0;
     }
     .modal-custom .modal-body strong {
-      color: #fff;
+      color: var(--text-main);
     }
     .modal-custom .btn-close {
-      filter: invert(1) grayscale(1) brightness(2);
+      filter: var(--btn-close-filter);
+    }
+
+    /* ── Light Mode Text Contrast Overrides ── */
+    [data-theme="light"] h1,
+    [data-theme="light"] h2,
+    [data-theme="light"] h3,
+    [data-theme="light"] h4,
+    [data-theme="light"] h5,
+    [data-theme="light"] h6,
+    [data-theme="light"] .hero-title,
+    [data-theme="light"] .desc-title,
+    [data-theme="light"] .tech-title,
+    [data-theme="light"] .timeline-title,
+    [data-theme="light"] .stat-value,
+    [data-theme="light"] .metric-box .val,
+    [data-theme="light"] .section-title,
+    [data-theme="light"] .sidebar-brand .brand-text .title,
+    [data-theme="light"] strong,
+    [data-theme="light"] b,
+    [data-theme="light"] .modal-body strong {
+      color: var(--text-main) !important;
+    }
+
+    [data-theme="light"] .timeline-dot {
+      background: var(--surface) !important;
+      color: var(--text-main) !important;
+      border-color: var(--border) !important;
+    }
+
+    [data-theme="light"] .section-sub,
+    [data-theme="light"] .desc-text,
+    [data-theme="light"] .tech-desc,
+    [data-theme="light"] .timeline-desc,
+    [data-theme="light"] .stat-label,
+    [data-theme="light"] .text-muted,
+    [data-theme="light"] .metric-box .lbl,
+    [data-theme="light"] .sidebar-brand .brand-text .subtitle {
+      color: var(--muted) !important;
+    }
+
+    /* Keep green elements properly colored */
+    [data-theme="light"] .highlight-text,
+    [data-theme="light"] .text-success,
+    [data-theme="light"] .badge-tech,
+    [data-theme="light"] .hover-lime {
+      color: var(--lime) !important;
     }
   </style>
 
