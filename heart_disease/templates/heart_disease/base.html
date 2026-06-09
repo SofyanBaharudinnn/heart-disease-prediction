@@ -1388,9 +1388,11 @@
     </a>
     <div class="d-flex align-items-center gap-2">
       <!-- Mobile Theme Toggle -->
+      {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
       <button class="btn p-0" onclick="toggleTheme()" aria-label="Toggle Theme" style="background:none; border:none; color: var(--text-main);">
         <i class="bi bi-moon-stars-fill fs-3" id="mobileThemeToggleIcon" style="color: var(--lime); line-height: 1;"></i>
       </button>
+      {% endif %}
       
       <!-- Mobile Language Toggle -->
       {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
@@ -1477,10 +1479,12 @@
       <i class="bi bi-gear-fill"></i> {% if current_lang == 'en' %}Settings{% else %}Pengaturan{% endif %}
     </a>
     {% endif %}
+    {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
     <a href="javascript:void(0);" onclick="toggleTheme()" class="sidebar-link" id="themeToggleLink" style="cursor: pointer;">
       <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
       <span id="themeToggleText">{% if current_lang == 'en' %}Dark Mode{% else %}Mode Gelap{% endif %}</span>
     </a>
+    {% endif %}
   </div>
 
   <div class="sidebar-footer">
