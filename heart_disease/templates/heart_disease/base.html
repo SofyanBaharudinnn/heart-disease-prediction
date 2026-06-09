@@ -1384,20 +1384,21 @@
 
     <!-- Premium User Profile Card -->
     <div class="user-profile-card">
-      <div class="user-profile-top">
-        <!-- Avatar with gradient ring -->
-        <div class="user-avatar-pro {% if request.user.is_staff %}avatar-admin{% else %}avatar-user{% endif %}">
-          <span class="avatar-letter">
-            {% if request.user.get_full_name %}
-              {{ request.user.get_full_name|make_list|first|upper }}
-            {% else %}
-              {{ request.user.username|make_list|first|upper }}
-            {% endif %}
-          </span>
-          <span class="avatar-status-ring"></span>
-        </div>
-        <div class="user-info-pro d-flex align-items-center justify-content-between gap-1" style="min-width: 0;">
-          <div style="min-width: 0; flex-grow: 1;">
+      <div class="user-profile-top d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3" style="min-width: 0; flex-grow: 1;">
+          <!-- Avatar with gradient ring -->
+          <div class="user-avatar-pro {% if request.user.is_staff %}avatar-admin{% else %}avatar-user{% endif %}" style="flex-shrink: 0;">
+            <span class="avatar-letter">
+              {% if request.user.get_full_name %}
+                {{ request.user.get_full_name|make_list|first|upper }}
+              {% else %}
+                {{ request.user.username|make_list|first|upper }}
+              {% endif %}
+            </span>
+            <span class="avatar-status-ring"></span>
+          </div>
+          <!-- User info (name & role badge) -->
+          <div class="user-info-pro" style="min-width: 0;">
             <div class="user-name-pro" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
               {% if request.user.get_full_name %}
                 {{ request.user.get_full_name }}
@@ -1413,10 +1414,11 @@
               {% endif %}
             </div>
           </div>
-          <a href="{% url 'theme_selection' %}" class="hover-lime p-1" style="flex-shrink: 0;" title="{{ t.menu_theme }}">
-            <i class="bi bi-gear-fill fs-5"></i>
-          </a>
         </div>
+        <!-- Settings Gear Icon -->
+        <a href="{% url 'theme_selection' %}" class="hover-lime p-1 d-flex align-items-center" style="flex-shrink: 0; color: var(--muted); transition: color 0.2s;" title="{{ t.menu_theme }}">
+          <i class="bi bi-gear-fill fs-5"></i>
+        </a>
       </div>
 
       <!-- Divider -->
