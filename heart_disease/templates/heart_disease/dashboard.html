@@ -199,8 +199,9 @@
                   <th>Email / {% if current_lang == 'en' %}Phone{% else %}Telepon{% endif %}</th>
                   <th>{% if current_lang == 'en' %}Subject{% else %}Subjek{% endif %}</th>
                   <th>{% if current_lang == 'en' %}Message{% else %}Pesan{% endif %}</th>
-                  <th>{% if current_lang == 'en' %}Auto-Reply{% else %}Balasan Otomatis{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Status{% else %}Status{% endif %}</th>
                   <th>{% if current_lang == 'en' %}Date{% else %}Tanggal{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Action{% else %}Aksi{% endif %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -215,11 +216,22 @@
                     {% if msg.phone %}<span class="text-muted small">{{ msg.phone }}</span>{% endif %}
                   </td>
                   <td><strong>{{ msg.subject }}</strong></td>
-                  <td><div style="max-width: 300px; white-space: normal; word-wrap: break-word; font-size: 0.88rem;">{{ msg.message }}</div></td>
+                  <td><div style="max-width: 260px; white-space: normal; word-wrap: break-word; font-size: 0.88rem;">{{ msg.message }}</div></td>
                   <td>
-                    <span class="badge bg-success" style="font-size:0.75rem;"><i class="bi bi-check-circle-fill me-1"></i>Sent</span>
+                    {% if msg.reply_sent %}
+                      <span class="badge bg-success" style="font-size:0.75rem;" data-bs-toggle="tooltip" title="{{ msg.admin_reply }}"><i class="bi bi-check-circle-fill me-1"></i>{% if current_lang == 'en' %}Replied{% else %}Dibalas{% endif %}</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark" style="font-size:0.75rem;"><i class="bi bi-exclamation-circle-fill me-1"></i>{% if current_lang == 'en' %}No Reply{% else %}Belum Dibalas{% endif %}</span>
+                    {% endif %}
                   </td>
                   <td style="font-size:.8rem;color:var(--muted);">{{ msg.created_at|date:"d/m H:i" }}</td>
+                  <td>
+                    <button class="btn btn-outline-custom btn-sm py-1 px-2 text-nowrap" 
+                            style="font-size: 0.78rem;"
+                            onclick="openReplyModal({{ msg.id }}, '{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}', '{{ msg.admin_reply|escapejs }}')">
+                      <i class="bi bi-reply-fill"></i> {% if msg.reply_sent %}{% if current_lang == 'en' %}Edit Reply{% else %}Ubah Balasan{% endif %}{% else %}{% if current_lang == 'en' %}Reply{% else %}Balas{% endif %}{% endif %}
+                    </button>
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -233,6 +245,45 @@
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Balas Pesan / Reply Inquiry -->
+<div class="modal fade modal-custom" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="replyModalLabel">
+          <i class="bi bi-reply-fill me-2" style="color: var(--lime);"></i>
+          {% if current_lang == 'en' %}Reply to Client{% else %}Balas Pesan Klien{% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="reply-form" onsubmit="submitAdminReply(event)">
+        {% csrf_token %}
+        <input type="hidden" id="reply-msg-id">
+        <div class="modal-body text-start">
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Recipient{% else %}Penerima{% endif %}</label>
+            <input type="text" id="reply-recipient" class="form-control-custom w-100" readonly style="opacity: 0.7;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Original Message{% else %}Pesan Asli{% endif %}</label>
+            <div id="reply-original-text" class="p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 0.88rem; max-height: 120px; overflow-y: auto;"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Your Reply{% else %}Balasan Anda{% endif %}</label>
+            <textarea id="reply-text" class="form-control-custom w-100" rows="5" placeholder="{% if current_lang == 'en' %}Type your response here...{% else %}Tulis jawaban Anda di sini...{% endif %}" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Cancel{% else %}Batal{% endif %}</button>
+          <button type="submit" class="btn btn-primary-custom" id="reply-submit-btn">
+            <i class="bi bi-send-fill me-1"></i> {% if current_lang == 'en' %}Send Reply{% else %}Kirim Balasan{% endif %}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -311,5 +362,66 @@ new Chart(ctxBar, {
     }
   }
 });
+
+// Admin Reply Actions
+let replyModalObj = null;
+
+function openReplyModal(id, name, email, subject, message, existingReply) {
+  document.getElementById('reply-msg-id').value = id;
+  document.getElementById('reply-recipient').value = `${name} (${email})`;
+  document.getElementById('reply-original-text').textContent = message;
+  document.getElementById('reply-text').value = existingReply || '';
+  
+  if (!replyModalObj) {
+    replyModalObj = new bootstrap.Modal(document.getElementById('replyModal'));
+  }
+  replyModalObj.show();
+}
+
+function submitAdminReply(event) {
+  event.preventDefault();
+  const id = document.getElementById('reply-msg-id').value;
+  const replyText = document.getElementById('reply-text').value;
+  const submitBtn = document.getElementById('reply-submit-btn');
+  const oldHtml = submitBtn.innerHTML;
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Sending...';
+  
+  const formData = new FormData();
+  formData.append('reply_text', replyText);
+  formData.append('csrfmiddlewaretoken', document.querySelector('#reply-form [name=csrfmiddlewaretoken]').value);
+  
+  fetch(`/contact/reply/${id}/`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.status === 'success') {
+      alert('{% if current_lang == "en" %}Reply sent successfully!{% else %}Balasan berhasil dikirim!{% endif %}');
+      replyModalObj.hide();
+      window.location.reload();
+    } else {
+      alert(data.message || 'Error sending reply');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Failed to send reply. Please try again.');
+  })
+  .finally(() => {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = oldHtml;
+  });
+}
 </script>
 {% endblock %}

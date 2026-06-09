@@ -8,6 +8,7 @@ import socket
 from django.urls import reverse
 # pyrefly: ignore [missing-import]
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.mail import send_mail
 # pyrefly: ignore [missing-import]
 from django.contrib import messages
 # pyrefly: ignore [missing-import]
@@ -853,11 +854,69 @@ def submit_contact_view(request):
             success_msg = 'Pesan berhasil dikirim! Kami akan menghubungi Anda segera.'
             auto_reply_msg = f"Balasan Otomatis: Halo {name}, terima kasih telah menghubungi kami! Kami telah menerima pesan Anda. Tim kami akan membalas ke email Anda dalam waktu 24 jam. Untuk pemeriksaan medis segera, silakan gunakan fitur Prediksi."
 
+        # Kirim email balasan otomatis (auto-reply) menggunakan Django send_mail
+        email_subject = "HeartGuard Inquiry Auto-Reply" if lang == 'en' else "Balasan Otomatis Pertanyaan HeartGuard"
+        send_mail(
+            subject=email_subject,
+            message=auto_reply_msg,
+            from_email=None,  # Menggunakan DEFAULT_FROM_EMAIL dari settings.py
+            recipient_list=[email],
+            fail_silently=True  # Agar request tidak error jika SMTP belum dikonfigurasi secara nyata
+        )
+
         return JsonResponse({
             'status': 'success',
             'message': success_msg,
             'auto_reply': auto_reply_msg,
             'name': name
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@user_passes_test(is_admin, login_url='login')
+@require_POST
+def reply_contact_view(request, id):
+    try:
+        msg = get_object_or_404(ContactMessage, id=id)
+        reply_text = request.POST.get('reply_text', '').strip()
+        
+        if not reply_text:
+            return JsonResponse({'status': 'error', 'message': 'Reply text cannot be empty.'}, status=400)
+            
+        msg.admin_reply = reply_text
+        msg.reply_sent = True
+        msg.replied_at = timezone.now()
+        msg.save()
+        
+        # Kirim email balasan manual dari Admin ke Klien
+        email_subject = f"Re: {msg.subject}"
+        email_body = (
+            f"Halo {msg.name},\n\n"
+            f"Berikut adalah tanggapan dari tim dukungan HeartGuard mengenai pesan Anda:\n\n"
+            f"----------------------------------------\n"
+            f"Pesan Anda:\n"
+            f"\"{msg.message}\"\n"
+            f"----------------------------------------\n\n"
+            f"Jawaban Kami:\n"
+            f"\"{reply_text}\"\n\n"
+            f"Salam hangat,\n"
+            f"Tim Dukungan HeartGuard"
+        )
+        
+        send_mail(
+            subject=email_subject,
+            message=email_body,
+            from_email=None,
+            recipient_list=[msg.email],
+            fail_silently=True
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Reply sent successfully!',
+            'reply_text': reply_text,
+            'replied_at': msg.replied_at.strftime('%d/%m %H:%M')
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

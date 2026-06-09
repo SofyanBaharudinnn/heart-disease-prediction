@@ -83,7 +83,9 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     subject = models.CharField(max_length=200)
     message = models.TextField()
-    reply_sent = models.BooleanField(default=True)
+    reply_sent = models.BooleanField(default=False)
+    admin_reply = models.TextField(blank=True, null=True)
+    replied_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
