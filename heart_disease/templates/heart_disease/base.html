@@ -28,6 +28,12 @@
       return false;
     };
   </script>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}HeartGuard – Prediksi Penyakit Jantung{% endblock %}</title>
@@ -72,6 +78,44 @@
       --sidebar-active-bg:   rgba(var(--primary-rgb), 0.12);
       --sidebar-active-text: rgb(var(--primary-rgb));
       --sidebar-hover-bg:    rgba(255,255,255,0.04);
+
+      /* Additional helper variables */
+      --table-striped-bg:    #222222;
+      --table-header-bg:     #0A0A0A;
+      --input-bg:            #1A1A1A;
+      --brand-text-color:    #FFFFFF;
+      --btn-secondary-hover-bg: #2A2A2A;
+      --btn-secondary-hover-border: #444444;
+      --btn-secondary-hover-text: #FFFFFF;
+    }
+
+    [data-theme="light"] {
+      --bg:          #F8FAFC;
+      --surface:     #FFFFFF;
+      --muted:       #64748B;
+      --text-main:   #0F172A;
+      --border:      #E2E8F0;
+
+      /* Sidebar Colors — light theme */
+      --sidebar-bg:          #FFFFFF;
+      --sidebar-border:      #E2E8F0;
+      --sidebar-text:        #64748B;
+      --sidebar-active-bg:   rgba(var(--primary-rgb), 0.08);
+      --sidebar-active-text: rgb(var(--primary-rgb));
+      --sidebar-hover-bg:    rgba(0, 0, 0, 0.03);
+
+      /* Additional helper variables */
+      --table-striped-bg:    #F8FAFC;
+      --table-header-bg:     #F1F5F9;
+      --input-bg:            #FFFFFF;
+      --brand-text-color:    #0F172A;
+      --btn-secondary-hover-bg: #F1F5F9;
+      --btn-secondary-hover-border: #CBD5E1;
+      --btn-secondary-hover-text: #0F172A;
+    }
+
+    body, .sidebar-custom, .card-custom, .table-custom td, .form-control-custom, .form-select-custom, .modal-content, a, span, p, h1, h2, h3, h4, h5, h6 {
+      transition: background 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
     *,
@@ -590,7 +634,7 @@
     }
 
     .card-header-custom {
-      background: #0A0A0A;
+      background: var(--table-header-bg);
       color: var(--lime);
       border-radius: 20px 20px 0 0 !important;
       padding: 1.2rem 1.6rem;
@@ -680,9 +724,9 @@
     }
 
     .btn-secondary-custom:hover {
-      background: #2A2A2A;
-      border-color: #444;
-      color: #FFFFFF;
+      background: var(--btn-secondary-hover-bg);
+      border-color: var(--btn-secondary-hover-border);
+      color: var(--btn-secondary-hover-text);
     }
 
     .btn-outline-custom {
@@ -709,12 +753,12 @@
       padding: 0.7rem 1rem;
       font-size: 0.95rem;
       color: var(--text-main);
-      background: #1A1A1A;
+      background: var(--input-bg);
       transition: all .3s ease;
     }
 
     .form-control-custom::placeholder {
-      color: #555;
+      color: var(--muted);
     }
 
     .form-control-custom:focus,
@@ -722,10 +766,6 @@
       border-color: var(--lime);
       box-shadow: 0 0 0 4px rgba(var(--primary-rgb),0.18);
       outline: none;
-    }
-
-    .form-control-custom::placeholder {
-      color: var(--muted);
     }
 
     .form-label-custom {
@@ -737,50 +777,50 @@
 
     /* ── Bootstrap dark mode overrides ── */
     body {
-      --bs-body-bg:    #111111;
-      --bs-body-color: #FFFFFF;
-      --bs-border-color: #2E2E2E;
+      --bs-body-bg:    var(--bg);
+      --bs-body-color: var(--text-main);
+      --bs-border-color: var(--border);
     }
 
     /* Force dark background on all Bootstrap tables */
     .table {
-      --bs-table-bg:           #1C1C1C;
-      --bs-table-striped-bg:   #222222;
+      --bs-table-bg:           var(--surface);
+      --bs-table-striped-bg:   var(--table-striped-bg);
       --bs-table-hover-bg:     rgba(var(--primary-rgb),0.06);
-      --bs-table-border-color: #2E2E2E;
-      --bs-table-color:        #FFFFFF;
-      color: #FFFFFF !important;
+      --bs-table-border-color: var(--border);
+      --bs-table-color:        var(--text-main);
+      color: var(--text-main) !important;
     }
 
     .table > :not(caption) > * > * {
       background-color: var(--bs-table-bg) !important;
-      color: #FFFFFF !important;
-      border-bottom-color: #2E2E2E;
+      color: var(--text-main) !important;
+      border-bottom-color: var(--border);
     }
 
     /* Bootstrap modal dark */
     .modal-content {
-      background: #1C1C1C !important;
-      border: 1px solid #2E2E2E !important;
-      color: #FFFFFF !important;
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text-main) !important;
     }
     .modal-header {
-      border-bottom: 1px solid #2E2E2E !important;
+      border-bottom: 1px solid var(--border) !important;
     }
     .modal-footer {
-      border-top: 1px solid #2E2E2E !important;
+      border-top: 1px solid var(--border) !important;
     }
 
     /* List group dark */
     .list-group-item {
       background-color: transparent !important;
-      border-color: #2E2E2E !important;
-      color: #FFFFFF !important;
+      border-color: var(--border) !important;
+      color: var(--text-main) !important;
     }
 
     /* Progress bar dark */
     .progress {
-      background-color: #2E2E2E !important;
+      background-color: var(--border) !important;
     }
 
     /* ── Tables ── */
@@ -790,7 +830,7 @@
     }
 
     .table-custom thead th {
-      background: #0A0A0A !important;
+      background: var(--table-header-bg) !important;
       color: var(--lime) !important;
       font-weight: 700;
       font-size: 0.85rem;
@@ -813,9 +853,9 @@
       padding: 1rem;
       font-size: 0.95rem;
       vertical-align: middle;
-      border-bottom: 1px solid #2E2E2E !important;
-      color: #FFFFFF !important;
-      background: #1C1C1C !important;
+      border-bottom: 1px solid var(--border) !important;
+      color: var(--text-main) !important;
+      background: var(--surface) !important;
     }
 
     /* ── Badges ── */
@@ -1289,27 +1329,32 @@
 <body>
   <!-- Mobile Header -->
   <header class="mobile-header">
-    <button class="btn p-0 text-white" id="sidebarToggleBtn" aria-label="Buka Menu" style="background:none; border:none;">
+    <button class="btn p-0" id="sidebarToggleBtn" aria-label="Buka Menu" style="background:none; border:none; color: var(--text-main);">
       <i class="bi bi-list fs-1" style="color: var(--lime); line-height: 1;"></i>
     </button>
     <a href="{% if request.user.is_authenticated and request.user.is_staff %}{% url 'dashboard' %}{% else %}{% url 'predict' %}{% endif %}" class="d-flex align-items-center gap-2 text-decoration-none">
       <div class="mobile-brand-icon rounded p-1 d-flex align-items-center justify-content-center" style="width:32px; height:32px;">
         <i class="bi bi-heart-pulse-fill"></i>
       </div>
-      <span class="text-white fw-bold" style="font-size:1.1rem; letter-spacing:-0.5px;">HeartGuard</span>
+      <span class="fw-bold" style="font-size:1.1rem; letter-spacing:-0.5px; color: var(--text-main);">HeartGuard</span>
     </a>
-    <!-- Mobile Language Toggle -->
-    {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
-    <form method="post" action="{% url 'toggle_language' %}" style="margin:0;">
-      {% csrf_token %}
-      <button type="submit" class="btn-lang-toggle" aria-label="Change Language">
-        <span>{% if current_lang == 'en' %}ENGLISH{% else %}INDONESIA{% endif %}</span>
-        <i class="bi bi-arrow-left-right lang-icon"></i>
+    <div class="d-flex align-items-center gap-2">
+      <!-- Mobile Theme Toggle -->
+      <button class="btn p-0" onclick="toggleTheme()" aria-label="Toggle Theme" style="background:none; border:none; color: var(--text-main);">
+        <i class="bi bi-moon-stars-fill fs-3" id="mobileThemeToggleIcon" style="color: var(--lime); line-height: 1;"></i>
       </button>
-    </form>
-    {% else %}
-    <div style="width: 32px;"></div> <!-- Spacer to center the brand on other pages -->
-    {% endif %}
+      
+      <!-- Mobile Language Toggle -->
+      {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
+      <form method="post" action="{% url 'toggle_language' %}" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="btn-lang-toggle" aria-label="Change Language">
+          <span>{% if current_lang == 'en' %}ENGLISH{% else %}INDONESIA{% endif %}</span>
+          <i class="bi bi-arrow-left-right lang-icon"></i>
+        </button>
+      </form>
+      {% endif %}
+    </div>
   </header>
 
   <!-- Sidebar Overlay Backdrop -->
@@ -1384,6 +1429,10 @@
       <i class="bi bi-gear-fill"></i> {% if current_lang == 'en' %}Settings{% else %}Pengaturan{% endif %}
     </a>
     {% endif %}
+    <a href="javascript:void(0);" onclick="toggleTheme()" class="sidebar-link" id="themeToggleLink" style="cursor: pointer;">
+      <i class="bi bi-moon-stars-fill" id="themeToggleIcon"></i>
+      <span id="themeToggleText">{% if current_lang == 'en' %}Dark Mode{% else %}Mode Gelap{% endif %}</span>
+    </a>
   </div>
 
   <div class="sidebar-footer">
@@ -1811,6 +1860,54 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Theme Toggle Functionality
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeUI(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeUI(newTheme);
+    }
+
+    function updateThemeUI(theme) {
+      const toggleIcon = document.getElementById('themeToggleIcon');
+      const toggleText = document.getElementById('themeToggleText');
+      const mobileToggleIcon = document.getElementById('mobileThemeToggleIcon');
+      
+      const isEnglish = "{{ current_lang }}" === "en";
+      
+      if (theme === 'light') {
+        if (toggleIcon) {
+          toggleIcon.className = 'bi bi-sun-fill';
+        }
+        if (toggleText) {
+          toggleText.textContent = isEnglish ? 'Light Mode' : 'Mode Terang';
+        }
+        if (mobileToggleIcon) {
+          mobileToggleIcon.className = 'bi bi-sun-fill fs-3';
+        }
+      } else {
+        if (toggleIcon) {
+          toggleIcon.className = 'bi bi-moon-stars-fill';
+        }
+        if (toggleText) {
+          toggleText.textContent = isEnglish ? 'Dark Mode' : 'Mode Gelap';
+        }
+        if (mobileToggleIcon) {
+          mobileToggleIcon.className = 'bi bi-moon-stars-fill fs-3';
+        }
+      }
+    }
+
+    // Initialize theme state UI
+    initTheme();
+
     document.addEventListener('DOMContentLoaded', function() {
       const toggleBtn = document.getElementById('sidebarToggleBtn');
       const sidebar = document.querySelector('.sidebar-custom');

@@ -17,21 +17,21 @@
 
   <style>
     .stat-card {
-      background: #1C1C1C;
-      border: 1px solid #2E2E2E;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 1.5rem;
       display: flex;
       align-items: center;
       gap: 1rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: all .3s ease;
       height: 100%;
     }
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 28px rgba(170,255,0,0.1);
-      border-color: rgba(170,255,0,0.2);
+      box-shadow: 0 12px 28px rgba(var(--primary-rgb),0.1);
+      border-color: rgba(var(--primary-rgb),0.2);
     }
     .stat-icon {
       width: 54px; height: 54px;
@@ -40,11 +40,11 @@
       font-size: 1.8rem; flex-shrink: 0;
     }
     .stat-value {
-      font-size: 1.5rem; font-weight: 800; color: #FFFFFF;
+      font-size: 1.5rem; font-weight: 800; color: var(--text-main);
       line-height: 1.2;
     }
     .stat-label {
-      font-size: 0.8rem; font-weight: 700; color: #BBBBBB;
+      font-size: 0.8rem; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.2rem;
     }
     .chart-container {
@@ -193,8 +193,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Chart.js Configuration
+const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+const chartTextColor = isLight ? '#64748B' : '#BBBBBB';
+const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+
 Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-Chart.defaults.color = "#BBBBBB";
+Chart.defaults.color = chartTextColor;
 
 const isEn = "{{ current_lang }}" === "en";
 
@@ -218,7 +222,7 @@ new Chart(ctxPie, {
     plugins: {
       legend: {
         position: 'bottom',
-        labels: { padding: 20, usePointStyle: true, pointStyle: 'circle', color: '#BBBBBB' }
+        labels: { padding: 20, usePointStyle: true, pointStyle: 'circle', color: chartTextColor }
       }
     }
   }
@@ -248,12 +252,12 @@ new Chart(ctxBar, {
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: "rgba(255,255,255,0.06)", borderDash: [5, 5] },
-        ticks: { stepSize: 1, color: '#BBBBBB' }
+        grid: { color: gridColor, borderDash: [5, 5] },
+        ticks: { stepSize: 1, color: chartTextColor }
       },
       x: {
         grid: { display: false },
-        ticks: { color: '#BBBBBB' }
+        ticks: { color: chartTextColor }
       }
     }
   }
