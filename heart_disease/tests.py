@@ -1,5 +1,8 @@
+# pyrefly: ignore [missing-import]
 from django.test import TestCase, Client
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
+# pyrefly: ignore [missing-import]
 from django.urls import reverse
 
 class RegistrationAccessControlTests(TestCase):
@@ -91,7 +94,9 @@ class RegistrationAccessControlTests(TestCase):
         self.assertFalse(standard_user.is_staff)
 
 
+# pyrefly: ignore [missing-import]
 from django.test import override_settings
+# pyrefly: ignore [missing-import]
 from django.core.cache import cache
 
 class RateLimitMiddlewareTests(TestCase):
