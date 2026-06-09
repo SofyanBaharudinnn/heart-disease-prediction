@@ -1379,6 +1379,7 @@
         justify-content: center;
         padding: 0.65rem;
         margin: 0.2rem 0.5rem;
+        overflow: hidden;
       }
       
       body.sidebar-collapsed .sidebar-link span,
@@ -1397,7 +1398,9 @@
       body.sidebar-collapsed .user-card-divider,
       html.sidebar-collapsed-init .user-card-divider,
       body.sidebar-collapsed .btn-logout-inner .btn-logout-text,
-      html.sidebar-collapsed-init .btn-logout-inner .btn-logout-text {
+      html.sidebar-collapsed-init .btn-logout-inner .btn-logout-text,
+      body.sidebar-collapsed .btn-login-text,
+      html.sidebar-collapsed-init .btn-login-text {
         display: none !important;
       }
       
@@ -1405,7 +1408,13 @@
       html.sidebar-collapsed-init .user-profile-card {
         padding: 0.5rem;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
       }
       
       body.sidebar-collapsed .user-avatar-pro,
@@ -1413,28 +1422,32 @@
         margin-right: 0 !important;
       }
       
-      body.sidebar-collapsed .btn-logout-inner,
-      html.sidebar-collapsed-init .btn-logout-inner {
-        justify-content: center;
-      }
-      
       body.sidebar-collapsed .btn-logout-pro,
-      html.sidebar-collapsed-init .btn-logout-pro {
-        padding: 0.5rem;
-      }
-      
-      body.sidebar-collapsed .btn-login-inner,
-      html.sidebar-collapsed-init .btn-login-inner {
-        justify-content: center;
-      }
-      
+      html.sidebar-collapsed-init .btn-logout-pro,
       body.sidebar-collapsed .btn-login-pro,
       html.sidebar-collapsed-init .btn-login-pro {
-        padding: 0.5rem;
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
       
-      body.sidebar-collapsed .btn-login-text,
-      html.sidebar-collapsed-init .btn-login-text {
+      body.sidebar-collapsed .btn-logout-inner,
+      html.sidebar-collapsed-init .btn-logout-inner,
+      body.sidebar-collapsed .btn-login-inner,
+      html.sidebar-collapsed-init .btn-login-inner {
+        padding: 0 !important;
+        margin: 0 !important;
+        justify-content: center !important;
+      }
+      
+      body.sidebar-collapsed .btn-login-dot,
+      html.sidebar-collapsed-init .btn-login-dot,
+      body.sidebar-collapsed .btn-login-arrow,
+      html.sidebar-collapsed-init .btn-login-arrow {
         display: none !important;
       }
 
@@ -1561,29 +1574,29 @@
     {% if not request.user.is_authenticated %}
     <a href="{% url 'index' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
-      <i class="bi bi-house-door"></i> {{ t.menu_home }}
+      <i class="bi bi-house-door"></i> <span>{{ t.menu_home }}</span>
     </a>
     {% endif %}
     
     {% if request.user.is_authenticated and request.user.is_staff %}
     <a href="{% url 'dashboard' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-      <i class="bi bi-bar-chart-line"></i> {{ t.menu_dashboard }}
+      <i class="bi bi-bar-chart-line"></i> <span>{{ t.menu_dashboard }}</span>
     </a>
     <a href="{% url 'dataset_management' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'dataset_management' %}active{% endif %}">
-      <i class="bi bi-database-fill-gear"></i> {{ t.menu_dataset }}
+      <i class="bi bi-database-fill-gear"></i> <span>{{ t.menu_dataset }}</span>
     </a>
     <a href="{% url 'train_page' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'train_page' %}active{% endif %}">
-      <i class="bi bi-sliders"></i> {{ t.menu_training }}
+      <i class="bi bi-sliders"></i> <span>{{ t.menu_training }}</span>
     </a>
     {% endif %}
 
     {% if request.user.is_authenticated %}
     <a href="{% url 'predict' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
-      <i class="bi bi-cpu"></i> {{ t.menu_predict }}
+      <i class="bi bi-cpu"></i> <span>{{ t.menu_predict }}</span>
     </a>
     {% endif %}
 
@@ -1592,24 +1605,24 @@
     {% if request.user.is_authenticated %}
     <a href="{% url 'history' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'history' %}active{% endif %}">
-      <i class="bi bi-clock-history"></i> {{ t.menu_history }}
+      <i class="bi bi-clock-history"></i> <span>{{ t.menu_history }}</span>
     </a>
     {% if request.user.is_staff %}
     <a href="{% url 'manage_users' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
-      <i class="bi bi-people-fill"></i> {{ t.menu_users }}
+      <i class="bi bi-people-fill"></i> <span>{{ t.menu_users }}</span>
     </a>
     {% endif %}
     {% endif %}
 
     <a href="{% url 'about' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
-      <i class="bi bi-info-circle"></i> {{ t.menu_about }}
+      <i class="bi bi-info-circle"></i> <span>{{ t.menu_about }}</span>
     </a>
     {% if request.user.is_authenticated %}
     <a href="{% url 'theme_selection' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'theme_selection' %}active{% endif %}">
-      <i class="bi bi-gear-fill"></i> {% if current_lang == 'en' %}Settings{% else %}Pengaturan{% endif %}
+      <i class="bi bi-gear-fill"></i> <span>{% if current_lang == 'en' %}Settings{% else %}Pengaturan{% endif %}</span>
     </a>
     {% endif %}
     {% if request.resolver_match and request.resolver_match.url_name == 'index' %}
