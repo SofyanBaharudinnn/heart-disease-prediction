@@ -26,7 +26,7 @@ from django.contrib.auth.models import User
 from .ml_model import (
     FEATURE_INFO, load_dataset, train_and_evaluate, predict_single
 )
-from .models import PredictionHistory, ModelMetrics
+from .models import PredictionHistory, ModelMetrics, ContactMessage
 
 def is_admin(user):
     return user.is_authenticated and user.is_staff
@@ -113,6 +113,8 @@ def dashboard(request):
     risk_med = PredictionHistory.objects.filter(risk_level='Sedang').count()
     risk_high = PredictionHistory.objects.filter(risk_level='Tinggi').count()
 
+    contact_messages = ContactMessage.objects.all().order_by('-created_at')[:5]
+
     context = {
         'dataset_size': dataset_size,
         'total_predictions': total_predictions,
@@ -123,6 +125,7 @@ def dashboard(request):
         'risk_high': risk_high,
         'last_metrics': last_metrics,
         'history':      history,
+        'contact_messages': contact_messages,
     }
     return render(request, 'heart_disease/dashboard.html', context)
 
@@ -816,5 +819,47 @@ def theme_selection_view(request):
         'profile': profile,
     }
     return render(request, 'heart_disease/theme_selection.html', context)
+
+
+@require_POST
+def submit_contact_view(request):
+    try:
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        company = request.POST.get('company', '').strip() or None
+        phone = request.POST.get('phone', '').strip() or None
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not name or not email or not subject or not message:
+            return JsonResponse({'status': 'error', 'message': 'All required fields must be filled.'}, status=400)
+
+        # Simpan ke Database
+        msg = ContactMessage.objects.create(
+            name=name,
+            email=email,
+            company=company,
+            phone=phone,
+            subject=subject,
+            message=message
+        )
+
+        lang = request.session.get('lang', 'id')
+        
+        if lang == 'en':
+            success_msg = 'Message sent successfully! We will get back to you shortly.'
+            auto_reply_msg = f"Auto-Reply: Hello {name}, thank you for contacting us! We have received your inquiry. A team member will respond to your email address within 24 hours. For immediate medical screening, please use the Predict tool."
+        else:
+            success_msg = 'Pesan berhasil dikirim! Kami akan menghubungi Anda segera.'
+            auto_reply_msg = f"Balasan Otomatis: Halo {name}, terima kasih telah menghubungi kami! Kami telah menerima pesan Anda. Tim kami akan membalas ke email Anda dalam waktu 24 jam. Untuk pemeriksaan medis segera, silakan gunakan fitur Prediksi."
+
+        return JsonResponse({
+            'status': 'success',
+            'message': success_msg,
+            'auto_reply': auto_reply_msg,
+            'name': name
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 

@@ -75,3 +75,22 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Profile (Theme: {self.theme})"
 
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    company = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    reply_sent = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Pesan Kontak'
+        verbose_name_plural = 'Pesan Kontak'
+
+    def __str__(self):
+        return f"Message from {self.name} - {self.subject}"
+

@@ -1398,30 +1398,31 @@
           <h4 class="fw-extrabold text-white mb-4" style="font-weight:800; letter-spacing:-0.5px;">{% if current_lang == 'en' %}Send a message{% else %}Kirim Pesan{% endif %}</h4>
           
           <form id="contact-form" onsubmit="handleContactSubmit(event)">
+            {% csrf_token %}
             <div class="row g-4 mb-4">
               <div class="col-md-6">
                 <label class="form-label-custom">{% if current_lang == 'en' %}Name{% else %}Nama{% endif %}</label>
-                <input type="text" class="form-control-custom w-100" placeholder="Name" required>
+                <input type="text" name="name" class="form-control-custom w-100" placeholder="Name" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label-custom">{% if current_lang == 'en' %}Company{% else %}Perusahaan{% endif %}</label>
-                <input type="text" class="form-control-custom w-100" placeholder="Company">
+                <input type="text" name="company" class="form-control-custom w-100" placeholder="Company">
               </div>
               <div class="col-md-6">
                 <label class="form-label-custom">{% if current_lang == 'en' %}Phone{% else %}Telepon{% endif %}</label>
-                <input type="tel" class="form-control-custom w-100" placeholder="Phone">
+                <input type="tel" name="phone" class="form-control-custom w-100" placeholder="Phone">
               </div>
               <div class="col-md-6">
                 <label class="form-label-custom">Email</label>
-                <input type="email" class="form-control-custom w-100" placeholder="Email" required>
+                <input type="email" name="email" class="form-control-custom w-100" placeholder="Email" required>
               </div>
               <div class="col-12">
                 <label class="form-label-custom">{% if current_lang == 'en' %}Subject{% else %}Subjek{% endif %}</label>
-                <input type="text" class="form-control-custom w-100" placeholder="Subject" required>
+                <input type="text" name="subject" class="form-control-custom w-100" placeholder="Subject" required>
               </div>
               <div class="col-12">
                 <label class="form-label-custom">{% if current_lang == 'en' %}Message{% else %}Pesan{% endif %}</label>
-                <textarea class="form-control-custom w-100" rows="4" placeholder="Message" required></textarea>
+                <textarea name="message" class="form-control-custom w-100" rows="4" placeholder="Message" required></textarea>
               </div>
             </div>
             
@@ -1505,26 +1506,54 @@
     const submitBtn = document.getElementById('contact-submit-btn');
     const oldHtml = submitBtn.innerHTML;
     
-    // Extract user's name from form
-    const nameInput = form.querySelector('input[placeholder="Name"]');
-    const name = nameInput ? nameInput.value : '';
-    
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> SENDING...';
     
-    setTimeout(() => {
-      showToast('{% if current_lang == "en" %}Message sent successfully! We will get back to you shortly.{% else %}Pesan berhasil dikirim! Kami akan menghubungi Anda segera.{% endif %}');
-      form.reset();
+    const formData = new FormData(form);
+    
+    fetch('/contact/submit/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        showToast(data.message);
+        form.reset();
+        
+        // Auto-reply after 2 seconds
+        setTimeout(() => {
+          const replyHeader = '{% if current_lang == "en" %}HeartGuard System Bot{% else %}Bot Sistem HeartGuard{% endif %}';
+          const cleanName = data.name.trim();
+          let replyMsg = '';
+          
+          if ("{{ current_lang }}" === "en") {
+            replyMsg = `Auto-Reply: Hello ${cleanName}, thank you for contacting us! We have received your inquiry. A team member will respond to your email address within 24 hours. For immediate medical screening, please use the Predict tool.`;
+          } else {
+            replyMsg = `Balasan Otomatis: Halo ${cleanName}, terima kasih telah menghubungi kami! Kami telah menerima pesan Anda. Tim kami akan membalas ke email Anda dalam waktu 24 jam. Untuk pemeriksaan medis segera, silakan gunakan fitur Prediksi.`;
+          }
+          showToast(replyMsg, replyHeader);
+        }, 2000);
+      } else {
+        showToast(data.message || 'An error occurred.');
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting form:', error);
+      showToast('{% if current_lang == "en" %}Failed to send message. Please try again.{% else %}Gagal mengirim pesan. Silakan coba lagi.{% endif %}');
+    })
+    .finally(() => {
       submitBtn.disabled = false;
       submitBtn.innerHTML = oldHtml;
-      
-      // Auto-reply after 2 seconds
-      setTimeout(() => {
-        const replyHeader = '{% if current_lang == "en" %}HeartGuard System Bot{% else %}Bot Sistem HeartGuard{% endif %}';
-        const replyMsg = `{% if current_lang == "en" %}Auto-Reply: Hello ${name}, thank you for contacting us! We have received your inquiry. A team member will respond to your email address within 24 hours. For immediate medical screening, please use the Predict tool.{% else %}Balasan Otomatis: Halo ${name}, terima kasih telah menghubungi kami! Kami telah menerima pesan Anda. Tim kami akan membalas ke email Anda dalam waktu 24 jam. Untuk pemeriksaan medis segera, silakan gunakan fitur Prediksi.{% endif %}`;
-        showToast(replyMsg, replyHeader);
-      }, 2000);
-    }, 1200);
+    });
   }
 
 </script>

@@ -183,8 +183,57 @@
           {% endif %}
         </div>
       </div>
-    </div>
 
+      <!-- Client Inquiries Card -->
+      <div class="card-custom mt-4">
+        <div class="card-header-custom">
+          <i class="bi bi-chat-right-text-fill"></i> {% if current_lang == 'en' %}Recent Client Inquiries{% else %}Pertanyaan Masuk Terbaru{% endif %}
+        </div>
+        <div class="p-0">
+          {% if contact_messages %}
+          <div class="table-responsive">
+            <table class="table table-custom mb-0">
+              <thead>
+                <tr>
+                  <th>{% if current_lang == 'en' %}Name{% else %}Nama{% endif %}</th>
+                  <th>Email / {% if current_lang == 'en' %}Phone{% else %}Telepon{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Subject{% else %}Subjek{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Message{% else %}Pesan{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Auto-Reply{% else %}Balasan Otomatis{% endif %}</th>
+                  <th>{% if current_lang == 'en' %}Date{% else %}Tanggal{% endif %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for msg in contact_messages %}
+                <tr>
+                  <td>
+                    <strong>{{ msg.name }}</strong>
+                    {% if msg.company %}<span class="d-block text-muted small">{{ msg.company }}</span>{% endif %}
+                  </td>
+                  <td>
+                    <span class="d-block">{{ msg.email }}</span>
+                    {% if msg.phone %}<span class="text-muted small">{{ msg.phone }}</span>{% endif %}
+                  </td>
+                  <td><strong>{{ msg.subject }}</strong></td>
+                  <td><div style="max-width: 300px; white-space: normal; word-wrap: break-word; font-size: 0.88rem;">{{ msg.message }}</div></td>
+                  <td>
+                    <span class="badge bg-success" style="font-size:0.75rem;"><i class="bi bi-check-circle-fill me-1"></i>Sent</span>
+                  </td>
+                  <td style="font-size:.8rem;color:var(--muted);">{{ msg.created_at|date:"d/m H:i" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="p-4 text-center" style="color:var(--muted);font-size:.9rem;">
+            <i class="bi bi-chat-left-dots fs-3 d-block mb-2"></i>{% if current_lang == 'en' %}No inquiries received yet{% else %}Belum ada pertanyaan masuk{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 {% endblock %}
