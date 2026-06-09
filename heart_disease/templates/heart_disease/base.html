@@ -1377,6 +1377,13 @@
     <a href="{% url 'about' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
       <i class="bi bi-info-circle"></i> {{ t.menu_about }}
+    </a>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'theme_selection' %}"
+      class="sidebar-link {% if request.resolver_match.url_name == 'theme_selection' %}active{% endif %}">
+      <i class="bi bi-gear-fill"></i> {% if current_lang == 'en' %}Settings{% else %}Pengaturan{% endif %}
+    </a>
+    {% endif %}
   </div>
 
   <div class="sidebar-footer">
@@ -1384,41 +1391,35 @@
 
     <!-- Premium User Profile Card -->
     <div class="user-profile-card">
-      <div class="user-profile-top d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-3" style="min-width: 0; flex-grow: 1;">
-          <!-- Avatar with gradient ring -->
-          <div class="user-avatar-pro {% if request.user.is_staff %}avatar-admin{% else %}avatar-user{% endif %}" style="flex-shrink: 0;">
-            <span class="avatar-letter">
-              {% if request.user.get_full_name %}
-                {{ request.user.get_full_name|make_list|first|upper }}
-              {% else %}
-                {{ request.user.username|make_list|first|upper }}
-              {% endif %}
-            </span>
-            <span class="avatar-status-ring"></span>
+      <div class="user-profile-top d-flex align-items-center">
+        <!-- Avatar with gradient ring -->
+        <div class="user-avatar-pro {% if request.user.is_staff %}avatar-admin{% else %}avatar-user{% endif %}" style="flex-shrink: 0; margin-right: 12px;">
+          <span class="avatar-letter">
+            {% if request.user.get_full_name %}
+              {{ request.user.get_full_name|make_list|first|upper }}
+            {% else %}
+              {{ request.user.username|make_list|first|upper }}
+            {% endif %}
+          </span>
+          <span class="avatar-status-ring"></span>
+        </div>
+        <!-- User info (name & role badge) -->
+        <div class="user-info-pro" style="min-width: 0; flex-grow: 1;">
+          <div class="user-name-pro" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+            {% if request.user.get_full_name %}
+              {{ request.user.get_full_name }}
+            {% else %}
+              {{ request.user.username }}
+            {% endif %}
           </div>
-          <!-- User info (name & role badge) -->
-          <div class="user-info-pro" style="min-width: 0;">
-            <div class="user-name-pro" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-              {% if request.user.get_full_name %}
-                {{ request.user.get_full_name }}
-              {% else %}
-                {{ request.user.username }}
-              {% endif %}
-            </div>
-            <div class="user-role-badge {% if request.user.is_staff %}badge-admin{% else %}badge-user{% endif %}">
-              {% if request.user.is_staff %}
-                <i class="bi bi-shield-fill-check"></i> Admin
-              {% else %}
-                <i class="bi bi-person-fill"></i> {% if current_lang == 'en' %}Patient{% else %}Pasien{% endif %}
-              {% endif %}
-            </div>
+          <div class="user-role-badge {% if request.user.is_staff %}badge-admin{% else %}badge-user{% endif %}">
+            {% if request.user.is_staff %}
+              <i class="bi bi-shield-fill-check"></i> Admin
+            {% else %}
+              <i class="bi bi-person-fill"></i> {% if current_lang == 'en' %}Patient{% else %}Pasien{% endif %}
+            {% endif %}
           </div>
         </div>
-        <!-- Settings Gear Icon -->
-        <a href="{% url 'theme_selection' %}" class="hover-lime p-1 d-flex align-items-center" style="flex-shrink: 0; color: var(--muted); transition: color 0.2s;" title="{{ t.menu_theme }}">
-          <i class="bi bi-gear-fill fs-5"></i>
-        </a>
       </div>
 
       <!-- Divider -->
