@@ -31,6 +31,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='heart_disease/login.html', redirect_authenticated_user=True), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('toggle-language/', views.toggle_language, name='toggle_language'),
+    path('theme/', views.theme_selection_view, name='theme_selection'),
     path('social-login/<str:provider>/', views.social_login_view, name='social_login'),
     path('social-login/<str:provider>/callback/', views.social_login_callback, name='social_login_callback'),
 ]

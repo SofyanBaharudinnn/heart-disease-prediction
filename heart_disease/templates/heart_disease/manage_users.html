@@ -28,9 +28,24 @@
             <td>
                 <div class="d-flex align-items-center gap-2">
                     <div style="width:32px; height:32px; border-radius:50%; background:var(--primary-lt); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.85rem;">
-                        {{ item.user.username|make_list|first|upper }}
+                        {% if item.user.get_full_name %}
+                            {{ item.user.get_full_name|make_list|first|upper }}
+                        {% else %}
+                            {{ item.user.username|make_list|first|upper }}
+                        {% endif %}
                     </div>
-                    <strong>{{ item.user.username }}</strong>
+                    <div class="d-flex flex-column">
+                        <strong class="d-block">
+                            {% if item.user.get_full_name %}
+                                {{ item.user.get_full_name }}
+                            {% else %}
+                                {{ item.user.username }}
+                            {% endif %}
+                        </strong>
+                        {% if item.user.get_full_name %}
+                            <small class="text-muted" style="font-size:0.75rem;">@{{ item.user.username }}</small>
+                        {% endif %}
+                    </div>
                 </div>
             </td>
             <td>{{ item.user.date_joined|date:"d M Y, H:i" }}</td>

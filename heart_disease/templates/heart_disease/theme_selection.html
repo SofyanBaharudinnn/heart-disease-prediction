@@ -1,0 +1,211 @@
+{% extends 'heart_disease/base.html' %}
+
+{% block title %}{{ t.theme_title }} – HeartGuard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      
+      <!-- Premium Glassmorphic Card -->
+      <div class="card-custom">
+        <div class="card-header-custom">
+          <i class="bi bi-palette-fill" style="filter: drop-shadow(0 0 5px rgba(var(--primary-rgb),0.5));"></i>
+          <span>{{ t.theme_title }}</span>
+        </div>
+        
+        <div class="card-body p-4">
+          <p class="text-muted mb-4">{{ t.theme_sub }}</p>
+          
+          <form method="post" id="theme-form">
+            {% csrf_token %}
+            
+            <div class="d-flex flex-column gap-3 mb-4">
+              <!-- Blue Option -->
+              <label class="theme-option-card d-flex align-items-center justify-content-between p-3 rounded-4 cursor-pointer" data-theme="blue">
+                <div class="d-flex align-items-center gap-3">
+                  <input type="radio" name="theme" value="blue" {% if profile.theme == 'blue' %}checked{% endif %} class="form-check-input theme-radio d-none">
+                  <div class="theme-dot bg-blue"></div>
+                  <div>
+                    <div class="theme-name fw-bold">{{ t.theme_blue }}</div>
+                    <div class="theme-desc text-muted small">{% if current_lang == 'en' %}Ocean blue theme with calm and clean aesthetics{% else %}Tema biru samudra dengan estetika tenang dan bersih{% endif %}</div>
+                  </div>
+                </div>
+                <div class="check-indicator"><i class="bi bi-check-circle-fill"></i></div>
+              </label>
+
+              <!-- Green Option -->
+              <label class="theme-option-card d-flex align-items-center justify-content-between p-3 rounded-4 cursor-pointer" data-theme="green">
+                <div class="d-flex align-items-center gap-3">
+                  <input type="radio" name="theme" value="green" {% if profile.theme == 'green' %}checked{% endif %} class="form-check-input theme-radio d-none">
+                  <div class="theme-dot bg-green"></div>
+                  <div>
+                    <div class="theme-name fw-bold">{{ t.theme_green }}</div>
+                    <div class="theme-desc text-muted small">{% if current_lang == 'en' %}The signature electric lime look of HeartGuard{% else %}Tampilan hijau limau elektrik khas dari HeartGuard{% endif %}</div>
+                  </div>
+                </div>
+                <div class="check-indicator"><i class="bi bi-check-circle-fill"></i></div>
+              </label>
+
+              <!-- Red Option -->
+              <label class="theme-option-card d-flex align-items-center justify-content-between p-3 rounded-4 cursor-pointer" data-theme="red">
+                <div class="d-flex align-items-center gap-3">
+                  <input type="radio" name="theme" value="red" {% if profile.theme == 'red' %}checked{% endif %} class="form-check-input theme-radio d-none">
+                  <div class="theme-dot bg-red"></div>
+                  <div>
+                    <div class="theme-name fw-bold">{{ t.theme_red }}</div>
+                    <div class="theme-desc text-muted small">{% if current_lang == 'en' %}Energetic crimson red theme for high-contrast visibility{% else %}Tema merah menyala yang energetik untuk kontras visibilitas tinggi{% endif %}</div>
+                  </div>
+                </div>
+                <div class="check-indicator"><i class="bi bi-check-circle-fill"></i></div>
+              </label>
+
+              <!-- Purple Option -->
+              <label class="theme-option-card d-flex align-items-center justify-content-between p-3 rounded-4 cursor-pointer" data-theme="purple">
+                <div class="d-flex align-items-center gap-3">
+                  <input type="radio" name="theme" value="purple" {% if profile.theme == 'purple' %}checked{% endif %} class="form-check-input theme-radio d-none">
+                  <div class="theme-dot bg-purple"></div>
+                  <div>
+                    <div class="theme-name fw-bold">{{ t.theme_purple }}</div>
+                    <div class="theme-desc text-muted small">{% if current_lang == 'en' %}Futuristic neon purple theme for modern cyberpunk vibes{% else %}Tema ungu neon futuristik untuk nuansa cyberpunk yang modern{% endif %}</div>
+                  </div>
+                </div>
+                <div class="check-indicator"><i class="bi bi-check-circle-fill"></i></div>
+              </label>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary-custom w-100 py-3" id="save-theme-btn">
+              <span class="btn-text"><i class="bi bi-save2-fill me-2"></i> {{ t.theme_btn_save }}</span>
+              <span class="btn-spinner d-none"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> {{ t.theme_btn_save_loading }}</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  /* Glassmorphism theme option cards */
+  .theme-option-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .theme-option-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(var(--theme-option-rgb), 0.35);
+    transform: translateY(-2px);
+  }
+  
+  /* Selected State */
+  .theme-option-card.selected {
+    background: rgba(var(--theme-option-rgb), 0.08);
+    border-color: rgb(var(--theme-option-rgb));
+    box-shadow: 0 8px 24px rgba(var(--theme-option-rgb), 0.18);
+  }
+  
+  /* Theme preview dot */
+  .theme-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  .bg-blue   { background: #3B82F6; box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); }
+  .bg-green  { background: #AAFF00; box-shadow: 0 0 12px rgba(170, 255, 0, 0.6); }
+  .bg-red    { background: #FF4D4D; box-shadow: 0 0 12px rgba(255, 77, 77, 0.6); }
+  .bg-purple { background: #A855F7; box-shadow: 0 0 12px rgba(168, 85, 247, 0.6); }
+  
+  /* Color RGB configurations for Javascript/CSS mapping */
+  .theme-option-card[data-theme="blue"] { --theme-option-rgb: 59, 130, 246; }
+  .theme-option-card[data-theme="green"] { --theme-option-rgb: 170, 255, 0; }
+  .theme-option-card[data-theme="red"] { --theme-option-rgb: 255, 77, 77; }
+  .theme-option-card[data-theme="purple"] { --theme-option-rgb: 168, 85, 247; }
+  
+  /* Check Indicator styling */
+  .check-indicator {
+    color: var(--muted);
+    font-size: 1.25rem;
+    transition: all 0.25s ease;
+    opacity: 0.2;
+  }
+  
+  .theme-option-card.selected .check-indicator {
+    color: rgb(var(--theme-option-rgb));
+    opacity: 1;
+    transform: scale(1.1);
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.theme-option-card');
+    const form = document.getElementById('theme-form');
+    const saveBtn = document.getElementById('save-theme-btn');
+    const btnText = saveBtn.querySelector('.btn-text');
+    const btnSpinner = saveBtn.querySelector('.btn-spinner');
+    
+    // Theme configs for live preview
+    const themes = {
+      'blue': { rgb: '59, 130, 246', lt: '#60A5FA', dk: '#2563EB' },
+      'green': { rgb: '170, 255, 0', lt: '#C8FF4D', dk: '#88CC00' },
+      'red': { rgb: '255, 77, 77', lt: '#F87171', dk: '#DC2626' },
+      'purple': { rgb: '168, 85, 247', lt: '#C084FC', dk: '#9333EA' }
+    };
+    
+    // Setup initial selected card visual state
+    const checkedRadio = document.querySelector('.theme-radio:checked');
+    if (checkedRadio) {
+      const parentLabel = checkedRadio.closest('.theme-option-card');
+      if (parentLabel) {
+        parentLabel.classList.add('selected');
+      }
+    }
+    
+    // Live Preview interactions
+    cards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        // Prevent default double click / browser selection issues
+        const themeName = this.getAttribute('data-theme');
+        const radio = this.querySelector('.theme-radio');
+        
+        // Update radios & cards visual states
+        cards.forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        radio.checked = true;
+        
+        // Live Preview: Dynamically change root CSS variables instantly!
+        const themeConfig = themes[themeName];
+        if (themeConfig) {
+          document.documentElement.style.setProperty('--primary-rgb', themeConfig.rgb);
+          document.documentElement.style.setProperty('--primary-lt', themeConfig.lt);
+          document.documentElement.style.setProperty('--primary-dark', themeConfig.dk);
+        }
+      });
+    });
+    
+    // Submit loader animation
+    form.addEventListener('submit', function() {
+      saveBtn.disabled = true;
+      btnText.classList.add('d-none');
+      btnSpinner.classList.remove('d-none');
+    });
+  });
+</script>
+{% endblock %}

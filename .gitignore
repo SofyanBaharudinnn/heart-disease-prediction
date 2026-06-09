@@ -20,3 +20,4 @@ dataset/heart_backup.csv
 .DS_Store
 *.log
 scratch/
+staticfiles/

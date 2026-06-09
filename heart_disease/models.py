@@ -60,3 +60,18 @@ class ModelMetrics(models.Model):
 
     def __str__(self):
         return f"Model {self.trained_at.strftime('%d-%m-%Y %H:%M')} – Acc: {self.accuracy:.3f}"
+
+
+class UserProfile(models.Model):
+    THEME_CHOICES = [
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+        ('red', 'Red'),
+        ('purple', 'Purple'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='green')
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile (Theme: {self.theme})"
+

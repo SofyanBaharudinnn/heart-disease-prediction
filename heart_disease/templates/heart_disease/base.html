@@ -44,14 +44,19 @@
 
   <style>
     :root {
-      --lime:        #AAFF00;   /* Electric lime accent */
-      --lime-lt:     #C8FF4D;
-      --lime-dk:     #88CC00;
-      --primary:     #AAFF00;
+      /* Theme color tokens - overwritten dynamically */
+      --primary-rgb: 170, 255, 0;
       --primary-lt:  #C8FF4D;
-      --primary-dark:#88CC00;
-      --accent:      #AAFF00;
-      --teal:        #AAFF00;
+      --primary-dark: #88CC00;
+
+      --lime:        rgb(var(--primary-rgb));
+      --lime-lt:     var(--primary-lt);
+      --lime-dk:     var(--primary-dark);
+      --primary:     rgb(var(--primary-rgb));
+      --primary-lt:  var(--primary-lt);
+      --primary-dark: var(--primary-dark);
+      --accent:      rgb(var(--primary-rgb));
+      --teal:        rgb(var(--primary-rgb));
       --bg:          #111111;   /* Dark background — projector-friendly */
       --surface:     #1C1C1C;   /* Dark card surface */
       --muted:       #BBBBBB;   /* Light gray — readable from far away */
@@ -64,8 +69,8 @@
       --sidebar-bg:          #0A0A0A;
       --sidebar-border:      #1A1A1A;
       --sidebar-text:        #888888;
-      --sidebar-active-bg:   rgba(170,255,0,0.12);
-      --sidebar-active-text: #AAFF00;
+      --sidebar-active-bg:   rgba(var(--primary-rgb), 0.12);
+      --sidebar-active-text: rgb(var(--primary-rgb));
       --sidebar-hover-bg:    rgba(255,255,255,0.04);
     }
 
@@ -117,7 +122,7 @@
       justify-content: center;
       font-size: 1.1rem;
       color: #0A0A0A;
-      box-shadow: 0 4px 12px rgba(170,255,0,0.35);
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb),0.35);
     }
 
     .sidebar-brand .brand-text .title {
@@ -222,7 +227,7 @@
     /* ── Premium User Profile Card ── */
     .user-profile-card {
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(170,255,0,0.15);
+      border: 1px solid rgba(var(--primary-rgb),0.15);
       border-radius: 16px;
       padding: 0.85rem;
       backdrop-filter: blur(10px);
@@ -249,7 +254,7 @@
 
     .avatar-admin {
       background: var(--lime);
-      box-shadow: 0 0 0 2px rgba(170,255,0,0.5), 0 0 12px rgba(170,255,0,0.3);
+      box-shadow: 0 0 0 2px rgba(var(--primary-rgb),0.5), 0 0 12px rgba(var(--primary-rgb),0.3);
     }
 
     .avatar-admin .avatar-letter { color: #0A0A0A; }
@@ -312,9 +317,9 @@
     }
 
     .badge-admin {
-      background: rgba(170,255,0,0.15);
+      background: rgba(var(--primary-rgb),0.15);
       color: var(--lime);
-      border: 1px solid rgba(170,255,0,0.3);
+      border: 1px solid rgba(var(--primary-rgb),0.3);
     }
 
     .badge-user {
@@ -416,13 +421,13 @@
       border-radius: 14px;
       overflow: hidden;
       background: var(--lime);
-      box-shadow: 0 6px 24px rgba(170,255,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 24px rgba(var(--primary-rgb),0.4), 0 1px 4px rgba(0,0,0,0.3);
       transition: transform .25s ease, box-shadow .25s ease;
     }
 
     .btn-login-pro:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(170,255,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+      box-shadow: 0 12px 32px rgba(var(--primary-rgb),0.6), 0 2px 8px rgba(0,0,0,0.35);
     }
 
     /* Shimmer sweep on hover */
@@ -534,7 +539,7 @@
     /* ── Desktop & Mobile Flat Language Toggle ── */
     .btn-lang-toggle {
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(170, 255, 0, 0.25);
+      border: 1px solid rgba(var(--primary-rgb), 0.25);
       border-radius: 12px;
       padding: 0.55rem 0.95rem;
       color: #FFFFFF;
@@ -551,9 +556,9 @@
     }
 
     .btn-lang-toggle:hover {
-      background: rgba(170, 255, 0, 0.08);
+      background: rgba(var(--primary-rgb), 0.08);
       border-color: var(--lime);
-      box-shadow: 0 4px 15px rgba(170, 255, 0, 0.25);
+      box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.25);
       transform: translateY(-1px);
     }
     
@@ -612,7 +617,7 @@
 
     .stat-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 15px 35px rgba(170,255,0,0.12);
+      box-shadow: 0 15px 35px rgba(var(--primary-rgb),0.12);
     }
 
     .stat-icon {
@@ -624,7 +629,7 @@
       justify-content: center;
       font-size: 1.6rem;
       flex-shrink: 0;
-      background: rgba(170,255,0,0.12);
+      background: rgba(var(--primary-rgb),0.12);
       color: #0A0A0A;
     }
 
@@ -654,12 +659,12 @@
       border-radius: 12px;
       padding: 0.75rem 1.8rem;
       transition: all .3s ease;
-      box-shadow: 0 6px 15px rgba(170,255,0,0.35);
+      box-shadow: 0 6px 15px rgba(var(--primary-rgb),0.35);
     }
 
     .btn-primary-custom:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(170,255,0,0.5);
+      box-shadow: 0 8px 24px rgba(var(--primary-rgb),0.5);
       color: #0A0A0A;
       background: var(--lime-lt);
     }
@@ -691,9 +696,9 @@
     }
 
     .btn-outline-custom:hover {
-      background: rgba(170, 255, 0, 0.1);
+      background: rgba(var(--primary-rgb), 0.1);
       color: var(--lime);
-      box-shadow: 0 4px 12px rgba(170, 255, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
     }
 
     /* ── Form controls ── */
@@ -715,7 +720,7 @@
     .form-control-custom:focus,
     .form-select-custom:focus {
       border-color: var(--lime);
-      box-shadow: 0 0 0 4px rgba(170,255,0,0.18);
+      box-shadow: 0 0 0 4px rgba(var(--primary-rgb),0.18);
       outline: none;
     }
 
@@ -741,7 +746,7 @@
     .table {
       --bs-table-bg:           #1C1C1C;
       --bs-table-striped-bg:   #222222;
-      --bs-table-hover-bg:     rgba(170,255,0,0.06);
+      --bs-table-hover-bg:     rgba(var(--primary-rgb),0.06);
       --bs-table-border-color: #2E2E2E;
       --bs-table-color:        #FFFFFF;
       color: #FFFFFF !important;
@@ -793,7 +798,7 @@
       letter-spacing: .5px;
       border: none !important;
       padding: 1rem;
-      border-bottom: 2px solid rgba(170,255,0,0.2) !important;
+      border-bottom: 2px solid rgba(var(--primary-rgb),0.2) !important;
     }
 
     .table-custom tbody tr {
@@ -801,7 +806,7 @@
     }
 
     .table-custom tbody tr:hover > td {
-      background: rgba(170,255,0,0.06) !important;
+      background: rgba(var(--primary-rgb),0.06) !important;
     }
 
     .table-custom td {
@@ -899,7 +904,7 @@
       left: 10%;
       right: 10%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(170, 255, 0, 0.22), transparent);
+      background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.22), transparent);
     }
 
     .footer-custom a {
@@ -927,7 +932,7 @@
 
     .footer-brand-name span {
       color: var(--lime);
-      text-shadow: 0 0 10px rgba(170, 255, 0, 0.3);
+      text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
     }
 
     .footer-copy {
@@ -940,8 +945,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(170, 255, 0, 0.04);
-      border: 1px solid rgba(170, 255, 0, 0.15);
+      background: rgba(var(--primary-rgb), 0.04);
+      border: 1px solid rgba(var(--primary-rgb), 0.15);
       padding: 3px 8px;
       border-radius: 20px;
       font-size: 0.66rem;
@@ -949,7 +954,7 @@
       color: var(--lime);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(170, 255, 0, 0.03);
+      box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.03);
     }
 
     .status-dot {
@@ -982,10 +987,10 @@
     }
 
     .footer-tech-pill:hover {
-      border-color: rgba(170, 255, 0, 0.35);
+      border-color: rgba(var(--primary-rgb), 0.35);
       color: var(--lime);
-      background: rgba(170, 255, 0, 0.03);
-      box-shadow: 0 0 8px rgba(170, 255, 0, 0.08);
+      background: rgba(var(--primary-rgb), 0.03);
+      box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.08);
     }
 
     .footer-project-label {
@@ -1080,7 +1085,7 @@
       .mobile-brand-icon {
         background: var(--lime);
         color: #0A0A0A;
-        box-shadow: 0 2px 8px rgba(170,255,0,0.3);
+        box-shadow: 0 2px 8px rgba(var(--primary-rgb),0.3);
       }
       .sidebar-overlay {
         position: fixed;
@@ -1120,7 +1125,163 @@
     .text-muted {
       color: var(--muted) !important;
     }
+    
+    .hover-lime {
+      color: var(--muted) !important;
+      transition: color .2s ease;
+    }
+    .hover-lime:hover {
+      color: var(--lime) !important;
+    }
+
+    /* Multi-column Links Footer (Socionet Style) */
+    .footer-links-wrap {
+      padding: 4rem 0 2rem;
+      border-top: 1px solid var(--border);
+      background: #0A0A0A;
+      margin-top: 5rem;
+      position: relative;
+    }
+
+    .footer-links-wrap::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.25), transparent);
+    }
+
+    .footer-logo-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo-title span {
+      color: var(--lime);
+      text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
+    }
+
+    .footer-link-col-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-link-ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-link-ul li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-link-ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .footer-link-ul a:hover {
+      color: var(--lime) !important;
+      padding-left: 4px;
+    }
+
+    /* Premium Glassmorphic Modals */
+    .modal-custom .modal-content {
+      background: rgba(15, 17, 15, 0.95) !important;
+      border: 1px solid rgba(var(--primary-rgb), 0.2) !important;
+      border-radius: 24px !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(var(--primary-rgb), 0.1) !important;
+    }
+    .modal-custom .modal-header {
+      border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+      padding: 1.5rem 2rem;
+    }
+    .modal-custom .modal-footer {
+      border-top: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+      padding: 1.25rem 2rem;
+    }
+    .modal-custom .modal-title {
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .modal-custom .modal-body {
+      padding: 2rem;
+      color: #dedede;
+      font-size: 0.95rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .modal-custom .modal-body h6 {
+      font-weight: 700;
+      color: var(--lime);
+      margin-top: 1.4rem;
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+    }
+    .modal-custom .modal-body h6:first-of-type {
+      margin-top: 0;
+    }
+    .modal-custom .modal-body p {
+      margin-bottom: 1rem;
+      line-height: 1.7;
+      color: #b0b0b0;
+    }
+    .modal-custom .modal-body ul, .modal-custom .modal-body ol {
+      margin-bottom: 1.2rem;
+      padding-left: 1.2rem;
+    }
+    .modal-custom .modal-body li {
+      margin-bottom: 0.6rem;
+      line-height: 1.6;
+      color: #b0b0b0;
+    }
+    .modal-custom .modal-body strong {
+      color: #fff;
+    }
+    .modal-custom .btn-close {
+      filter: invert(1) grayscale(1) brightness(2);
+    }
   </style>
+
+  {% if current_theme == 'blue' %}
+  <style>
+    :root {
+      --primary-rgb: 59, 130, 246;
+      --primary-lt:  #60A5FA;
+      --primary-dark: #2563EB;
+    }
+  </style>
+  {% elif current_theme == 'red' %}
+  <style>
+    :root {
+      --primary-rgb: 239, 68, 68;
+      --primary-lt:  #F87171;
+      --primary-dark: #DC2626;
+    }
+  </style>
+  {% elif current_theme == 'purple' %}
+  <style>
+    :root {
+      --primary-rgb: 168, 85, 247;
+      --primary-lt:  #C084FC;
+      --primary-dark: #9333EA;
+    }
+  </style>
+  {% endif %}
 
   {% block extra_css %}{% endblock %}
 </head>
@@ -1217,6 +1378,12 @@
       class="sidebar-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
       <i class="bi bi-info-circle"></i> {{ t.menu_about }}
     </a>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'theme_selection' %}"
+      class="sidebar-link {% if request.resolver_match.url_name == 'theme_selection' %}active{% endif %}">
+      <i class="bi bi-palette-fill"></i> {{ t.menu_theme }}
+    </a>
+    {% endif %}
   </div>
 
   <div class="sidebar-footer">
@@ -1227,18 +1394,35 @@
       <div class="user-profile-top">
         <!-- Avatar with gradient ring -->
         <div class="user-avatar-pro {% if request.user.is_staff %}avatar-admin{% else %}avatar-user{% endif %}">
-          <span class="avatar-letter">{{ request.user.username|make_list|first|upper }}</span>
+          <span class="avatar-letter">
+            {% if request.user.get_full_name %}
+              {{ request.user.get_full_name|make_list|first|upper }}
+            {% else %}
+              {{ request.user.username|make_list|first|upper }}
+            {% endif %}
+          </span>
           <span class="avatar-status-ring"></span>
         </div>
-        <div class="user-info-pro">
-          <div class="user-name-pro">{{ request.user.username }}</div>
-          <div class="user-role-badge {% if request.user.is_staff %}badge-admin{% else %}badge-user{% endif %}">
-            {% if request.user.is_staff %}
-              <i class="bi bi-shield-fill-check"></i> Admin
-            {% else %}
-              <i class="bi bi-person-fill"></i> {% if current_lang == 'en' %}Patient{% else %}Pasien{% endif %}
-            {% endif %}
+        <div class="user-info-pro d-flex align-items-center justify-content-between gap-1 w-100" style="min-width: 0;">
+          <div style="min-width: 0; flex-grow: 1;">
+            <div class="user-name-pro" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+              {% if request.user.get_full_name %}
+                {{ request.user.get_full_name }}
+              {% else %}
+                {{ request.user.username }}
+              {% endif %}
+            </div>
+            <div class="user-role-badge {% if request.user.is_staff %}badge-admin{% else %}badge-user{% endif %}">
+              {% if request.user.is_staff %}
+                <i class="bi bi-shield-fill-check"></i> Admin
+              {% else %}
+                <i class="bi bi-person-fill"></i> {% if current_lang == 'en' %}Patient{% else %}Pasien{% endif %}
+              {% endif %}
+            </div>
           </div>
+          <a href="{% url 'theme_selection' %}" class="hover-lime p-1" style="flex-shrink: 0;" title="{{ t.menu_theme }}">
+            <i class="bi bi-gear-fill fs-5"></i>
+          </a>
         </div>
       </div>
 
@@ -1314,44 +1498,319 @@
     </main>
 
     <!-- ── Footer ── -->
-    <footer class="footer-custom mt-5">
-      <div class="container-fluid px-4">
-        <div class="row align-items-center justify-content-between g-3">
-          
-          <!-- Left side: Copyright & Brand -->
-          <div class="col-lg-5 text-center text-lg-start order-2 order-lg-1">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start gap-2 gap-sm-3">
-              <span class="footer-brand-name">
-                <i class="bi bi-heart-pulse-fill me-1" style="color: var(--lime); filter: drop-shadow(0 0 4px rgba(170,255,0,0.5));"></i>
-                Heart<span>Guard</span>
-              </span>
-              <span class="footer-sep d-none d-sm-inline">|</span>
-              <span class="footer-copy">&copy; 2026. {{ t.footer_rights }}</span>
+    <!-- ── Footer ── -->
+    {% block footer %}
+    <!-- Link Footer Section (Socionet Style) without Solutions -->
+    <footer class="footer-links-wrap">
+      <div class="container">
+        <div class="row gy-5 text-start">
+          <!-- Brand column -->
+          <div class="col-lg-4">
+            <div class="footer-logo-title">
+              <i class="bi bi-heart-pulse-fill me-1"></i> Heart<span>Guard</span>
             </div>
-            <div class="mt-2 text-center text-lg-start" style="color: #444444; font-size: 0.72rem; font-weight: 500;">
-              {% if current_lang == 'en' %}Information System Development Final Project{% else %}Proyek Akhir Pengembangan Sistem Informasi{% endif %} &bull; {{ t.univ_name }}
-            </div>
-          </div>
-
-          <!-- Right side: Systems Status & Tech Stack -->
-          <div class="col-lg-7 text-center text-lg-end order-1 order-lg-2">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end gap-3">
-              <!-- System Status -->
-              <div class="status-indicator">
-                <span class="status-dot"></span>
-                {{ t.footer_status }}
+            <p class="text-muted small mb-4" style="line-height:1.7;">{% if current_lang == 'en' %}Advanced system for predicting heart disease risk based on the Random Forest algorithm. Designed for clinical analysis and early screening.{% else %}Sistem Canggih Untuk Memprediksi Risiko Penyakit Jantung Berbasis Algoritma Random Forest. Didesain Untuk Analisis Klinis Dan Penapisan Awal.{% endif %}</p>
+            
+            <!-- Musamus Logo & Copyright Affiliation -->
+            <div class="d-flex align-items-center gap-3 mt-4">
+              <img src="/static/logo-musamus.png" alt="Logo Universitas Musamus" style="height: 44px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));">
+              <div>
+                <div class="text-muted small">&copy; 2026. {{ t.footer_rights }}</div>
+                <div class="mt-1 text-muted" style="font-size: 0.72rem; line-height: 1.4;">
+                  {% if current_lang == 'en' %}Information System Development Final Project{% else %}Proyek Akhir Pengembangan Sistem Informasi{% endif %} &bull; {{ t.univ_name }}
+                </div>
               </div>
-              <span class="footer-sep d-none d-sm-inline">|</span>
-              <!-- Tech stack pills -->
-              <span class="footer-tech-pill" title="Algoritma Klasifikasi Utama">Random Forest</span>
-              <span class="footer-tech-pill" title="Metode Evaluasi Model">Multi-Holdout</span>
-              <span class="footer-tech-pill" title="Dataset Sumber">UCI Dataset</span>
             </div>
           </div>
 
+          <!-- Support -->
+          <div class="col-md-6 col-lg-3 offset-lg-2">
+            <h6 class="footer-link-col-title">{% if current_lang == 'en' %}Support{% else %}Dukungan{% endif %}</h6>
+            <ul class="footer-link-ul">
+              <li><a href="#" data-bs-toggle="modal" data-bs-target="#helpCenterModal">{% if current_lang == 'en' %}Help Center{% else %}Pusat Bantuan{% endif %}</a></li>
+              <li><a href="#" data-bs-toggle="modal" data-bs-target="#faqModal">{% if current_lang == 'en' %}FAQ{% else %}FAQ{% endif %}</a></li>
+              <li><a href="/#contact-section">{% if current_lang == 'en' %}Contact Us{% else %}Hubungi Kami{% endif %}</a></li>
+              <li><a href="#" data-bs-toggle="modal" data-bs-target="#clinicalGuideModal">{% if current_lang == 'en' %}Clinical Guide{% else %}Panduan Klinis{% endif %}</a></li>
+            </ul>
+          </div>
+
+          <!-- Company -->
+          <div class="col-md-6 col-lg-3">
+            <h6 class="footer-link-col-title">{% if current_lang == 'en' %}Company{% else %}Lembaga{% endif %}</h6>
+            <ul class="footer-link-ul">
+              <li><a href="{% url 'about' %}">{% if current_lang == 'en' %}About Us{% else %}Tentang Kami{% endif %}</a></li>
+              <li><a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">{% if current_lang == 'en' %}Privacy Policy{% else %}Kebijakan Privasi{% endif %}</a></li>
+              <li><a href="#" data-bs-toggle="modal" data-bs-target="#termsOfServiceModal">{% if current_lang == 'en' %}Terms of Service{% else %}Ketentuan Layanan{% endif %}</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </footer>
+
+    <!-- Modals for Footer Links -->
+    <!-- Modal: Pusat Bantuan / Help Center -->
+    <div class="modal fade modal-custom" id="helpCenterModal" tabindex="-1" aria-labelledby="helpCenterModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpCenterModalLabel">
+              <i class="bi bi-info-circle-fill me-2" style="color: var(--lime);"></i>
+              {% if current_lang == 'en' %}Help Center{% else %}Pusat Bantuan{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            {% if current_lang == 'en' %}
+              <h6>Welcome to HeartGuard Support Portal</h6>
+              <p>This application is designed to help you predict the risk of heart disease based on standard clinical parameters using advanced Machine Learning technology.</p>
+              
+              <h6>How to Use the Prediction Tool:</h6>
+              <ol>
+                <li><strong>Login / Register:</strong> Create a personalized account or sign in with your Google/GitHub credentials. Your prediction history is kept private.</li>
+                <li><strong>Fill out the Clinical Form:</strong> Go to the <strong>Predict</strong> menu and enter all 13 clinical variables (e.g., blood pressure, cholesterol, heart rate) exactly as documented in your clinical tests.</li>
+                <li><strong>Run Analysis:</strong> Click "Predict Now" to feed your parameters into our Random Forest classifier.</li>
+                <li><strong>Review & Download:</strong> Analyze your results, read personalized lifestyle advice, and export the comprehensive evaluation as a PDF report.</li>
+              </ol>
+
+              <h6>Need More Help?</h6>
+              <p>If you encounter technical issues or errors, please contact our support desk via the form on the homepage or reach out directly to <strong>support@heartguard.com</strong>.</p>
+            {% else %}
+              <h6>Selamat Datang di Portal Bantuan HeartGuard</h6>
+              <p>Aplikasi ini dirancang untuk mendeteksi dini risiko penyakit jantung berdasarkan parameter klinis standar dengan bantuan teknologi kecerdasan buatan (Machine Learning).</p>
+              
+              <h6>Cara Menggunakan Fitur Prediksi:</h6>
+              <ol>
+                <li><strong>Daftar / Masuk Akun:</strong> Buat akun baru atau masuk secara instan menggunakan akun Google/GitHub Anda agar riwayat pemeriksaan tersimpan rahasia.</li>
+                <li><strong>Isi Parameter Medis:</strong> Navigasi ke menu <strong>Prediksi</strong> dan isi 13 parameter klinis (seperti tekanan darah, kolesterol, detak jantung, dll.) sesuai rekam medis klinis Anda.</li>
+                <li><strong>Mulai Analisis:</strong> Klik "Mulai Prediksi" untuk menganalisis data klinis menggunakan model Random Forest kami.</li>
+                <li><strong>Lihat & Unduh Hasil:</strong> Tinjau tingkat risiko Anda, baca saran pola hidup sehat, dan cetak dokumen laporan dalam format PDF.</li>
+              </ol>
+
+              <h6>Butuh Bantuan Tambahan?</h6>
+              <p>Jika Anda mengalami kendala teknis atau error sistem, silakan kirimkan pesan melalui formulir kontak di bawah atau hubungi email tim dukungan kami di <strong>support@heartguard.com</strong>.</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: FAQ -->
+    <div class="modal fade modal-custom" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="faqModalLabel">
+              <i class="bi bi-question-circle-fill me-2" style="color: var(--lime);"></i>
+              {% if current_lang == 'en' %}Frequently Asked Questions (FAQ){% else %}Pertanyaan Umum (FAQ){% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            {% if current_lang == 'en' %}
+              <h6>Q: Is this prediction output a final medical diagnosis?</h6>
+              <p><strong>A: No.</strong> HeartGuard is an intelligent screening assistant. The prediction results are probabilities meant for early risk assessment. You must consult a licensed cardiologist or doctor for professional diagnostic tests (like echocardiograms or angiograms).</p>
+
+              <h6>Q: How accurate is the prediction model?</h6>
+              <p><strong>A: Highly accurate.</strong> Our system runs on a Random Forest Classifier trained on clinical databases. The model achieves an average accuracy of over 85% tested with Multi-Holdout Validation. You can inspect the real-time metrics of the active model on our Dashboard page.</p>
+
+              <h6>Q: What happens to my input data?</h6>
+              <p><strong>A: Your data is secure and confidential.</strong> We store your clinical entries in an encrypted database linked directly to your secure user account. We never share or sell patient records to insurance companies or third parties.</p>
+
+              <h6>Q: How do I export my results to show to my doctor?</h6>
+              <p><strong>A: Via the History Page.</strong> If you are logged in, go to the History menu, view details of any past prediction, and click "Download PDF Report". You can print this document or show it to your physician on your phone.</p>
+            {% else %}
+              <h6>T: Apakah hasil prediksi ini setara dengan diagnosis dokter?</h6>
+              <p><strong>J: Tidak.</strong> HeartGuard adalah sistem penapisan (screening) dini. Hasil prediksi berupa persentase probabilitas risiko dan bukan merupakan keputusan medis mutlak. Anda harus selalu berkonsultasi dengan dokter spesialis jantung untuk pemeriksaan medis formal.</p>
+
+              <h6>T: Seberapa akurat model prediksi ini?</h6>
+              <p><strong>J: Sangat Akurat.</strong> Sistem kami didukung oleh algoritma Random Forest Classifier yang dilatih dengan rekam medis klinis. Model ini mencapai akurasi rata-rata di atas 85% melalui pengujian Multi-Holdout Validation. Metrik performa aktif dapat dipantau di halaman Dashboard Admin.</p>
+
+              <h6>T: Apakah data medis yang saya masukkan aman?</h6>
+              <p><strong>J: Ya, data Anda dijamin aman dan rahasia.</strong> Data rekam medis disimpan terenkripsi di server kami dan hanya terikat pada akun Anda. Kami tidak akan pernah membagikan riwayat Anda ke pihak asuransi atau pihak ketiga lainnya.</p>
+
+              <h6>T: Bagaimana cara menunjukkan hasil prediksi ini ke dokter saya?</h6>
+              <p><strong>J: Melalui Halaman Riwayat.</strong> Navigasi ke menu "Riwayat", pilih hasil pemeriksaan Anda, kemudian klik "Unduh Laporan PDF". Cetak laporan tersebut atau tunjukkan file digitalnya saat Anda berkonsultasi ke klinik/rumah sakit.</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Panduan Klinis / Clinical Guide -->
+    <div class="modal fade modal-custom" id="clinicalGuideModal" tabindex="-1" aria-labelledby="clinicalGuideModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="clinicalGuideModalLabel">
+              <i class="bi bi-file-medical-fill me-2" style="color: var(--lime);"></i>
+              {% if current_lang == 'en' %}Clinical Parameter Guide{% else %}Panduan Klinis Parameter Medis{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            {% if current_lang == 'en' %}
+              <p>Below is a brief clinical explanation of the 13 input parameters utilized by the HeartGuard Random Forest algorithm to predict cardiovascular risk:</p>
+
+              <h6>1. Age & Sex</h6>
+              <p>Basic demographic metrics. Cardiovascular risk profiles generally increase with age, and baseline statistical thresholds differ between males and females.</p>
+
+              <h6>2. Chest Pain Type (CP)</h6>
+              <p>Categorized into four levels based on symptoms: Typical Angina, Atypical Angina, Non-Anginal Pain, or Asymptomatic (no pain but underlying ischemic risk).</p>
+
+              <h6>3. Resting Blood Pressure (Trestbps)</h6>
+              <p>The patient's blood pressure (systolic) measured in mmHg upon resting. Standard target is below 120 mmHg.</p>
+
+              <h6>4. Serum Cholesterol (Chol)</h6>
+              <p>Total serum cholesterol level in mg/dl. High cholesterol (> 200 mg/dl) is a critical precursor to plaque formation in arteries (atherosclerosis).</p>
+
+              <h6>5. Fasting Blood Sugar (FBS)</h6>
+              <p>Indicates if fasting blood sugar is greater than 120 mg/dl. Hyperglycemia is strongly linked to coronary arterial complications.</p>
+
+              <h6>6. Resting ECG (RestECG)</h6>
+              <p>Electrocardiogram results at rest. Detects normal states, ST-T wave abnormalities, or left ventricular hypertrophy signs.</p>
+
+              <h6>7. Max Heart Rate Achieved (Thalach)</h6>
+              <p>The maximum heart rate recorded during a physical stress test. Generally decreases with age and cardiac insufficiency.</p>
+
+              <h6>8. ST Depression (Oldpeak)</h6>
+              <p>Electrocardiograph ST segment depression induced by exercise relative to rest. Indicates degree of myocardial ischemia.</p>
+            {% else %}
+              <p>Berikut adalah penjelasan klinis singkat mengenai 13 parameter input yang digunakan oleh algoritma Random Forest HeartGuard untuk menganalisis risiko kardiovaskular:</p>
+
+              <h6>1. Usia & Jenis Kelamin (Age & Sex)</h6>
+              <p>Faktor demografi dasar. Risiko penyakit kardiovaskular cenderung meningkat seiring bertambahnya usia, dan terdapat perbedaan kerentanan serta gejala awal antara pria dan wanita.</p>
+
+              <h6>2. Jenis Nyeri Dada (Chest Pain Type - CP)</h6>
+              <p>Diklasifikasikan menjadi 4 tingkat: Angina Tipikal (nyeri dada khas jantung), Angina Atipikal, Nyeri Non-Anginal (bukan jantung), atau Asimptomatik (tanpa nyeri dada tetapi memiliki risiko iskemia).</p>
+
+              <h6>3. Tekanan Darah Istirahat (Resting Blood Pressure - Trestbps)</h6>
+              <p>Tekanan darah sistolik pasien dalam mmHg yang diukur saat beristirahat. Target ideal adalah di bawah 120 mmHg.</p>
+
+              <h6>4. Kolesterol Serum (Cholesterol - Chol)</h6>
+              <p>Kadar kolesterol total dalam darah (mg/dl). Kadar kolesterol tinggi (> 200 mg/dl) memicu pembentukan plak penyumbat pembuluh darah (aterosklerosis).</p>
+
+              <h6>5. Gula Darah Puasa (Fasting Blood Sugar - FBS)</h6>
+              <p>Menunjukkan apakah kadar gula darah puasa pasien > 120 mg/dl. Diabetes atau kadar gula tinggi sangat memicu kerusakan pembuluh darah koroner.</p>
+
+              <h6>6. Elektrokardiografi Istirahat (Resting ECG - RestECG)</h6>
+              <p>Hasil rekam jantung elektro saat istirahat. Mengindikasikan kondisi normal, kelainan gelombang ST-T, atau tanda hipertrofi bilik kiri jantung.</p>
+
+              <h6>7. Denyut Jantung Maksimal (Max Heart Rate - Thalach)</h6>
+              <p>Detak jantung tertinggi yang dicapai pasien saat uji beban fisik. Kapasitas maksimum ini cenderung menurun pada penderita penyakit jantung koroner.</p>
+
+              <h6>8. Depresi ST (Oldpeak)</h6>
+              <p>Penurunan segmen ST yang terdeteksi pada elektrokardiogram setelah olahraga dibandingkan saat istirahat. Mengukur tingkat keparahan kekurangan pasokan oksigen ke otot jantung (iskemia).</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Kebijakan Privasi / Privacy Policy -->
+    <div class="modal fade modal-custom" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="privacyPolicyModalLabel">
+              <i class="bi bi-shield-fill-check me-2" style="color: var(--lime);"></i>
+              {% if current_lang == 'en' %}Patient Privacy Policy{% else %}Kebijakan Privasi Data Pasien{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            {% if current_lang == 'en' %}
+              <h6>1. Privacy Commitment</h6>
+              <p>At HeartGuard, we prioritize the confidentiality of your clinical records. This Privacy Policy details how we handle, process, and safeguard your medical information.</p>
+
+              <h6>2. Data We Collect</h6>
+              <p>We only collect the clinical parameters required for risk prediction (such as blood pressure, cholesterol levels, demographic metrics, and cardiac electrocardiogram states). This data is linked securely to your username.</p>
+
+              <h6>3. Data Encryption & Storage</h6>
+              <p>Your records are stored in secure databases protected by industry-standard encryption protocols. Administrative access is restricted to verified clinical and database officers who maintain our predictive systems.</p>
+
+              <h6>4. Third-Party Sharing</h6>
+              <p>We do not sell, rent, disclose, or distribute your private clinical data to any third party (such as commercial organizations, insurance companies, or advertising networks) without your explicit written authorization.</p>
+
+              <h6>5. Deletion Rights</h6>
+              <p>You have full authority over your data. You may delete individual test records or clear your entire prediction history at any time through the History interface.</p>
+            {% else %}
+              <h6>1. Komitmen Terhadap Kerahasiaan Data</h6>
+              <p>Di HeartGuard, kami memprioritaskan kerahasiaan rekam medis Anda. Kebijakan Privasi ini merinci cara kami mengelola, menyimpan, dan melindungi informasi klinis Anda.</p>
+
+              <h6>2. Data yang Kami Kumpulkan</h6>
+              <p>Kami hanya mengumpulkan parameter klinis yang diperlukan untuk memproses analisis risiko penyakit jantung (seperti tekanan darah, kolesterol, usia, jenis kelamin, dan hasil ECG). Data ini disimpan secara aman dan dihubungkan langsung ke akun pengguna Anda.</p>
+
+              <h6>3. Enkripsi & Penyimpanan Data</h6>
+              <p>Data klinis Anda disimpan dalam database terenkripsi yang terlindung dari akses luar. Akses admin dibatasi hanya untuk staf verifikasi medis dan database administrator yang bersertifikat.</p>
+
+              <h6>4. Distribusi Data ke Pihak Ketiga</h6>
+              <p>Kami menjamin tidak akan pernah menjual, menyewakan, membagikan, atau mempublikasikan data medis pribadi Anda kepada pihak ketiga mana pun (seperti perusahaan asuransi, agensi pemasaran, dll.) tanpa izin tertulis dari Anda.</p>
+
+              <h6>5. Hak Penghapusan Data</h6>
+              <p>Anda memiliki kontrol penuh atas data Anda. Anda berhak menghapus riwayat pemeriksaan klinis secara permanen dari server kami kapan saja melalui menu "Riwayat".</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Ketentuan Layanan / Terms of Service -->
+    <div class="modal fade modal-custom" id="termsOfServiceModal" tabindex="-1" aria-labelledby="termsOfServiceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="termsOfServiceModalLabel">
+              <i class="bi bi-file-earmark-text-fill me-2" style="color: var(--lime);"></i>
+              {% if current_lang == 'en' %}Terms of Service & Disclaimer{% else %}Ketentuan Layanan & Disclaimer Hukum{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-start">
+            {% if current_lang == 'en' %}
+              <h6>1. Use of the System</h6>
+              <p>HeartGuard is a clinical decision support and screening application. By accessing this platform, you agree to comply with the terms and conditions outlined below.</p>
+
+              <h6>2. Medical Disclaimer (Critical)</h6>
+              <p><strong>The prediction outputs are NOT a replacement for professional clinical advice, diagnostic tests, or actual therapeutic plans.</strong> The analysis is based on statistical patterns from historical data and does not constitute a certified diagnosis. Do not make any changes to your medication or cardiac healthcare plan without consulting a physician.</p>
+
+              <h6>3. User Input Accuracy</h6>
+              <p>You agree to provide accurate, truthful clinical parameters to the prediction tool. Inaccurate inputs will result in skewed risk calculations and recommendations.</p>
+
+              <h6>4. Limitation of Liability</h6>
+              <p>The developers, universities, clinical partners, and system administrators of HeartGuard shall not be liable for any health decisions, outcomes, or clinical events occurring as a result of using or relying on this system's risk predictions.</p>
+            {% else %}
+              <h6>1. Ketentuan Penggunaan Sistem</h6>
+              <p>HeartGuard adalah sistem pendukung keputusan klinis dan penapisan dini. Dengan menggunakan aplikasi ini, Anda setuju untuk mematuhi seluruh ketentuan penggunaan yang tercantum di bawah ini.</p>
+
+              <h6>2. Disclaimer Medis (PENTING)</h6>
+              <p><strong>Hasil prediksi dari sistem ini BUKANLAH pengganti diagnosis medis profesional, konsultasi langsung, atau terapi dokter.</strong> Analisis didasarkan pada pola statistik data klinis historis dan tidak boleh dianggap sebagai rujukan diagnosis mutlak. Jangan pernah mengubah dosis obat atau rencana perawatan medis jantung Anda tanpa berkonsultasi langsung dengan dokter spesialis.</p>
+
+              <h6>3. Keakuratan Data Input</h6>
+              <p>Pengguna wajib memberikan data klinis medis yang akurat dan sesuai rekam medis terbaru. Input data yang tidak valid atau asal-asalan akan mengakibatkan persentase risiko tidak akurat dan membahayakan keselamatan evaluasi mandiri Anda.</p>
+
+              <h6>4. Batasan Tanggung Jawab</h6>
+              <p>Pengembang, institusi universitas, mitra klinik, dan pengelola sistem HeartGuard tidak bertanggung jawab atas segala konsekuensi medis, keputusan klinis, atau insiden kesehatan apa pun yang timbul akibat ketergantungan atau penyalahgunaan hasil prediksi dari aplikasi ini.</p>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
   </div> <!-- /main-wrapper -->
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

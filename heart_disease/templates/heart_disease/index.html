@@ -1,4 +1,5 @@
 {% extends 'heart_disease/base.html' %}
+{% load static %}
 
 {% block title %}HeartGuard – Beranda{% endblock %}
 
@@ -489,7 +490,200 @@
     100% { opacity: 0; transform: scale(0); }
   }
 
-  /* Simulator Styles Removed */
+  /* ── Homepage Premium Footer Styles ── */
+  .footer-contact-section {
+    padding: 6rem 0 4rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .contact-info-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 1.8rem;
+  }
+  
+  .contact-icon-circle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  
+  .contact-info-item:hover .contact-icon-circle {
+    transform: scale(1.1) rotate(10deg);
+  }
+  
+  .social-circle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .social-circle-btn:hover {
+    background: var(--lime);
+    color: #0A0A0A !important;
+    border-color: var(--lime);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.4);
+  }
+  
+  /* Map container styling */
+  .map-container-wrap {
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    margin: 3rem 0;
+    position: relative;
+  }
+  
+  .map-container-wrap iframe {
+    width: 100%;
+    height: 400px;
+    border: 0;
+    display: block;
+  }
+  
+
+
+  /* Multi-column Links Footer */
+  .footer-links-wrap {
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border);
+    background: #0A0A0A;
+    margin-top: 5rem;
+    position: relative;
+  }
+
+  .footer-links-wrap::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.25), transparent);
+  }
+
+  .footer-logo-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+  }
+
+  .footer-logo-title span {
+    color: var(--lime);
+    text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
+  }
+
+  .footer-link-col-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-link-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-link-ul li {
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-link-ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .footer-link-ul a:hover {
+    color: var(--lime) !important;
+    padding-left: 4px;
+  }
+
+  /* Premium Glassmorphic Modals */
+  .modal-custom .modal-content {
+    background: rgba(15, 17, 15, 0.95) !important;
+    border: 1px solid rgba(var(--primary-rgb), 0.2) !important;
+    border-radius: 24px !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(var(--primary-rgb), 0.1) !important;
+  }
+  .modal-custom .modal-header {
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+    padding: 1.5rem 2rem;
+  }
+  .modal-custom .modal-footer {
+    border-top: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+    padding: 1.25rem 2rem;
+  }
+  .modal-custom .modal-title {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .modal-custom .modal-body {
+    padding: 2rem;
+    color: #dedede;
+    font-size: 0.95rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .modal-custom .modal-body h6 {
+    font-weight: 700;
+    color: var(--lime);
+    margin-top: 1.4rem;
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+  }
+  .modal-custom .modal-body h6:first-of-type {
+    margin-top: 0;
+  }
+  .modal-custom .modal-body p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: #b0b0b0;
+  }
+  .modal-custom .modal-body ul, .modal-custom .modal-body ol {
+    margin-bottom: 1.2rem;
+    padding-left: 1.2rem;
+  }
+  .modal-custom .modal-body li {
+    margin-bottom: 0.6rem;
+    line-height: 1.6;
+    color: #b0b0b0;
+  }
+  .modal-custom .modal-body strong {
+    color: #fff;
+  }
+  .modal-custom .btn-close {
+    filter: invert(1) grayscale(1) brightness(2);
+  }
 </style>
 {% endblock %}
 
@@ -1131,5 +1325,167 @@
       `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` 
       : '170, 255, 0';
   }
+</script>
+{% endblock %}
+
+{% block footer %}
+<section class="footer-contact-section" id="contact-section">
+  <div class="container">
+    
+    <!-- Title -->
+    <div class="text-center mb-5">
+      <h2 class="section-title">{% if current_lang == 'en' %}Contact Us{% else %}Hubungi Kami{% endif %}</h2>
+      <p class="section-sub">{% if current_lang == 'en' %}We would love to hear from you.{% else %}Kami Senang Mendengar Dari Anda.{% endif %}</p>
+    </div>
+
+    <!-- Contact Row -->
+    <div class="row g-5 align-items-stretch">
+      <!-- Left: Get in touch -->
+      <div class="col-lg-5 d-flex flex-column justify-content-between py-2">
+        <div>
+          <h4 class="fw-extrabold text-white mb-3" style="font-size:1.8rem; font-weight:800; letter-spacing:-0.5px;">{% if current_lang == 'en' %}Get in touch{% else %}Mari Terhubung{% endif %}</h4>
+          <p class="text-muted mb-5">{% if current_lang == 'en' %}Feel free to reach out to us with any questions, inquiries, or feedback. Our clinical and systems team will respond as soon as possible.{% else %}Silakan Hubungi Kami Untuk Pertanyaan, Informasi, Atau Masukan. Tim Klinis Dan Sistem Kami Akan Merespons Secepatnya.{% endif %}</p>
+          
+          <!-- Location -->
+          <div class="contact-info-item">
+            <div class="contact-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6;">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div>
+              <div class="fw-bold text-white" style="font-size:0.95rem;">{% if current_lang == 'en' %}Location{% else %}Lokasi{% endif %}</div>
+              <div class="text-muted small">Jalan Spadem, Merauke, Papua Selatan, Indonesia</div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="contact-info-item">
+            <div class="contact-icon-circle" style="background:rgba(52, 211, 153, 0.15); color:#34D399;">
+              <i class="bi bi-envelope-fill"></i>
+            </div>
+            <div>
+              <div class="fw-bold text-white" style="font-size:0.95rem;">Email</div>
+              <div class="text-muted small">info@heartguard.com</div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="contact-info-item">
+            <div class="contact-icon-circle" style="background:rgba(239, 68, 68, 0.15); color:#EF4444;">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div>
+              <div class="fw-bold text-white" style="font-size:0.95rem;">{% if current_lang == 'en' %}Call us{% else %}Hubungi Kami{% endif %}</div>
+              <div class="text-muted small">+62 123 356 7890<br>+62 123 356 789(Fax)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Media -->
+        <div class="mt-4">
+          <h6 class="text-uppercase text-muted font-weight-800 mb-3" style="font-size:0.75rem; letter-spacing:1px; font-weight:700;">{% if current_lang == 'en' %}Follow our social media{% else %}Ikuti Media Sosial Kami{% endif %}</h6>
+          <div class="d-flex">
+            <a href="#" class="social-circle-btn"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-circle-btn"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-circle-btn"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-circle-btn"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Send a message Form -->
+      <div class="col-lg-7">
+        <div class="card-custom p-4 p-md-5 h-100" style="background: rgba(18, 20, 18, 0.65); border: 1px solid rgba(255,255,255,0.06); border-radius:24px; backdrop-filter: blur(15px);">
+          <h4 class="fw-extrabold text-white mb-4" style="font-weight:800; letter-spacing:-0.5px;">{% if current_lang == 'en' %}Send a message{% else %}Kirim Pesan{% endif %}</h4>
+          
+          <form id="contact-form" onsubmit="handleContactSubmit(event)">
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <label class="form-label-custom">{% if current_lang == 'en' %}Name{% else %}Nama{% endif %}</label>
+                <input type="text" class="form-control-custom w-100" placeholder="Name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">{% if current_lang == 'en' %}Company{% else %}Perusahaan{% endif %}</label>
+                <input type="text" class="form-control-custom w-100" placeholder="Company">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">{% if current_lang == 'en' %}Phone{% else %}Telepon{% endif %}</label>
+                <input type="tel" class="form-control-custom w-100" placeholder="Phone">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Email</label>
+                <input type="email" class="form-control-custom w-100" placeholder="Email" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label-custom">{% if current_lang == 'en' %}Subject{% else %}Subjek{% endif %}</label>
+                <input type="text" class="form-control-custom w-100" placeholder="Subject" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label-custom">{% if current_lang == 'en' %}Message{% else %}Pesan{% endif %}</label>
+                <textarea class="form-control-custom w-100" rows="4" placeholder="Message" required></textarea>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary-custom w-100 py-3" id="contact-submit-btn">
+              <i class="bi bi-send-fill me-2"></i> {% if current_lang == 'en' %}SEND MESSAGE{% else %}KIRIM PESAN{% endif %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map: Spadem Merauke -->
+    <div class="map-container-wrap">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.437194689408!2d140.4071424!3d-8.4988736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d17c37617b07db3%3A0xe54e0ad52f82ba1c!2sSpadem%2C%20Kec.%20Merauke%2C%20Kabupaten%20Merauke%2C%20Papua!5e0!3m2!1sid!2sid!4v1717887723901!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+
+  </div>
+</section>
+
+{{ block.super }}
+
+<!-- Toast Notifications for Simulated Form Actions -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+  <div id="footer-toast" class="toast align-items-center text-dark bg-white border-0 rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body fw-bold">
+        <!-- Message filled by JS -->
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showToast(message) {
+    const toastEl = document.getElementById('footer-toast');
+    if (!toastEl) return;
+    const body = toastEl.querySelector('.toast-body');
+    body.textContent = message;
+    
+    // Set matching theme color line or border
+    toastEl.style.borderLeft = '4px solid var(--lime)';
+    
+    const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+    toast.show();
+  }
+
+  function handleContactSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitBtn = document.getElementById('contact-submit-btn');
+    const oldHtml = submitBtn.innerHTML;
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> SENDING...';
+    
+    setTimeout(() => {
+      showToast('{% if current_lang == "en" %}Message sent successfully! We will get back to you shortly.{% else %}Pesan berhasil dikirim! Kami akan menghubungi Anda segera.{% endif %}');
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = oldHtml;
+    }, 1200);
+  }
+
 </script>
 {% endblock %}

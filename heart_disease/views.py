@@ -444,14 +444,13 @@ def social_login_callback(request, provider):
         user.first_name = name_parts[0]
         if len(name_parts) > 1:
             user.last_name = name_parts[1]
-        user.is_staff = (role == 'Admin')
+        user.is_staff = False
         user.save()
     else:
         name_parts = name.split(' ', 1)
         user.first_name = name_parts[0]
         if len(name_parts) > 1:
             user.last_name = name_parts[1]
-        user.is_staff = (role == 'Admin')
         user.save()
         
     login(request, user)
@@ -792,4 +791,30 @@ def get_lifestyle_recommendations(data, lang='id'):
             })
 
     return recs
+
+
+@login_required(login_url='login')
+def theme_selection_view(request):
+    from heart_disease.models import UserProfile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        selected_theme = request.POST.get('theme', 'green')
+        if selected_theme in ['blue', 'green', 'red', 'purple']:
+            profile.theme = selected_theme
+            profile.save()
+            
+            from heart_disease.translations import TRANSLATIONS
+            lang = request.session.get('lang', 'id')
+            t = TRANSLATIONS.get(lang, TRANSLATIONS['id'])
+            success_msg = t.get('theme_saved', 'Tema warna berhasil diperbarui!')
+            
+            messages.success(request, success_msg)
+            return redirect('theme_selection')
+            
+    context = {
+        'profile': profile,
+    }
+    return render(request, 'heart_disease/theme_selection.html', context)
+
 

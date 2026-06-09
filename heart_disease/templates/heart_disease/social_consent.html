@@ -356,36 +356,6 @@
       border-color: var(--lime);
     }
 
-    /* ── Role Selection ── */
-    .role-section {
-      margin-bottom: 1.8rem;
-    }
-    .role-toggle {
-      display: flex;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 4px;
-      gap: 4px;
-    }
-    .role-btn {
-      flex: 1;
-      padding: 0.5rem 0;
-      border: none;
-      border-radius: 9px;
-      font-family: var(--font);
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: transparent;
-      color: var(--muted);
-    }
-    .role-btn.active {
-      background: var(--lime);
-      color: var(--black);
-      box-shadow: 0 4px 12px rgba(170,255,0,0.2);
-    }
 
     /* ── Actions ── */
     .actions {
@@ -518,18 +488,6 @@
           </div>
         </div>
 
-        <!-- Role Selection -->
-        <div class="role-section">
-          <div class="section-label">{{ t.consent_select_role }}</div>
-          <div class="role-toggle">
-            <button type="button" class="role-btn active" id="role-user-btn" onclick="setRole('User')">
-              <i class="bi bi-person-fill"></i> {{ t.consent_role_patient }}
-            </button>
-            <button type="button" class="role-btn" id="role-admin-btn" onclick="setRole('Admin')">
-              <i class="bi bi-shield-fill-check"></i> {{ t.consent_role_admin }}
-            </button>
-          </div>
-        </div>
 
         <!-- Action Buttons -->
         <div class="actions">
@@ -611,20 +569,6 @@
       document.getElementById('submit-name').value = customName ? customName : 'Custom User';
     }
 
-    function setRole(role) {
-      document.getElementById('submit-role').value = role;
-      
-      const userBtn = document.getElementById('role-user-btn');
-      const adminBtn = document.getElementById('role-admin-btn');
-      
-      if (role === 'Admin') {
-        adminBtn.classList.add('active');
-        userBtn.classList.remove('active');
-      } else {
-        userBtn.classList.add('active');
-        adminBtn.classList.remove('active');
-      }
-    }
 
     document.getElementById('consent-form').addEventListener('submit', function(e) {
       const emailVal = document.getElementById('submit-email').value.trim();

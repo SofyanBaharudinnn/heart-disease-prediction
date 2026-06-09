@@ -20,3 +20,18 @@ def translation_processor(request):
         'feature_info': localized_feature_info
     }
 
+
+def theme_processor(request):
+    from heart_disease.models import UserProfile
+    theme = 'green'
+    if hasattr(request, 'user') and request.user.is_authenticated:
+        try:
+            profile, created = UserProfile.objects.get_or_create(user=request.user)
+            theme = profile.theme
+        except Exception:
+            pass
+    return {
+        'current_theme': theme
+    }
+
+
