@@ -1,0 +1,23 @@
+=== process_exception at 2026-06-09 16:42:14 ===
+Path: /manage-inquiries/
+Method: GET
+Traceback (most recent call last):
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\heart_disease\views.py", line 934, in manage_inquiries_view
+    return render(request, 'heart_disease/manage_inquiries.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\venv\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sofyan-LEGION\Downloads\heart_disease_project\heart_disease_project\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: heart_disease/manage_inquiries.html
+--------------------------------------------------

@@ -8,7 +8,10 @@ import socket
 from django.urls import reverse
 # pyrefly: ignore [missing-import]
 from django.shortcuts import render, redirect, get_object_or_404
+# pyrefly: ignore [missing-import]
 from django.core.mail import send_mail
+# pyrefly: ignore [missing-import]
+from django.utils import timezone
 # pyrefly: ignore [missing-import]
 from django.contrib import messages
 # pyrefly: ignore [missing-import]
@@ -114,8 +117,6 @@ def dashboard(request):
     risk_med = PredictionHistory.objects.filter(risk_level='Sedang').count()
     risk_high = PredictionHistory.objects.filter(risk_level='Tinggi').count()
 
-    contact_messages = ContactMessage.objects.all().order_by('-created_at')[:5]
-
     context = {
         'dataset_size': dataset_size,
         'total_predictions': total_predictions,
@@ -126,7 +127,6 @@ def dashboard(request):
         'risk_high': risk_high,
         'last_metrics': last_metrics,
         'history':      history,
-        'contact_messages': contact_messages,
     }
     return render(request, 'heart_disease/dashboard.html', context)
 
@@ -919,6 +919,20 @@ def reply_contact_view(request, id):
             'replied_at': msg.replied_at.strftime('%d/%m %H:%M')
         })
     except Exception as e:
+        import traceback
+        with open('error_log.txt', 'a') as f:
+            f.write(f"=== Exception in reply_contact_view at {timezone.now()} ===\n")
+            traceback.print_exc(file=f)
+            f.write("-" * 50 + "\n")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@user_passes_test(is_admin, login_url='login')
+def manage_inquiries_view(request):
+    contact_messages = ContactMessage.objects.all().order_by('-created_at')
+    context = {
+        'contact_messages': contact_messages,
+    }
+    return render(request, 'heart_disease/manage_inquiries.html', context)
 
 

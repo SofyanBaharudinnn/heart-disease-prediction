@@ -1615,6 +1615,10 @@
       class="sidebar-link {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
       <i class="bi bi-people-fill"></i> <span>{{ t.menu_users }}</span>
     </a>
+    <a href="{% url 'manage_inquiries' %}"
+      class="sidebar-link {% if request.resolver_match.url_name == 'manage_inquiries' %}active{% endif %}">
+      <i class="bi bi-chat-right-text-fill"></i> <span>{{ t.menu_inquiries }}</span>
+    </a>
     {% endif %}
     {% endif %}
 

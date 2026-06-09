@@ -75,4 +75,35 @@ class RateLimitMiddleware:
         request_history.append(now)
         cache.set(cache_key, request_history, window)
 
-        return self.get_response(request)
+        try:
+            response = self.get_response(request)
+            if response.status_code >= 400:
+                with open('error_log.txt', 'a') as f:
+                    f.write(f"=== Error response {response.status_code} at {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n")
+                    f.write(f"Path: {request.path}\n")
+                    f.write(f"Method: {request.method}\n")
+                    f.write(f"User: {request.user.username if request.user.is_authenticated else 'Anonymous'}\n")
+                    if hasattr(response, 'content'):
+                        f.write(f"Content: {response.content[:1000].decode('utf-8', errors='ignore')}\n")
+                    f.write("-" * 50 + "\n")
+            return response
+        except Exception as e:
+            import traceback
+            with open('error_log.txt', 'a') as f:
+                f.write(f"=== Exception at {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n")
+                f.write(f"Path: {request.path}\n")
+                f.write(f"Method: {request.method}\n")
+                traceback.print_exc(file=f)
+                f.write("-" * 50 + "\n")
+            raise
+
+    def process_exception(self, request, exception):
+        import traceback
+        with open('error_log.txt', 'a') as f:
+            f.write(f"=== process_exception at {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n")
+            f.write(f"Path: {request.path}\n")
+            f.write(f"Method: {request.method}\n")
+            traceback.print_exc(file=f)
+            f.write("-" * 50 + "\n")
+        return None
+

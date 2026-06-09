@@ -36,4 +36,5 @@ urlpatterns = [
     path('social-login/<str:provider>/callback/', views.social_login_callback, name='social_login_callback'),
     path('contact/submit/', views.submit_contact_view, name='submit_contact_form'),
     path('contact/reply/<int:id>/', views.reply_contact_view, name='reply_contact'),
+    path('manage-inquiries/', views.manage_inquiries_view, name='manage_inquiries'),
 ]
