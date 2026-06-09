@@ -1457,17 +1457,46 @@
 </div>
 
 <script>
-  function showToast(message) {
-    const toastEl = document.getElementById('footer-toast');
-    if (!toastEl) return;
-    const body = toastEl.querySelector('.toast-body');
-    body.textContent = message;
+  function showToast(message, headerText = "") {
+    const toastContainer = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
+    if (!toastContainer) return;
     
-    // Set matching theme color line or border
+    // Create new toast element dynamically
+    const toastEl = document.createElement('div');
+    toastEl.className = 'toast align-items-center text-dark bg-white border-0 rounded-3 mb-2';
+    toastEl.setAttribute('role', 'alert');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
     toastEl.style.borderLeft = '4px solid var(--lime)';
+    toastEl.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)';
     
-    const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+    let headerHtml = '';
+    if (headerText) {
+      headerHtml = `<div class="toast-header border-bottom-0 bg-transparent py-2 pb-0">
+        <strong class="me-auto text-primary" style="color: var(--lime) !important; font-weight:800;"><i class="bi bi-robot me-1"></i> ${headerText}</strong>
+        <small class="text-muted">Just now</small>
+      </div>`;
+    }
+    
+    toastEl.innerHTML = `
+      ${headerHtml}
+      <div class="d-flex">
+        <div class="toast-body fw-bold" style="font-size: 0.88rem; line-height: 1.5; color: #333;">
+          ${message}
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    `;
+    
+    toastContainer.appendChild(toastEl);
+    
+    const toast = new bootstrap.Toast(toastEl, { delay: 6000 });
     toast.show();
+    
+    // Remove element from DOM once hidden
+    toastEl.addEventListener('hidden.bs.toast', () => {
+      toastEl.remove();
+    });
   }
 
   function handleContactSubmit(event) {
@@ -1475,6 +1504,10 @@
     const form = event.target;
     const submitBtn = document.getElementById('contact-submit-btn');
     const oldHtml = submitBtn.innerHTML;
+    
+    // Extract user's name from form
+    const nameInput = form.querySelector('input[placeholder="Name"]');
+    const name = nameInput ? nameInput.value : '';
     
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> SENDING...';
@@ -1484,6 +1517,13 @@
       form.reset();
       submitBtn.disabled = false;
       submitBtn.innerHTML = oldHtml;
+      
+      // Auto-reply after 2 seconds
+      setTimeout(() => {
+        const replyHeader = '{% if current_lang == "en" %}HeartGuard System Bot{% else %}Bot Sistem HeartGuard{% endif %}';
+        const replyMsg = `{% if current_lang == "en" %}Auto-Reply: Hello ${name}, thank you for contacting us! We have received your inquiry. A team member will respond to your email address within 24 hours. For immediate medical screening, please use the Predict tool.{% else %}Balasan Otomatis: Halo ${name}, terima kasih telah menghubungi kami! Kami telah menerima pesan Anda. Tim kami akan membalas ke email Anda dalam waktu 24 jam. Untuk pemeriksaan medis segera, silakan gunakan fitur Prediksi.{% endif %}`;
+        showToast(replyMsg, replyHeader);
+      }, 2000);
     }, 1200);
   }
 
