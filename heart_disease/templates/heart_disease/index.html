@@ -692,6 +692,18 @@
   .fact-dot.active {
     background: var(--lime) !important;
   }
+  /* ── FAQ Accordion Styles ── */
+  .faq-item-card:hover {
+    border-color: rgba(170, 255, 0, 0.25) !important;
+    box-shadow: 0 4px 20px rgba(170, 255, 0, 0.05);
+  }
+  .faq-item-card.active {
+    border-color: var(--lime) !important;
+    box-shadow: 0 8px 30px rgba(170, 255, 0, 0.12);
+  }
+  .faq-item-card.active .faq-trigger {
+    color: var(--lime) !important;
+  }
 </style>
 {% endblock %}
 
@@ -1470,7 +1482,7 @@
             </div>
             <div>
               <div class="fw-bold text-white" style="font-size:0.95rem;">{% if current_lang == 'en' %}Call us{% else %}Hubungi Kami{% endif %}</div>
-              <div class="text-muted small">+62 123 356 7890<br>+62 123 356 789(Fax)</div>
+              <div class="text-muted small"><br>+62 123 356 789 (Fax)</div>
             </div>
           </div>
         </div>
@@ -1533,6 +1545,110 @@
     <div class="map-container-wrap">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.437194689408!2d140.4071424!3d-8.4988736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d17c37617b07db3%3A0xe54e0ad52f82ba1c!2sSpadem%2C%20Kec.%20Merauke%2C%20Kabupaten%20Merauke%2C%20Papua!5e0!3m2!1sid!2sid!4v1717887723901!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
+
+    <!-- Divider Line -->
+    <div class="my-5" style="height: 3px; background: rgba(255, 255, 255, 0.2); width: 100%; border-radius: 2px;"></div>
+
+    <!-- ── FAQ Section ── -->
+    <section class="mb-5 mt-4" id="faq-section">
+      <div class="text-center mb-5">
+        <h2 class="section-title">{% if current_lang == 'en' %}Frequently Asked Questions{% else %}Pertanyaan Umum (FAQ){% endif %}</h2>
+        <p class="section-sub">{% if current_lang == 'en' %}Everything you need to know about the HeartGuard prediction system and cardiovascular health.{% else %}Segala hal yang perlu Anda ketahui tentang sistem prediksi HeartGuard dan kesehatan kardiovaskular.{% endif %}</p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="faq-accordion-container">
+            
+            <!-- FAQ Item 1 -->
+            <div class="faq-item-card mb-3" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; overflow: hidden; transition: all 0.3s ease;">
+              <button type="button" class="faq-trigger w-100 d-flex justify-content-between align-items-center p-4" onclick="toggleFaq(this)" style="background: transparent; border: none; text-align: left; color: #fff; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; outline: none;">
+                <span>{% if current_lang == 'en' %}What is HeartGuard?{% else %}Apa itu HeartGuard?{% endif %}</span>
+                <i class="bi bi-plus-lg faq-icon text-lime" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.15);">
+                <div class="p-4 pt-0 text-muted" style="font-size: 0.92rem; line-height: 1.7; color: #b0b0b0 !important;">
+                  {% if current_lang == 'en' %}
+                    HeartGuard is an AI-powered (Machine Learning) heart disease risk prediction system using the Random Forest algorithm to analyze patient clinical data accurately and transparently.
+                  {% else %}
+                    HeartGuard adalah sistem prediksi risiko penyakit jantung berbasis kecerdasan buatan (Machine Learning) menggunakan algoritma Random Forest untuk menganalisis data klinis pasien secara akurat dan transparan.
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item-card mb-3" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; overflow: hidden; transition: all 0.3s ease;">
+              <button type="button" class="faq-trigger w-100 d-flex justify-content-between align-items-center p-4" onclick="toggleFaq(this)" style="background: transparent; border: none; text-align: left; color: #fff; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; outline: none;">
+                <span>{% if current_lang == 'en' %}How accurate is the prediction?{% else %}Seberapa akurat hasil prediksinya?{% endif %}</span>
+                <i class="bi bi-plus-lg faq-icon text-lime" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.15);">
+                <div class="p-4 pt-0 text-muted" style="font-size: 0.92rem; line-height: 1.7; color: #b0b0b0 !important;">
+                  {% if current_lang == 'en' %}
+                    Our model is trained on gold-standard datasets and validated using a 5-Fold Cross Validation (Multi-Holdout) method to generate stable performance estimates with an average accuracy rate exceeding 85%.
+                  {% else %}
+                    Model kami dilatih menggunakan dataset standar emas dan divalidasi dengan metode 5-Fold Cross Validation (Multi-Holdout) untuk menghasilkan estimasi performa yang stabil dengan tingkat akurasi rata-rata di atas 85%.
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item-card mb-3" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; overflow: hidden; transition: all 0.3s ease;">
+              <button type="button" class="faq-trigger w-100 d-flex justify-content-between align-items-center p-4" onclick="toggleFaq(this)" style="background: transparent; border: none; text-align: left; color: #fff; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; outline: none;">
+                <span>{% if current_lang == 'en' %}What clinical features are analyzed?{% else %}Fitur klinis apa saja yang dianalisis oleh sistem?{% endif %}</span>
+                <i class="bi bi-plus-lg faq-icon text-lime" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.15);">
+                <div class="p-4 pt-0 text-muted" style="font-size: 0.92rem; line-height: 1.7; color: #b0b0b0 !important;">
+                  {% if current_lang == 'en' %}
+                    The system analyzes 13 key medical features, including age, sex, chest pain type (cp), blood pressure (trestbps), cholesterol (chol), blood sugar (fbs), electrocardiographic results (restecg), max heart rate (thalach), exercise-induced angina (exang), ST depression (oldpeak), peak ST slope (slope), number of major vessels (ca), and thalassemia (thal).
+                  {% else %}
+                    Sistem menganalisis 13 fitur medis utama, termasuk usia, jenis kelamin, tipe nyeri dada (cp), tekanan darah (trestbps), kolesterol (chol), gula darah (fbs), elektrokardiogram (restecg), detak jantung maksimal (thalach), angina akibat olahraga (exang), depresi ST (oldpeak), kemiringan puncak ST (slope), jumlah pembuluh darah utama (ca), dan thalasemia (thal).
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item-card mb-3" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; overflow: hidden; transition: all 0.3s ease;">
+              <button type="button" class="faq-trigger w-100 d-flex justify-content-between align-items-center p-4" onclick="toggleFaq(this)" style="background: transparent; border: none; text-align: left; color: #fff; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; outline: none;">
+                <span>{% if current_lang == 'en' %}Can this system replace a doctor?{% else %}Apakah sistem ini bisa menggantikan dokter spesialis?{% endif %}</span>
+                <i class="bi bi-plus-lg faq-icon text-lime" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.15);">
+                <div class="p-4 pt-0 text-muted" style="font-size: 0.92rem; line-height: 1.7; color: #b0b0b0 !important;">
+                  {% if current_lang == 'en' %}
+                    No. HeartGuard is designed as an early screening tool to indicate potential risk levels. Final medical decisions and formal diagnoses should always be consulted with a cardiologist or professional healthcare provider.
+                  {% else %}
+                    Tidak. HeartGuard dirancang sebagai alat bantu penapisan awal (screening tool) untuk memberikan indikasi risiko. Keputusan medis akhir dan diagnosis resmi harus selalu dikonsultasikan dengan dokter spesialis jantung atau tenaga medis profesional.
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item-card mb-3" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; overflow: hidden; transition: all 0.3s ease;">
+              <button type="button" class="faq-trigger w-100 d-flex justify-content-between align-items-center p-4" onclick="toggleFaq(this)" style="background: transparent; border: none; text-align: left; color: #fff; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; outline: none;">
+                <span>{% if current_lang == 'en' %}Is patient clinical data kept safe?{% else %}Apakah data klinis pasien aman di sistem ini?{% endif %}</span>
+                <i class="bi bi-plus-lg faq-icon text-lime" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.15);">
+                <div class="p-4 pt-0 text-muted" style="font-size: 0.92rem; line-height: 1.7; color: #b0b0b0 !important;">
+                  {% if current_lang == 'en' %}
+                    Yes. We prioritize your data privacy. The input data you submit for prediction is processed locally and temporarily to generate evaluation reports, without being permanently stored or shared with third parties.
+                  {% else %}
+                    Ya. Kami memprioritaskan privasi data Anda. Data masukan yang Anda kirimkan untuk prediksi diolah secara lokal dan sementara untuk menghasilkan laporan evaluasi, tanpa disimpan secara permanen atau dibagikan ke pihak ketiga.
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Divider Line -->
     <div class="my-5" style="height: 3px; background: rgba(255, 255, 255, 0.2); width: 100%; border-radius: 2px;"></div>
@@ -1751,5 +1867,41 @@
     });
   }
 
+  function toggleFaq(trigger) {
+    const card = trigger.closest('.faq-item-card');
+    const content = card.querySelector('.faq-content');
+    const icon = card.querySelector('.faq-icon');
+    const isActive = card.classList.contains('active');
+
+    // Close all other FAQ items
+    document.querySelectorAll('.faq-item-card').forEach(otherCard => {
+      if (otherCard !== card) {
+        otherCard.classList.remove('active');
+        const otherContent = otherCard.querySelector('.faq-content');
+        if (otherContent) {
+          otherContent.style.maxHeight = '0px';
+        }
+        const otherIcon = otherCard.querySelector('.faq-icon');
+        if (otherIcon) {
+          otherIcon.style.transform = 'rotate(0deg)';
+        }
+      }
+    });
+
+    // Toggle current item
+    if (isActive) {
+      card.classList.remove('active');
+      content.style.maxHeight = '0px';
+      if (icon) {
+        icon.style.transform = 'rotate(0deg)';
+      }
+    } else {
+      card.classList.add('active');
+      content.style.maxHeight = content.scrollHeight + 'px';
+      if (icon) {
+        icon.style.transform = 'rotate(135deg)';
+      }
+    }
+  }
 </script>
 {% endblock %}
