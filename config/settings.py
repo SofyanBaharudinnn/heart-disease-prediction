@@ -22,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok.io',         # ngrok (legacy)
     'https://*.loca.lt',          # localtunnel
     'https://*.trycloudflare.com', # cloudflare tunnel
+    'https://*.pythonanywhere.com', # PythonAnywhere (gratis)
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
