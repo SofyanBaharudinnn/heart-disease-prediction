@@ -131,3 +131,94 @@ class RateLimitMiddlewareTests(TestCase):
             response = self.client.get(predict_url)
             self.assertNotEqual(response.status_code, 429)
 
+
+from heart_disease.models import ContactMessage
+
+class ManageInquiriesTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = User.objects.create_user(
+            username='admin_test',
+            email='admin@example.com',
+            password='password123'
+        )
+        self.admin_user.is_staff = True
+        self.admin_user.save()
+        
+        self.regular_user = User.objects.create_user(
+            username='regular_test',
+            email='user@example.com',
+            password='password123'
+        )
+        
+        self.inquiry = ContactMessage.objects.create(
+            name='Test Sender',
+            email='sender@example.com',
+            subject='Testing Subject',
+            message='Testing Message Body'
+        )
+
+    def test_anonymous_and_regular_user_cannot_access_manage_or_modify(self):
+        # Manage inquiries page
+        response = self.client.get(reverse('manage_inquiries'))
+        self.assertEqual(response.status_code, 302) # redirects to login
+        
+        self.client.login(username='regular_test', password='password123')
+        response = self.client.get(reverse('manage_inquiries'))
+        self.assertEqual(response.status_code, 302) # redirects to login because not is_staff
+        
+        # Edit inquiry POST
+        response = self.client.post(reverse('edit_inquiry', args=[self.inquiry.id]), {
+            'name': 'Malicious Edit'
+        })
+        self.assertEqual(response.status_code, 302)
+        
+        # Delete inquiry POST
+        response = self.client.post(reverse('delete_inquiry', args=[self.inquiry.id]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_can_edit_inquiry(self):
+        self.client.login(username='admin_test', password='password123')
+        edit_url = reverse('edit_inquiry', args=[self.inquiry.id])
+        
+        # Invalid payload (missing required)
+        response = self.client.post(edit_url, {
+            'name': 'Updated Name',
+            'email': '',
+            'subject': 'Updated Subject',
+            'message': 'Updated Message'
+        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 400)
+        
+        # Valid payload
+        response = self.client.post(edit_url, {
+            'name': 'Updated Name',
+            'email': 'updated@example.com',
+            'phone': '08123456789',
+            'company': 'Updated Company',
+            'subject': 'Updated Subject',
+            'message': 'Updated Message'
+        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        
+        # Verify changes in DB
+        self.inquiry.refresh_from_db()
+        self.assertEqual(self.inquiry.name, 'Updated Name')
+        self.assertEqual(self.inquiry.email, 'updated@example.com')
+        self.assertEqual(self.inquiry.phone, '08123456789')
+        self.assertEqual(self.inquiry.company, 'Updated Company')
+        self.assertEqual(self.inquiry.subject, 'Updated Subject')
+        self.assertEqual(self.inquiry.message, 'Updated Message')
+
+    def test_admin_can_delete_inquiry(self):
+        self.client.login(username='admin_test', password='password123')
+        delete_url = reverse('delete_inquiry', args=[self.inquiry.id])
+        
+        response = self.client.post(delete_url)
+        self.assertEqual(response.status_code, 302) # redirects to manage_inquiries
+        
+        # Verify deleted in DB
+        self.assertFalse(ContactMessage.objects.filter(id=self.inquiry.id).exists())
+
+

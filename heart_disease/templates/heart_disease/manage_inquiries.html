@@ -52,12 +52,23 @@
             </td>
             <td style="font-size:.8rem;color:var(--muted);">{{ msg.created_at|date:"d M Y, H:i" }}</td>
             <td>
-              <div class="d-flex justify-content-end">
+              <div class="d-flex justify-content-end gap-2">
                 <button class="btn btn-outline-custom btn-sm py-1 px-2 text-nowrap" 
                         style="font-size: 0.78rem;"
                         onclick="openReplyModal({{ msg.id }}, '{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}', '{{ msg.admin_reply|escapejs }}')">
                   <i class="bi bi-reply-fill"></i> {% if msg.reply_sent %}{% if current_lang == 'en' %}Edit Reply{% else %}Ubah Balasan{% endif %}{% else %}{% if current_lang == 'en' %}Reply{% else %}Balas{% endif %}{% endif %}
                 </button>
+                <button class="btn btn-outline-primary btn-sm py-1 px-2 text-nowrap" 
+                        style="font-size: 0.78rem;"
+                        onclick="openEditModal({{ msg.id }}, '{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.phone|default_if_none:""|escapejs }}', '{{ msg.company|default_if_none:""|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}')">
+                  <i class="bi bi-pencil-square"></i> {% if current_lang == 'en' %}Edit{% else %}Ubah{% endif %}
+                </button>
+                <form action="{% url 'delete_inquiry' msg.id %}" method="post" onsubmit="return confirm('{% if current_lang == 'en' %}Are you sure you want to delete this inquiry?{% else %}Yakin ingin menghapus pertanyaan ini?{% endif %}');" style="margin:0;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger btn-sm py-1 px-2 text-nowrap" style="font-size: 0.78rem;">
+                    <i class="bi bi-trash"></i> {% if current_lang == 'en' %}Delete{% else %}Hapus{% endif %}
+                  </button>
+                </form>
               </div>
             </td>
           </tr>
@@ -112,11 +123,62 @@
     </div>
   </div>
 </div>
+<!-- Modal: Ubah Pertanyaan / Edit Inquiry -->
+<div class="modal fade modal-custom" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">
+          <i class="bi bi-pencil-square me-2" style="color: var(--lime);"></i>
+          {% if current_lang == 'en' %}Edit Client Inquiry{% else %}Ubah Pertanyaan Klien{% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="edit-form" onsubmit="submitEditInquiry(event)">
+        {% csrf_token %}
+        <input type="hidden" id="edit-msg-id">
+        <div class="modal-body text-start">
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Name{% else %}Nama{% endif %}</label>
+            <input type="text" id="edit-name" class="form-control-custom w-100" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">Email</label>
+            <input type="email" id="edit-email" class="form-control-custom w-100" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Phone{% else %}Telepon{% endif %}</label>
+            <input type="text" id="edit-phone" class="form-control-custom w-100">
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Company{% else %}Instansi / Perusahaan{% endif %}</label>
+            <input type="text" id="edit-company" class="form-control-custom w-100">
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Subject{% else %}Subjek{% endif %}</label>
+            <input type="text" id="edit-subject" class="form-control-custom w-100" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">{% if current_lang == 'en' %}Message{% else %}Pesan{% endif %}</label>
+            <textarea id="edit-message" class="form-control-custom w-100" rows="5" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">{% if current_lang == 'en' %}Cancel{% else %}Batal{% endif %}</button>
+          <button type="submit" class="btn btn-primary-custom" id="edit-submit-btn">
+            <i class="bi bi-save-fill me-1"></i> {% if current_lang == 'en' %}Save Changes{% else %}Simpan Perubahan{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 let replyModalObj = null;
+let editModalObj = null;
 
 function openReplyModal(id, name, email, subject, message, existingReply) {
   document.getElementById('reply-msg-id').value = id;
@@ -128,6 +190,21 @@ function openReplyModal(id, name, email, subject, message, existingReply) {
     replyModalObj = new bootstrap.Modal(document.getElementById('replyModal'));
   }
   replyModalObj.show();
+}
+
+function openEditModal(id, name, email, phone, company, subject, message) {
+  document.getElementById('edit-msg-id').value = id;
+  document.getElementById('edit-name').value = name;
+  document.getElementById('edit-email').value = email;
+  document.getElementById('edit-phone').value = phone || '';
+  document.getElementById('edit-company').value = company || '';
+  document.getElementById('edit-subject').value = subject;
+  document.getElementById('edit-message').value = message;
+  
+  if (!editModalObj) {
+    editModalObj = new bootstrap.Modal(document.getElementById('editModal'));
+  }
+  editModalObj.show();
 }
 
 function submitAdminReply(event) {
@@ -181,6 +258,65 @@ function submitAdminReply(event) {
   .catch(error => {
     console.error('Error:', error);
     alert('Failed to send reply: ' + error.message);
+  })
+  .finally(() => {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = oldHtml;
+  });
+}
+
+function submitEditInquiry(event) {
+  event.preventDefault();
+  const id = document.getElementById('edit-msg-id').value;
+  const name = document.getElementById('edit-name').value;
+  const email = document.getElementById('edit-email').value;
+  const phone = document.getElementById('edit-phone').value;
+  const company = document.getElementById('edit-company').value;
+  const subject = document.getElementById('edit-subject').value;
+  const message = document.getElementById('edit-message').value;
+  
+  const submitBtn = document.getElementById('edit-submit-btn');
+  const oldHtml = submitBtn.innerHTML;
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Saving...';
+  
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('phone', phone);
+  formData.append('company', company);
+  formData.append('subject', subject);
+  formData.append('message', message);
+  formData.append('csrfmiddlewaretoken', document.querySelector('#edit-form [name=csrfmiddlewaretoken]').value);
+  
+  fetch(`/manage-inquiries/edit/${id}/`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => {
+    return response.json().then(data => {
+      if (!response.ok) {
+        throw new Error(data.message || `Server error (${response.status})`);
+      }
+      return data;
+    });
+  })
+  .then(data => {
+    if (data.status === 'success') {
+      alert(data.message || 'Changes saved successfully!');
+      editModalObj.hide();
+      window.location.reload();
+    } else {
+      alert(data.message || 'Error saving changes');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Failed to save changes: ' + error.message);
   })
   .finally(() => {
     submitBtn.disabled = false;

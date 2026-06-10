@@ -684,6 +684,14 @@
   .modal-custom .btn-close {
     filter: invert(1) grayscale(1) brightness(2);
   }
+  @media (min-width: 992px) {
+    .border-end-lg {
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  }
+  .fact-dot.active {
+    background: var(--lime) !important;
+  }
 </style>
 {% endblock %}
 
@@ -865,6 +873,8 @@
 
   </div>
 </section>
+
+
 
 <!-- ── Interactive Heart Anatomy Infographic ── -->
 <section class="container mb-5 mt-5" id="anatomy-section">
@@ -1325,6 +1335,91 @@
       `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` 
       : '170, 255, 0';
   }
+
+  // ── Fun Facts Carousel JavaScript ──
+  let currentFactIndex = 0;
+  const factItems = document.querySelectorAll('.fact-item');
+  const factDots = document.querySelectorAll('.fact-dot');
+  let factInterval;
+
+  function showFact(index) {
+    if (index === currentFactIndex) return;
+    
+    // Hide current fact item
+    const currentFact = factItems[currentFactIndex];
+    if (currentFact) {
+      currentFact.style.opacity = '0';
+      currentFact.style.transform = 'translateY(-10px)';
+    }
+    
+    // Update dots
+    if (factDots[currentFactIndex]) {
+      factDots[currentFactIndex].classList.remove('active');
+      factDots[currentFactIndex].style.width = '6px';
+      factDots[currentFactIndex].style.backgroundColor = 'rgba(255,255,255,0.2)';
+    }
+
+    setTimeout(() => {
+      if (currentFact) {
+        currentFact.classList.add('d-none');
+        currentFact.classList.remove('active');
+      }
+      
+      // Show new fact item
+      const nextFact = factItems[index];
+      if (nextFact) {
+        nextFact.classList.remove('d-none');
+        // Trigger reflow for transition
+        nextFact.offsetWidth;
+        nextFact.classList.add('active');
+        nextFact.style.opacity = '1';
+        nextFact.style.transform = 'translateY(0)';
+      }
+      
+      // Update new dot
+      if (factDots[index]) {
+        factDots[index].classList.add('active');
+        factDots[index].style.width = '16px';
+        factDots[index].style.backgroundColor = 'var(--lime)';
+      }
+      
+      currentFactIndex = index;
+    }, 400);
+  }
+
+  function nextFact() {
+    let nextIdx = (currentFactIndex + 1) % factItems.length;
+    showFact(nextIdx);
+    resetFactTimer();
+  }
+
+  function prevFact() {
+    let prevIdx = (currentFactIndex - 1 + factItems.length) % factItems.length;
+    showFact(prevIdx);
+    resetFactTimer();
+  }
+
+  function goToFact(index) {
+    showFact(index);
+    resetFactTimer();
+  }
+
+  function startFactTimer() {
+    factInterval = setInterval(nextFact, 6000);
+  }
+
+  function resetFactTimer() {
+    clearInterval(factInterval);
+    startFactTimer();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (factItems.length > 0) {
+      factItems[0].style.opacity = '1';
+      factItems[0].style.transform = 'translateY(0)';
+      startFactTimer();
+    }
+  });
 </script>
 {% endblock %}
 
@@ -1437,6 +1532,106 @@
     <!-- Map: Spadem Merauke -->
     <div class="map-container-wrap">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.437194689408!2d140.4071424!3d-8.4988736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d17c37617b07db3%3A0xe54e0ad52f82ba1c!2sSpadem%2C%20Kec.%20Merauke%2C%20Kabupaten%20Merauke%2C%20Papua!5e0!3m2!1sid!2sid!4v1717887723901!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <!-- Divider Line -->
+    <div class="my-5" style="height: 3px; background: rgba(255, 255, 255, 0.2); width: 100%; border-radius: 2px;"></div>
+
+    <!-- ── Fun Facts Carousel ── -->
+    <div id="facts-section" class="card-custom p-4 p-md-5 mt-4 mb-4" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(170, 255, 0, 0.15); border-radius: 28px; backdrop-filter: blur(20px); position: relative; overflow: hidden;">
+      <!-- Decorative background elements -->
+      <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(170, 255, 0, 0.08) 0%, transparent 70%); pointer-events: none; border-radius: 50%;"></div>
+      
+      <div class="row align-items-center gy-4">
+        <!-- Left side: Beating Neon Icon & Title -->
+        <div class="col-lg-4 text-center text-lg-start border-end-lg" style="border-color: rgba(255, 255, 255, 0.05); padding-bottom: 1rem;">
+          <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px; border-radius: 20px; background: rgba(170, 255, 0, 0.1); border: 1.5px solid rgba(170, 255, 0, 0.25); box-shadow: 0 0 20px rgba(170, 255, 0, 0.15);">
+            <i class="bi bi-lightbulb-fill text-lime icon-float" style="font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(170, 255, 0, 0.5));"></i>
+          </div>
+          <h3 style="font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 8px;">
+            {% if current_lang == 'en' %}Did You Know?{% else %}Tahukah Anda?{% endif %}
+          </h3>
+          <p class="text-muted mb-0" style="font-size: 0.9rem;">
+            {% if current_lang == 'en' %}Educational and interesting facts about cardiovascular health.{% else %}Fakta menarik dan edukatif seputar kesehatan kardiovaskular.{% endif %}
+          </p>
+        </div>
+
+        <!-- Right side: Carousel Facts -->
+        <div class="col-lg-8">
+          <div class="position-relative px-md-4" style="min-height: 120px; display: flex; align-items: center;">
+            
+            <!-- Fact Items -->
+            <div class="fact-carousel-container w-100">
+              <!-- Fact 1 -->
+              <div class="fact-item active" style="transition: opacity 0.5s ease, transform 0.5s ease;">
+                <p class="fact-text text-white mb-0" style="font-size: 1.15rem; font-weight: 600; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                  {% if current_lang == 'en' %}
+                    Your heart beats about 100,000 times a day and pumps about 2,000 gallons (7,570 liters) of blood.
+                  {% else %}
+                    Jantung Anda berdetak sekitar 100.000 kali setiap hari dan memompa sekitar 7.570 liter darah ke seluruh tubuh.
+                  {% endif %}
+                </p>
+              </div>
+              <!-- Fact 2 -->
+              <div class="fact-item d-none" style="transition: opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(10px);">
+                <p class="fact-text text-white mb-0" style="font-size: 1.15rem; font-weight: 600; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                  {% if current_lang == 'en' %}
+                    Heart disease is the leading cause of death globally, but up to 80% of cases are preventable through healthy lifestyle choices.
+                  {% else %}
+                    Penyakit jantung adalah penyebab kematian nomor satu secara global, namun 80% kasus dapat dicegah dengan gaya hidup sehat.
+                  {% endif %}
+                </p>
+              </div>
+              <!-- Fact 3 -->
+              <div class="fact-item d-none" style="transition: opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(10px);">
+                <p class="fact-text text-white mb-0" style="font-size: 1.15rem; font-weight: 600; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                  {% if current_lang == 'en' %}
+                    Laughter is good for your heart! It can increase your blood flow by 20% and reduce stress on the blood vessel linings.
+                  {% else %}
+                    Tertawa baik untuk jantung Anda! Ini dapat meningkatkan aliran darah sebesar 20% dan mengurangi stres pada dinding pembuluh darah.
+                  {% endif %}
+                </p>
+              </div>
+              <!-- Fact 4 -->
+              <div class="fact-item d-none" style="transition: opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(10px);">
+                <p class="fact-text text-white mb-0" style="font-size: 1.15rem; font-weight: 600; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                  {% if current_lang == 'en' %}
+                    Monday morning is the most common time for heart attacks, often linked to circadian rhythms and early-week stress.
+                  {% else %}
+                    Senin pagi adalah waktu paling sering terjadinya serangan jantung, dikaitkan dengan ritme sirkadian dan stres awal pekan.
+                  {% endif %}
+                </p>
+              </div>
+              <!-- Fact 5 -->
+              <div class="fact-item d-none" style="transition: opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(10px);">
+                <p class="fact-text text-white mb-0" style="font-size: 1.15rem; font-weight: 600; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                  {% if current_lang == 'en' %}
+                    Your heart rate can synchronize with the tempo of the music you listen to, aiding cardiovascular relaxation.
+                  {% else %}
+                    Detak jantung Anda dapat menyesuaikan dengan tempo musik yang Anda dengarkan, membantu merelaksasi sistem kardiovaskular.
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="position-absolute" style="bottom: -42px; right: 24px;">
+              <button class="btn btn-sm btn-outline-custom px-3 py-1.5 d-flex align-items-center" onclick="nextFact()" style="border-color: rgba(170,255,0,0.25); color: var(--lime); background: transparent; font-size: 0.75rem; font-weight: 700; border-radius: 20px; letter-spacing: 0.5px; transition: all 0.3s ease;">
+                {% if current_lang == 'en' %}NEXT FACT{% else %}FAKTA BERIKUTNYA{% endif %} <i class="bi bi-arrow-right ms-2" style="font-size: 0.85rem;"></i>
+              </button>
+            </div>
+
+            <!-- Dots -->
+            <div class="d-flex gap-2 position-absolute" style="bottom: -36px; left: 24px;">
+              <div class="fact-dot active" onclick="goToFact(0)" style="width: 16px; height: 6px; border-radius: 3px; background: var(--lime); cursor: pointer; transition: all 0.3s ease;"></div>
+              <div class="fact-dot" onclick="goToFact(1)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
+              <div class="fact-dot" onclick="goToFact(2)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
+              <div class="fact-dot" onclick="goToFact(3)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
+              <div class="fact-dot" onclick="goToFact(4)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
 

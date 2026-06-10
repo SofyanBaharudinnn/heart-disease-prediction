@@ -936,3 +936,48 @@ def manage_inquiries_view(request):
     return render(request, 'heart_disease/manage_inquiries.html', context)
 
 
+@user_passes_test(is_admin, login_url='login')
+@require_POST
+def edit_inquiry_view(request, id):
+    try:
+        msg = get_object_or_404(ContactMessage, id=id)
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip() or None
+        company = request.POST.get('company', '').strip() or None
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+        
+        if not name or not email or not subject or not message:
+            return JsonResponse({'status': 'error', 'message': 'All required fields must be filled.'}, status=400)
+            
+        msg.name = name
+        msg.email = email
+        msg.phone = phone
+        msg.company = company
+        msg.subject = subject
+        msg.message = message
+        msg.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Pertanyaan berhasil diubah!' if request.session.get('lang', 'id') == 'id' else 'Inquiry updated successfully!'
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@user_passes_test(is_admin, login_url='login')
+@require_POST
+def delete_inquiry_view(request, id):
+    try:
+        msg = get_object_or_404(ContactMessage, id=id)
+        msg.delete()
+        lang = request.session.get('lang', 'id')
+        success_msg = 'Pertanyaan berhasil dihapus!' if lang == 'id' else 'Inquiry successfully deleted!'
+        messages.success(request, success_msg)
+    except Exception as e:
+        messages.error(request, f'Gagal menghapus pertanyaan: {str(e)}' if request.session.get('lang', 'id') == 'id' else f'Failed to delete inquiry: {str(e)}')
+    return redirect('manage_inquiries')
+
+

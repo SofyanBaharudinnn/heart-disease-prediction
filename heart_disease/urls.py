@@ -37,4 +37,6 @@ urlpatterns = [
     path('contact/submit/', views.submit_contact_view, name='submit_contact_form'),
     path('contact/reply/<int:id>/', views.reply_contact_view, name='reply_contact'),
     path('manage-inquiries/', views.manage_inquiries_view, name='manage_inquiries'),
+    path('manage-inquiries/edit/<int:id>/', views.edit_inquiry_view, name='edit_inquiry'),
+    path('manage-inquiries/delete/<int:id>/', views.delete_inquiry_view, name='delete_inquiry'),
 ]

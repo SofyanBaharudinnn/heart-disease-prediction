@@ -37,6 +37,20 @@
       if (isCollapsed && window.innerWidth >= 768) {
         document.documentElement.classList.add('sidebar-collapsed-init');
       }
+
+      let isReload = false;
+      try {
+        const navEntries = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation');
+        if (navEntries && navEntries.length > 0) {
+          isReload = navEntries[0].type === 'reload';
+        } else if (window.performance && window.performance.navigation) {
+          isReload = window.performance.navigation.type === 1;
+        }
+      } catch (e) {}
+
+      if (sessionStorage.getItem('splash-shown') && !isReload) {
+        document.documentElement.classList.add('splash-hidden-init');
+      }
     })();
   </script>
   <meta charset="UTF-8">
@@ -754,6 +768,27 @@
       background: rgba(var(--primary-rgb), 0.1);
       color: var(--lime);
       box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+    }
+
+    /* ── Ripple Effect styles ── */
+    .btn, .btn-primary-custom, .btn-secondary-custom, .btn-outline-custom, .btn-lang-toggle, .btn-logout-pro, .btn-login-pro, .sidebar-link, button, [role="button"] {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple-animation 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
+      pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
 
     /* ── Form controls ── */
@@ -1487,6 +1522,307 @@
       border-color: var(--lime);
       box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4);
     }
+
+    /* ── Splash Screen (Loading Screen) ── */
+    .splash-hidden-init #splash-screen {
+      display: none !important;
+    }
+
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: #0A0A0A; /* Deep premium black */
+      z-index: 999999; /* Higher than everything */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+    }
+
+    #splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .splash-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .splash-logo-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: var(--lime);
+      color: #0A0A0A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4);
+      z-index: 2;
+      animation: splash-heartbeat 1.4s infinite ease-in-out;
+    }
+
+    .splash-glow {
+      position: absolute;
+      inset: 10px;
+      border-radius: 24px;
+      background: var(--lime);
+      filter: blur(25px);
+      opacity: 0.6;
+      z-index: 1;
+      animation: splash-glow-pulse 1.4s infinite ease-in-out;
+    }
+
+    .splash-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -1px;
+      margin-bottom: 0.2rem;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: splash-fade-up 0.8s forwards 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .splash-title span {
+      color: var(--lime);
+      text-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+    }
+
+    .splash-subtitle {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #666666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: splash-fade-up 0.8s forwards 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .splash-loader {
+      width: 140px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      opacity: 0;
+      animation: splash-fade-in 0.5s forwards 0.5s;
+    }
+
+    .splash-loader-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--lime);
+      box-shadow: 0 0 8px var(--lime);
+      border-radius: 10px;
+      animation: splash-load 1.4s forwards cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes splash-heartbeat {
+      0% {
+        transform: scale(1);
+      }
+      14% {
+        transform: scale(1.12);
+      }
+      28% {
+        transform: scale(1);
+      }
+      42% {
+        transform: scale(1.12);
+      }
+      70% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes splash-glow-pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      14% {
+        transform: scale(1.25);
+        opacity: 0.8;
+      }
+      28% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      42% {
+        transform: scale(1.25);
+        opacity: 0.8;
+      }
+      70% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes splash-fade-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes splash-fade-in {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes splash-load {
+      to {
+        width: 100%;
+      }
+    }
+
+    /* ── Logout Overlay ── */
+    #logout-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.85); /* Dark background */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    #logout-overlay.show {
+      opacity: 1;
+    }
+
+    .logout-overlay-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logout-overlay-icon-container {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logout-overlay-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      background: rgba(255, 60, 60, 0.15); /* Light red tint */
+      color: #FF4D4D; /* Red icon color */
+      border: 1px solid rgba(255, 80, 80, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      z-index: 2;
+      animation: logout-icon-pulse 1.2s infinite ease-in-out;
+    }
+
+    .logout-overlay-glow {
+      position: absolute;
+      inset: 10px;
+      border-radius: 20px;
+      background: #FF4D4D;
+      filter: blur(20px);
+      opacity: 0.4;
+      z-index: 1;
+      animation: logout-glow-pulse 1.2s infinite ease-in-out;
+    }
+
+    .logout-overlay-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.2rem;
+    }
+
+    .logout-overlay-subtitle {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #888888;
+      letter-spacing: 0.5px;
+      margin-bottom: 2rem;
+    }
+
+    .logout-overlay-loader {
+      width: 120px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .logout-overlay-loader-bar {
+      height: 100%;
+      width: 0%;
+      background: #FF4D4D;
+      box-shadow: 0 0 8px #FF4D4D;
+      border-radius: 10px;
+      animation: logout-load 1.4s forwards cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes logout-icon-pulse {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+      50% {
+        transform: scale(1.08) rotate(5deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes logout-glow-pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+    }
+
+    @keyframes logout-load {
+      to {
+        width: 100%;
+      }
+    }
   </style>
 
   {% if current_theme == 'blue' %}
@@ -1519,6 +1855,40 @@
 </head>
 
 <body>
+  <!-- Premium Loading / Splash Screen -->
+  <div id="splash-screen">
+    <div class="splash-content text-center">
+      <div class="splash-logo-container">
+        <div class="splash-logo">
+          <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <div class="splash-glow"></div>
+      </div>
+      <h1 class="splash-title">Heart<span>Guard</span></h1>
+      <p class="splash-subtitle">PREDICTION SYSTEM</p>
+      <div class="splash-loader">
+        <div class="splash-loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Logout Transition Overlay -->
+  <div id="logout-overlay" style="display: none;">
+    <div class="logout-overlay-content text-center">
+      <div class="logout-overlay-icon-container">
+        <div class="logout-overlay-icon">
+          <i class="bi bi-box-arrow-right"></i>
+        </div>
+        <div class="logout-overlay-glow"></div>
+      </div>
+      <h2 class="logout-overlay-title">{% if current_lang == 'en' %}Ending Session{% else %}Mengakhiri Sesi{% endif %}...</h2>
+      <p class="logout-overlay-subtitle">{% if current_lang == 'en' %}Securing your connection{% else %}Mengamankan koneksi Anda{% endif %}</p>
+      <div class="logout-overlay-loader">
+        <div class="logout-overlay-loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Header -->
   <header class="mobile-header">
     <button class="btn p-0" id="sidebarToggleBtn" aria-label="Buka Menu" style="background:none; border:none; color: var(--text-main);">
@@ -2177,6 +2547,113 @@
               toggleSidebar();
             }
           });
+        });
+      }
+    });
+
+    // ── Ripple Effect functionality ──
+    document.addEventListener('mousedown', function (e) {
+      const button = e.target.closest('.btn, .btn-primary-custom, .btn-secondary-custom, .btn-outline-custom, .btn-lang-toggle, .btn-logout-pro, .btn-login-pro, .sidebar-link, button, [role="button"]');
+      if (!button) return;
+
+      // Exclude toggle buttons (theme toggles, language toggles, sidebar toggles, and modal togglers)
+      if (
+        button.id.toLowerCase().includes('toggle') ||
+        button.className.toLowerCase().includes('toggle') ||
+        button.hasAttribute('data-bs-toggle')
+      ) {
+        return;
+      }
+
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+
+      const rect = button.getBoundingClientRect();
+      circle.style.left = `${e.clientX - rect.left - radius}px`;
+      circle.style.top = `${e.clientY - rect.top - radius}px`;
+      circle.classList.add('ripple-effect');
+
+      // Light colored active states/primary buttons get dark ripples, others get white ripples
+      const isLime = button.classList.contains('btn-primary-custom') || 
+                     button.classList.contains('btn-login-pro') || 
+                     (button.classList.contains('sidebar-link') && button.classList.contains('active'));
+      
+      if (isLime) {
+        circle.style.background = 'rgba(0, 0, 0, 0.25)';
+      } else {
+        circle.style.background = 'rgba(255, 255, 255, 0.35)';
+      }
+
+      // Clear any prior active ripples
+      const existingRipples = button.querySelectorAll('.ripple-effect');
+      existingRipples.forEach(r => r.remove());
+
+      button.appendChild(circle);
+
+      setTimeout(() => {
+        circle.remove();
+      }, 600);
+    });
+
+    // ── Splash Screen Handler ──
+    document.addEventListener('DOMContentLoaded', function () {
+      const splash = document.getElementById('splash-screen');
+      if (!splash) return;
+
+      let isReload = false;
+      try {
+        const navEntries = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation');
+        if (navEntries && navEntries.length > 0) {
+          isReload = navEntries[0].type === 'reload';
+        } else if (window.performance && window.performance.navigation) {
+          isReload = window.performance.navigation.type === 1;
+        }
+      } catch (e) {}
+
+      if (sessionStorage.getItem('splash-shown') && !isReload) {
+        splash.remove();
+        return;
+      }
+
+      // Hide loading screen after 1.8 seconds (giving the beating heart animation time to shine)
+      setTimeout(() => {
+        splash.classList.add('fade-out');
+        sessionStorage.setItem('splash-shown', 'true');
+        
+        // Remove from DOM after transition completes (0.6s transition defined in CSS)
+        setTimeout(() => {
+          splash.remove();
+        }, 600);
+      }, 1800);
+    });
+
+    // ── Logout Animation Handler ──
+    document.addEventListener('DOMContentLoaded', function () {
+      const logoutBtn = document.getElementById('sidebar-logout-btn');
+      const logoutForm = logoutBtn ? logoutBtn.closest('form') : null;
+      const logoutOverlay = document.getElementById('logout-overlay');
+
+      if (logoutBtn && logoutForm && logoutOverlay) {
+        logoutForm.addEventListener('submit', function (e) {
+          // If we haven't animated yet, prevent submit
+          if (!logoutOverlay.classList.contains('animating')) {
+            e.preventDefault();
+            logoutOverlay.style.display = 'flex';
+            logoutOverlay.classList.add('animating');
+            
+            // Force redraw/reflow for CSS transition
+            logoutOverlay.offsetHeight; 
+            
+            logoutOverlay.classList.add('show');
+
+            // Wait 1.4 seconds for progress bar and glow pulse animation, then submit form
+            setTimeout(() => {
+              logoutForm.submit();
+            }, 1400);
+          }
         });
       }
     });
