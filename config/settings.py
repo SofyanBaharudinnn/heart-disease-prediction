@@ -18,6 +18,7 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 # Diperlukan agar CSRF tidak memblokir request yang masuk lewat tunnel HTTPS
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app',   # ngrok (gratis)
+    'https://*.ngrok-free.dev',   # ngrok (gratis versi baru/dev)
     'https://*.ngrok.io',         # ngrok (legacy)
     'https://*.loca.lt',          # localtunnel
     'https://*.trycloudflare.com', # cloudflare tunnel
