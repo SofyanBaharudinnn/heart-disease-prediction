@@ -1558,7 +1558,7 @@
 
         <!-- Right side: Carousel Facts -->
         <div class="col-lg-8">
-          <div class="position-relative px-md-4" style="min-height: 120px; display: flex; align-items: center;">
+          <div class="position-relative px-md-4" style="min-height: 120px; display: flex; align-items: center; padding-bottom: 50px;">
             
             <!-- Fact Items -->
             <div class="fact-carousel-container w-100">
@@ -1615,14 +1615,14 @@
             </div>
 
             <!-- Controls -->
-            <div class="position-absolute" style="bottom: -42px; right: 24px;">
+            <div class="position-absolute" style="bottom: 8px; right: 24px;">
               <button class="btn btn-sm btn-outline-custom px-3 py-1.5 d-flex align-items-center" onclick="nextFact()" style="border-color: rgba(170,255,0,0.25); color: var(--lime); background: transparent; font-size: 0.75rem; font-weight: 700; border-radius: 20px; letter-spacing: 0.5px; transition: all 0.3s ease;">
                 {% if current_lang == 'en' %}NEXT FACT{% else %}FAKTA BERIKUTNYA{% endif %} <i class="bi bi-arrow-right ms-2" style="font-size: 0.85rem;"></i>
               </button>
             </div>
 
             <!-- Dots -->
-            <div class="d-flex gap-2 position-absolute" style="bottom: -36px; left: 24px;">
+            <div class="d-flex gap-2 position-absolute" style="bottom: 14px; left: 24px;">
               <div class="fact-dot active" onclick="goToFact(0)" style="width: 16px; height: 6px; border-radius: 3px; background: var(--lime); cursor: pointer; transition: all 0.3s ease;"></div>
               <div class="fact-dot" onclick="goToFact(1)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
               <div class="fact-dot" onclick="goToFact(2)" style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease;"></div>
