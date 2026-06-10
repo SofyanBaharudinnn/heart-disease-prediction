@@ -588,6 +588,11 @@
       position: relative;
     }
 
+    /* Prevent background scrolling when a modal is open */
+    body.modal-open .main-wrapper {
+      overflow: hidden !important;
+    }
+
     /* ── Top Right Language Toggle for Desktop ── */
     .desktop-lang-toggle {
       position: absolute;

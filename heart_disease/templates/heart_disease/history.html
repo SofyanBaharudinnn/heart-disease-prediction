@@ -125,207 +125,6 @@
               </div>
             </td>
           </tr>
-
-          <!-- Modal Detail -->
-          <div class="modal fade" id="detailModal{{ h.id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ h.id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="modal-content" style="border:none; border-radius:15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background: var(--surface);">
-                <div class="modal-header" style="background: var(--table-header-bg); border-radius: 15px 15px 0 0; padding:1.5rem; border-bottom: 1px solid var(--border);">
-                  <h5 class="modal-title" id="detailModalLabel{{ h.id }}" style="color:var(--lime);">
-                    <i class="bi bi-file-earmark-medical me-2"></i>
-                    {% if h.serial_number %}{{ h.serial_number }}{% else %}{% if current_lang == 'en' %}Prediction Details #{{ h.id }}{% else %}Detail Prediksi #{{ h.id }}{% endif %}{% endif %}
-                  </h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: var(--btn-close-filter);"></button>
-                </div>
-                <div class="modal-body p-4">
-                  <div id="pdfReportContainer{{ h.id }}" class="p-3" style="background-color: var(--surface) !important; color: var(--text-main) !important; border-radius: 16px;">
-                    <!-- Printable Report Header (only visible on print/PDF) -->
-                    <div class="d-none align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary" id="pdfPrintHeader{{ h.id }}">
-                      <div class="d-flex align-items-center gap-2">
-                        <div style="background:var(--lime); width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#0A0A0A; font-size:1.2rem; box-shadow: 0 4px 12px rgba(170,255,0,0.35);">
-                          <i class="bi bi-heart-pulse-fill"></i>
-                        </div>
-                        <div>
-                          <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard</h4>
-                          <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">{% if current_lang == 'en' %}Prediction System Report{% else %}Laporan Sistem Prediksi{% endif %}</span>
-                        </div>
-                      </div>
-                      <div class="text-end">
-                        <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">{% if current_lang == 'en' %}Heart Analysis Report{% else %}Laporan Hasil Analisis Jantung{% endif %}</div>
-                        <div style="font-size:0.65rem; color:var(--muted);">{% if current_lang == 'en' %}Printed at:{% else %}Dicetak pada:{% endif %} <span id="pdfPrintDate{{ h.id }}"></span></div>
-                      </div>
-                    </div>
-
-                    <div class="row g-4">
-                      <!-- Info Rekam Medis -->
-                      {% if h.serial_number %}
-                      <div class="col-12">
-                        <div style="background: var(--bg); border: 1px solid var(--border); border-radius:12px;padding:0.8rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.8rem;">
-
-                          <!-- Kiri: ikon + serial + timestamp -->
-                          <div class="d-flex align-items-center gap-3 flex-grow-1">
-                            <i class="bi bi-upc-scan" style="color:var(--lime);font-size:1.2rem;flex-shrink:0;"></i>
-                            <div>
-                              <div style="font-size:0.6rem;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:700;">{{ t.result_serial }}</div>
-                              <div style="font-family:var(--mono);font-size:1rem;font-weight:800;color:var(--lime);">{{ h.serial_number }}</div>
-                              <div style="font-size:0.75rem;color:#888;margin-top:2px;"><i class="bi bi-clock me-1"></i>{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}</div>
-                              <!-- Share Actions -->
-                              <div class="d-flex gap-2 mt-2">
-                                <button onclick="shareHistoryToWhatsApp('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
-                                  class="btn btn-success btn-sm d-flex align-items-center gap-1 share-wa-btn"
-                                  style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: #25D366; border: none; color: #FFF; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
-                                  <i class="bi bi-whatsapp"></i> WhatsApp
-                                </button>
-                                <button onclick="shareHistoryToEmail('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
-                                  class="btn btn-warning btn-sm d-flex align-items-center gap-1 share-email-btn"
-                                  style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: transparent; border: 1px solid rgba(255,193,7,0.4); color: #FFC107; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
-                                  <i class="bi bi-envelope"></i> Email
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Kanan: QR Code -->
-                          <div class="text-center" style="flex-shrink:0;">
-                            <div style="background:var(--lime);border-radius:10px;padding:7px;display:inline-block;box-shadow:0 4px 16px rgba(170,255,0,0.35);">
-                              <div id="qrModal{{ h.id }}"
-                                   data-history-id="{{ h.id }}"
-                                   style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;">
-                              </div>
-                            </div>
-                            <div style="font-size:0.6rem;color:#888;margin-top:5px;text-transform:uppercase;letter-spacing:0.8px;">
-                              <i class="bi bi-qr-code-scan me-1" style="color:var(--lime);"></i>Scan QR
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                      {% endif %}
-
-                      <!-- Data Pasien -->
-                      <div class="col-md-6">
-                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>{% if current_lang == 'en' %}Profile Data{% else %}Data Profil{% endif %}</h6>
-                        <ul class="list-group list-group-flush" style="font-size:0.9rem;">
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Age{% else %}Usia{% endif %}</span>
-                            <strong>{{ h.age }} {% if current_lang == 'en' %}Years{% else %}Tahun{% endif %}</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Gender{% else %}Jenis Kelamin{% endif %}</span>
-                            <strong>{% if h.sex == 1 %}{% if current_lang == 'en' %}Male{% else %}Laki-laki{% endif %}{% else %}{% if current_lang == 'en' %}Female{% else %}Perempuan{% endif %}{% endif %}</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Chest Pain Type (cp){% else %}Jenis Nyeri Dada (cp){% endif %}</span>
-                            <strong>
-                              {% if h.cp == 0 %}Typical Angina
-                              {% elif h.cp == 1 %}Atypical Angina
-                              {% elif h.cp == 2 %}Non-anginal Pain
-                              {% else %}Asymptomatic{% endif %}
-                            </strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting Blood Pressure (trestbps){% else %}Tekanan Darah Istirahat (trestbps){% endif %}</span>
-                            <strong>{{ h.trestbps }} mmHg</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Cholesterol (chol){% else %}Kolesterol (chol){% endif %}</span>
-                            <strong>{{ h.chol }} mg/dl</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Fasting Blood Sugar (fbs){% else %}Gula Darah Puasa (fbs){% endif %}</span>
-                            <strong>{% if h.fbs == 1 %}> 120 mg/dl{% else %}< 120 mg/dl{% endif %}</strong>
-                          </li>
-                        </ul>
-                      </div>
-                      
-                      <!-- Data Medis Tambahan -->
-                      <div class="col-md-6">
-                        <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>{% if current_lang == 'en' %}Clinical Data{% else %}Data Klinis{% endif %}</h6>
-                        <ul class="list-group list-group-flush" style="font-size:0.9rem;">
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting EKG (restecg){% else %}EKG Istirahat (restecg){% endif %}</span>
-                            <strong>
-                              {% if h.restecg == 0 %}Normal
-                              {% elif h.restecg == 1 %}ST-T Wave Abnormality
-                              {% else %}Left Ventricular Hypertrophy{% endif %}
-                            </strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Maximum Heart Rate (thalach){% else %}Detak Jantung Maksimal (thalach){% endif %}</span>
-                            <strong>{{ h.thalach }} bpm</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Exercise-induced Angina (exang){% else %}Angina karena Olahraga (exang){% endif %}</span>
-                            <strong>{% if h.exang == 1 %}{% if current_lang == 'en' %}Yes{% else %}Ya{% endif %}{% else %}{% if current_lang == 'en' %}No{% else %}Tidak{% endif %}{% endif %}</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Depression (oldpeak){% else %}ST Depresi (oldpeak){% endif %}</span>
-                            <strong>{{ h.oldpeak }}</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Slope (slope){% else %}Kemiringan ST (slope){% endif %}</span>
-                            <strong>
-                              {% if h.slope == 0 %}Upsloping
-                              {% elif h.slope == 1 %}Flat
-                              {% else %}Downsloping{% endif %}
-                            </strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Vessels (ca){% else %}Pembuluh Darah (ca){% endif %}</span>
-                            <strong>{{ h.ca }}</strong>
-                          </li>
-                          <li class="list-group-item d-flex justify-content-between px-0">
-                            <span style="color:var(--muted)">{% if current_lang == 'en' %}Thalassemia (thal){% else %}Thalassemia (thal){% endif %}</span>
-                            <strong>
-                              {% if h.thal == 0 %}Normal
-                              {% elif h.thal == 1 %}Fixed Defect
-                              {% else %}Reversable Defect{% endif %}
-                            </strong>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <hr style="opacity:0.1;margin:2rem 0;">
-                    
-                    <!-- Hasil Prediksi -->
-                    <div class="p-3" style="background: var(--table-header-bg); border-radius:12px; border:1px solid rgba(170,255,0,0.2);">
-                      <div class="row align-items-center text-center gy-3">
-                        <div class="col-12 col-sm-4">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Final Result{% else %}Hasil Akhir{% endif %}</div>
-                          {% if h.prediction == 1 %}
-                          <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}POSITIVE{% else %}POSITIF{% endif %}</div>
-                          {% else %}
-                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}NEGATIVE{% else %}NEGATIF{% endif %}</div>
-                          {% endif %}
-                        </div>
-                        <div class="col-12 col-sm-4 modal-stat-divider">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Probability (+){% else %}Probabilitas (+){% endif %}</div>
-                          <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{{ h.probability_pos|floatformat:1 }}%</div>
-                        </div>
-                        <div class="col-12 col-sm-4">
-                          <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Risk Level{% else %}Tingkat Risiko{% endif %}</div>
-                          {% if h.risk_level == 'Tinggi' %}
-                            <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}HIGH{% else %}TINGGI{% endif %}</div>
-                          {% elif h.risk_level == 'Sedang' %}
-                            <div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}MEDIUM{% else %}SEDANG{% endif %}</div>
-                          {% else %}
-                            <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}LOW{% else %}RENDAH{% endif %}</div>
-                          {% endif %}
-                        </div>
-                      </div>
-                    </div>
-                  </div> <!-- /pdfReportContainer -->
-                </div>
-                <div class="modal-footer" style="background: var(--table-header-bg); border-radius: 0 0 15px 15px; padding:1rem 1.5rem; border-top: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; width:100%;">
-                  <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2 btn-sm" onclick="downloadModalPdf('{{ h.id }}', '{{ h.age }}', '{{ h.risk_level }}')" id="downloadPdfBtn{{ h.id }}">
-                    <i class="bi bi-file-earmark-pdf-fill"></i> {% if current_lang == 'en' %}Download PDF{% else %}Unduh PDF{% endif %}
-                  </button>
-                  <button type="button" class="btn btn-secondary-custom btn-sm" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
-                </div>
-              </div>
-            </div>
-          </div>
           {% endfor %}
         </tbody>
       </table>
@@ -342,6 +141,209 @@
     </div>
   </div>
 </div>
+
+{% for h in history %}
+<!-- Modal Detail -->
+<div class="modal fade" id="detailModal{{ h.id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ h.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border:none; border-radius:15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background: var(--surface);">
+      <div class="modal-header" style="background: var(--table-header-bg); border-radius: 15px 15px 0 0; padding:1.5rem; border-bottom: 1px solid var(--border);">
+        <h5 class="modal-title" id="detailModalLabel{{ h.id }}" style="color:var(--lime);">
+          <i class="bi bi-file-earmark-medical me-2"></i>
+          {% if h.serial_number %}{{ h.serial_number }}{% else %}{% if current_lang == 'en' %}Prediction Details #{{ h.id }}{% else %}Detail Prediksi #{{ h.id }}{% endif %}{% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: var(--btn-close-filter);"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="pdfReportContainer{{ h.id }}" class="p-3" style="background-color: var(--surface) !important; color: var(--text-main) !important; border-radius: 16px;">
+          <!-- Printable Report Header (only visible on print/PDF) -->
+          <div class="d-none align-items-center justify-content-between pb-3 mb-4 border-bottom border-secondary" id="pdfPrintHeader{{ h.id }}">
+            <div class="d-flex align-items-center gap-2">
+              <div style="background:var(--lime); width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#0A0A0A; font-size:1.2rem; box-shadow: 0 4px 12px rgba(170,255,0,0.35);">
+                <i class="bi bi-heart-pulse-fill"></i>
+              </div>
+              <div>
+                <h4 style="margin:0; font-weight:800; color:#FFFFFF; line-height:1.2; font-size:1.2rem; letter-spacing:-0.5px;">HeartGuard</h4>
+                <span style="font-size:0.6rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px;">{% if current_lang == 'en' %}Prediction System Report{% else %}Laporan Sistem Prediksi{% endif %}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <div style="font-size:0.75rem; color:#FFFFFF; font-weight:600;">{% if current_lang == 'en' %}Heart Analysis Report{% else %}Laporan Hasil Analisis Jantung{% endif %}</div>
+              <div style="font-size:0.65rem; color:var(--muted);">{% if current_lang == 'en' %}Printed at:{% else %}Dicetak pada:{% endif %} <span id="pdfPrintDate{{ h.id }}"></span></div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <!-- Info Rekam Medis -->
+            {% if h.serial_number %}
+            <div class="col-12">
+              <div style="background: var(--bg); border: 1px solid var(--border); border-radius:12px;padding:0.8rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.8rem;">
+
+                <!-- Kiri: ikon + serial + timestamp -->
+                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                  <i class="bi bi-upc-scan" style="color:var(--lime);font-size:1.2rem;flex-shrink:0;"></i>
+                  <div>
+                    <div style="font-size:0.6rem;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:700;">{{ t.result_serial }}</div>
+                    <div style="font-family:var(--mono);font-size:1rem;font-weight:800;color:var(--lime);">{{ h.serial_number }}</div>
+                    <div style="font-size:0.75rem;color:#888;margin-top:2px;"><i class="bi bi-clock me-1"></i>{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}</div>
+                    <!-- Share Actions -->
+                    <div class="d-flex gap-2 mt-2">
+                      <button onclick="shareHistoryToWhatsApp('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                        class="btn btn-success btn-sm d-flex align-items-center gap-1 share-wa-btn"
+                        style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: #25D366; border: none; color: #FFF; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
+                        <i class="bi bi-whatsapp"></i> WhatsApp
+                      </button>
+                      <button onclick="shareHistoryToEmail('{{ h.serial_number }}', '{{ h.created_at|date:"d M Y, H:i" }} {% if current_lang != 'en' %}WIB{% endif %}', '{{ h.prediction }}', '{{ h.probability_pos|floatformat:1 }}%', '{{ h.risk_level }}', '{{ h.age }}', '{{ h.sex }}', '{{ h.trestbps }}', '{{ h.chol }}', '{{ h.id }}')"
+                        class="btn btn-warning btn-sm d-flex align-items-center gap-1 share-email-btn"
+                        style="font-size: 0.72rem; padding: 0.3rem 0.6rem; background: transparent; border: 1px solid rgba(255,193,7,0.4); color: #FFC107; font-weight: 700; border-radius: 6px; transition: all 0.2s ease;">
+                        <i class="bi bi-envelope"></i> Email
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Kanan: QR Code -->
+                <div class="text-center" style="flex-shrink:0;">
+                  <div style="background:var(--lime);border-radius:10px;padding:7px;display:inline-block;box-shadow:0 4px 16px rgba(170,255,0,0.35);">
+                    <div id="qrModal{{ h.id }}"
+                         data-history-id="{{ h.id }}"
+                         style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;">
+                    </div>
+                  </div>
+                  <div style="font-size:0.6rem;color:#888;margin-top:5px;text-transform:uppercase;letter-spacing:0.8px;">
+                    <i class="bi bi-qr-code-scan me-1" style="color:var(--lime);"></i>Scan QR
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Data Pasien -->
+            <div class="col-md-6">
+              <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-person me-2"></i>{% if current_lang == 'en' %}Profile Data{% else %}Data Profil{% endif %}</h6>
+              <ul class="list-group list-group-flush" style="font-size:0.9rem;">
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Age{% else %}Usia{% endif %}</span>
+                  <strong>{{ h.age }} {% if current_lang == 'en' %}Years{% else %}Tahun{% endif %}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Gender{% else %}Jenis Kelamin{% endif %}</span>
+                  <strong>{% if h.sex == 1 %}{% if current_lang == 'en' %}Male{% else %}Laki-laki{% endif %}{% else %}{% if current_lang == 'en' %}Female{% else %}Perempuan{% endif %}{% endif %}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Chest Pain Type (cp){% else %}Jenis Nyeri Dada (cp){% endif %}</span>
+                  <strong>
+                    {% if h.cp == 0 %}Typical Angina
+                    {% elif h.cp == 1 %}Atypical Angina
+                    {% elif h.cp == 2 %}Non-anginal Pain
+                    {% else %}Asymptomatic{% endif %}
+                  </strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting Blood Pressure (trestbps){% else %}Tekanan Darah Istirahat (trestbps){% endif %}</span>
+                  <strong>{{ h.trestbps }} mmHg</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Cholesterol (chol){% else %}Kolesterol (chol){% endif %}</span>
+                  <strong>{{ h.chol }} mg/dl</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Fasting Blood Sugar (fbs){% else %}Gula Darah Puasa (fbs){% endif %}</span>
+                  <strong>{% if h.fbs == 1 %}> 120 mg/dl{% else %}< 120 mg/dl{% endif %}</strong>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Data Medis Tambahan -->
+            <div class="col-md-6">
+              <h6 style="color:var(--primary);font-weight:700;margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2"></i>{% if current_lang == 'en' %}Clinical Data{% else %}Data Klinis{% endif %}</h6>
+              <ul class="list-group list-group-flush" style="font-size:0.9rem;">
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting EKG (restecg){% else %}EKG Istirahat (restecg){% endif %}</span>
+                  <strong>
+                    {% if h.restecg == 0 %}Normal
+                    {% elif h.restecg == 1 %}ST-T Wave Abnormality
+                    {% else %}Left Ventricular Hypertrophy{% endif %}
+                  </strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Maximum Heart Rate (thalach){% else %}Detak Jantung Maksimal (thalach){% endif %}</span>
+                  <strong>{{ h.thalach }} bpm</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Exercise-induced Angina (exang){% else %}Angina karena Olahraga (exang){% endif %}</span>
+                  <strong>{% if h.exang == 1 %}{% if current_lang == 'en' %}Yes{% else %}Ya{% endif %}{% else %}{% if current_lang == 'en' %}No{% else %}Tidak{% endif %}{% endif %}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Depression (oldpeak){% else %}ST Depresi (oldpeak){% endif %}</span>
+                  <strong>{{ h.oldpeak }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}ST Slope (slope){% else %}Kemiringan ST (slope){% endif %}</span>
+                  <strong>
+                    {% if h.slope == 0 %}Upsloping
+                    {% elif h.slope == 1 %}Flat
+                    {% else %}Downsloping{% endif %}
+                  </strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Vessels (ca){% else %}Pembuluh Darah (ca){% endif %}</span>
+                  <strong>{{ h.ca }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span style="color:var(--muted)">{% if current_lang == 'en' %}Thalassemia (thal){% else %}Thalassemia (thal){% endif %}</span>
+                  <strong>
+                    {% if h.thal == 0 %}Normal
+                    {% elif h.thal == 1 %}Fixed Defect
+                    {% else %}Reversable Defect{% endif %}
+                  </strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <hr style="opacity:0.1;margin:2rem 0;">
+          
+          <!-- Hasil Prediksi -->
+          <div class="p-3" style="background: var(--table-header-bg); border-radius:12px; border:1px solid rgba(170,255,0,0.2);">
+            <div class="row align-items-center text-center gy-3">
+              <div class="col-12 col-sm-4">
+                <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Final Result{% else %}Hasil Akhir{% endif %}</div>
+                {% if h.prediction == 1 %}
+                <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}POSITIVE{% else %}POSITIF{% endif %}</div>
+                {% else %}
+                <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}NEGATIVE{% else %}NEGATIF{% endif %}</div>
+                {% endif %}
+              </div>
+              <div class="col-12 col-sm-4 modal-stat-divider">
+                <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Probability (+){% else %}Probabilitas (+){% endif %}</div>
+                <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{{ h.probability_pos|floatformat:1 }}%</div>
+              </div>
+              <div class="col-12 col-sm-4">
+                <div style="font-size:0.8rem;color:#BBBBBB;margin-bottom:5px;">{% if current_lang == 'en' %}Risk Level{% else %}Tingkat Risiko{% endif %}</div>
+                {% if h.risk_level == 'Tinggi' %}
+                  <div style="color:#FF6B6B;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}HIGH{% else %}TINGGI{% endif %}</div>
+                {% elif h.risk_level == 'Sedang' %}
+                  <div style="color:#FFAA00;font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}MEDIUM{% else %}SEDANG{% endif %}</div>
+                {% else %}
+                  <div style="color:var(--lime);font-weight:800;font-size:1.2rem;">{% if current_lang == 'en' %}LOW{% else %}RENDAH{% endif %}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div> <!-- /pdfReportContainer -->
+      </div>
+      <div class="modal-footer" style="background: var(--table-header-bg); border-radius: 0 0 15px 15px; padding:1rem 1.5rem; border-top: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; width:100%;">
+        <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2 btn-sm" onclick="downloadModalPdf('{{ h.id }}', '{{ h.age }}', '{{ h.risk_level }}')" id="downloadPdfBtn{{ h.id }}">
+          <i class="bi bi-file-earmark-pdf-fill"></i> {% if current_lang == 'en' %}Download PDF{% else %}Unduh PDF{% endif %}
+        </button>
+        <button type="button" class="btn btn-secondary-custom btn-sm" data-bs-dismiss="modal">{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
 
 {% block extra_js %}
