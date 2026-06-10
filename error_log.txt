@@ -171,3 +171,69 @@ Method: POST
 User: admin_test
 Content: {"status": "error", "message": "All required fields must be filled."}
 --------------------------------------------------
+=== Error response 400 at 2026-06-10 13:12:16 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 13:13:34 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 13:14:02 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 13:27:23 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 13:52:51 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:43:41 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:47:14 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:47:37 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:50:32 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:50:51 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------
+=== Error response 400 at 2026-06-10 14:52:39 ===
+Path: /manage-inquiries/edit/1/
+Method: POST
+User: admin_test
+Content: {"status": "error", "message": "All required fields must be filled."}
+--------------------------------------------------

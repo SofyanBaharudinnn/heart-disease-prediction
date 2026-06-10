@@ -396,81 +396,12 @@ def register_view(request):
 
 
 def social_login_view(request, provider):
-    if request.user.is_authenticated:
-        return redirect('predict')
-    
-    provider = provider.lower()
-    if provider not in ('google', 'github'):
-        messages.error(request, 'Provider tidak didukung / Provider not supported.')
-        return redirect('login')
-        
-    if provider == 'google':
-        mock_accounts = [
-            {'name': 'Sofyan Baharudin', 'email': 'sofyan.baharudin@gmail.com', 'avatar': 'https://api.dicebear.com/7.x/bottts/svg?seed=sofyan'},
-            {'name': 'Budi Santoso', 'email': 'budi.santoso@gmail.com', 'avatar': 'https://api.dicebear.com/7.x/bottts/svg?seed=budi'},
-        ]
-    else:
-        mock_accounts = [
-            {'name': 'Sofyan Baharudin', 'email': 'sofyanb-dev@github.com', 'username': 'sofyanb-dev', 'avatar': 'https://api.dicebear.com/7.x/identicon/svg?seed=sofyanb'},
-            {'name': 'Octocat Developer', 'email': 'octocat@github.com', 'username': 'octocat', 'avatar': 'https://api.dicebear.com/7.x/identicon/svg?seed=octocat'},
-        ]
-        
-    context = {
-        'provider': provider,
-        'mock_accounts': mock_accounts,
-    }
-    return render(request, 'heart_disease/social_consent.html', context)
+    messages.error(request, 'Metode login sosial dinonaktifkan / Social login is disabled.')
+    return redirect('login')
 
 
 def social_login_callback(request, provider):
-    if request.method != 'POST':
-        return redirect('login')
-        
-    provider = provider.lower()
-    email = request.POST.get('email', '').strip()
-    name = request.POST.get('name', '').strip()
-    role = request.POST.get('role', 'User')
-    
-    if not email:
-        messages.error(request, 'Email tidak boleh kosong / Email is required.')
-        return redirect('social_login', provider=provider)
-        
-    email_prefix = email.split('@')[0].lower()
-    username = f"{provider}_{email_prefix}"
-    
-    user = User.objects.filter(email=email).first()
-    if not user:
-        user = User.objects.filter(username=username).first()
-        
-    if not user:
-        user = User(username=username, email=email)
-        name_parts = name.split(' ', 1)
-        user.first_name = name_parts[0]
-        if len(name_parts) > 1:
-            user.last_name = name_parts[1]
-        user.is_staff = False
-        user.save()
-    else:
-        name_parts = name.split(' ', 1)
-        user.first_name = name_parts[0]
-        if len(name_parts) > 1:
-            user.last_name = name_parts[1]
-        user.save()
-        
-    login(request, user)
-    
-    lang = request.session.get('lang', 'id')
-    from heart_disease.translations import TRANSLATIONS
-    t = TRANSLATIONS.get(lang, TRANSLATIONS['id'])
-    success_msg_template = t.get('social_login_success', '{} authentication successful! Welcome, {}.')
-    
-    provider_name = 'Google' if provider == 'google' else 'GitHub'
-    display_name = name if name else username
-    messages.success(request, success_msg_template.format(provider_name, display_name))
-    
-    if user.is_staff:
-        return redirect('dashboard')
-    return redirect('predict')
+    return redirect('login')
 
 
 # ─── User Management ─────────────────────────────────────────────────────────

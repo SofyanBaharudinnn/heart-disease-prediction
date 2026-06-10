@@ -38,9 +38,10 @@
       <h2 class="section-title mb-1"><i class="bi bi-clock-history me-2" style="color:var(--accent)"></i>{% if current_lang == 'en' %}Prediction History{% else %}Riwayat Prediksi{% endif %}</h2>
       <p class="section-sub mb-0">{% if current_lang == 'en' %}All prediction history records{% else %}Semua Riwayat Prediksi Yang Telah Dilakukan{% endif %}</p>
     </div>
-    <a href="{% url 'predict' %}" class="btn-primary-custom btn w-100 w-sm-auto text-center">
-      <i class="bi bi-plus-circle me-2"></i>{{ t.result_btn_new }}
-    </a>
+    <div class="position-relative w-100 w-sm-auto" style="min-width: 280px;">
+      <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 15px; font-size: 0.95rem; z-index: 10;"></i>
+      <input type="text" id="medRecordSearch" class="form-control-custom w-100" placeholder="{% if current_lang == 'en' %}Search Med. Record No...{% else %}Cari No. Rekam Medis...{% endif %}" style="padding-left: 2.5rem;" onkeyup="filterHistoryTable()">
+    </div>
   </div>
 
   <div class="card-custom">
@@ -126,6 +127,12 @@
             </td>
           </tr>
           {% endfor %}
+          <tr id="noResultsRow" style="display: none;">
+            <td colspan="11" class="text-center p-4 text-muted">
+              <i class="bi bi-search-heart" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--muted); opacity: 0.7;"></i>
+              {% if current_lang == 'en' %}No matching medical records found.{% else %}Nomor rekam medis tidak ditemukan.{% endif %}
+            </td>
+          </tr>
         </tbody>
       </table>
       {% else %}
@@ -558,6 +565,37 @@ Catatan: Hasil prediksi ini dihasilkan oleh model Machine Learning dan tidak men
         printHeader.classList.add('d-none');
       }
     });
+  }
+
+  // ── Filter table by Medical Record Number ──
+  function filterHistoryTable() {
+    const input = document.getElementById('medRecordSearch');
+    const filter = input.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.table-custom tbody tr:not(#noResultsRow)');
+    const noResultsRow = document.getElementById('noResultsRow');
+    let hasVisibleRow = false;
+
+    rows.forEach(row => {
+      // Dapatkan kolom pertama (No. Rekam Medis)
+      const td = row.getElementsByTagName('td')[0];
+      if (td) {
+        const text = td.textContent || td.innerText;
+        if (text.toLowerCase().indexOf(filter) > -1) {
+          row.style.display = '';
+          hasVisibleRow = true;
+        } else {
+          row.style.display = 'none';
+        }
+      }
+    });
+
+    if (noResultsRow) {
+      if (!hasVisibleRow && filter.length > 0) {
+        noResultsRow.style.display = '';
+      } else {
+        noResultsRow.style.display = 'none';
+      }
+    }
   }
 </script>
 {% endblock %}
