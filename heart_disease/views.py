@@ -26,6 +26,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
 # pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from .ml_model import (
     FEATURE_INFO, load_dataset, train_and_evaluate, predict_single
@@ -145,8 +147,35 @@ def train_page_view(request):
 @user_passes_test(is_admin, login_url='login')
 def train_model(request):
     if request.method == 'POST':
-        n_splits     = int(request.POST.get('n_splits', 5))
-        n_estimators = int(request.POST.get('n_estimators', 100))
+        try:
+            n_splits     = int(request.POST.get('n_splits', 5))
+            n_estimators = int(request.POST.get('n_estimators', 100))
+        except ValueError:
+            messages.error(
+                request,
+                'Parameter pelatihan harus berupa angka bulat.'
+                if request.session.get('lang', 'id') == 'id'
+                else 'Training parameters must be integers.'
+            )
+            return redirect('train_page')
+
+        if n_splits < 2 or n_splits > 20:
+            messages.error(
+                request,
+                'Jumlah split holdout harus di antara 2 dan 20.'
+                if request.session.get('lang', 'id') == 'id'
+                else 'Number of holdout splits must be between 2 and 20.'
+            )
+            return redirect('train_page')
+
+        if n_estimators < 10 or n_estimators > 1000:
+            messages.error(
+                request,
+                'Jumlah estimator Random Forest harus di antara 10 dan 1000.'
+                if request.session.get('lang', 'id') == 'id'
+                else 'Number of Random Forest estimators must be between 10 and 1000.'
+            )
+            return redirect('train_page')
 
         data, err = train_and_evaluate(n_splits=n_splits, n_estimators=n_estimators)
 
@@ -252,7 +281,41 @@ def delete_model(request, id):
 def predict_view(request):
     if request.method == 'POST':
         try:
-            input_data = {f: request.POST.get(f, 0) for f in FEATURE_INFO}
+            # ─── Security Input Validation ───
+            input_data = {}
+            for field, info in FEATURE_INFO.items():
+                val_str = request.POST.get(field, '').strip()
+                if not val_str:
+                    messages.error(
+                        request,
+                        f"Field '{info['label']}' tidak boleh kosong." 
+                        if request.session.get('lang', 'id') == 'id' 
+                        else f"Field '{info['label']}' cannot be empty."
+                    )
+                    return redirect('predict')
+                
+                try:
+                    val = float(val_str) if field == 'oldpeak' else int(val_str)
+                except ValueError:
+                    messages.error(
+                        request,
+                        f"Format nilai untuk '{info['label']}' tidak valid." 
+                        if request.session.get('lang', 'id') == 'id' 
+                        else f"Invalid value format for '{info['label']}'."
+                    )
+                    return redirect('predict')
+                
+                if val < info['min'] or val > info['max']:
+                    messages.error(
+                        request,
+                        f"Nilai untuk '{info['label']}' harus berada di antara {info['min']} dan {info['max']}." 
+                        if request.session.get('lang', 'id') == 'id' 
+                        else f"Value for '{info['label']}' must be between {info['min']} and {info['max']}."
+                    )
+                    return redirect('predict')
+                
+                input_data[field] = val
+
             result, err = predict_single(input_data)
 
             if err:
@@ -764,7 +827,19 @@ def submit_contact_view(request):
         message = request.POST.get('message', '').strip()
 
         if not name or not email or not subject or not message:
-            return JsonResponse({'status': 'error', 'message': 'All required fields must be filled.'}, status=400)
+            return JsonResponse({
+                'status': 'error', 
+                'message': 'Semua field wajib diisi.' if request.session.get('lang', 'id') == 'id' else 'All required fields must be filled.'
+            }, status=400)
+
+        # ─── Email Format Security Validation ───
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({
+                'status': 'error', 
+                'message': 'Format alamat email tidak valid.' if request.session.get('lang', 'id') == 'id' else 'Invalid email address format.'
+            }, status=400)
 
         # Simpan ke Database
         msg = ContactMessage.objects.create(

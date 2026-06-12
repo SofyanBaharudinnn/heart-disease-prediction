@@ -17,12 +17,20 @@ class RateLimitMiddleware:
         if settings.DEBUG:
             return self.get_response(request)
 
-        # 2. Get client IP address (supporting reverse proxy headers like Cloudflare/Nginx)
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0].strip()
-        else:
-            ip = request.META.get('REMOTE_ADDR')
+        # 2. Get client IP address securely (preventing X-Forwarded-For header spoofing)
+        ip = request.META.get('HTTP_CF_CONNECTING_IP')
+        if not ip:
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                # Only trust X-Forwarded-For if we are explicitly configured behind a proxy
+                # (checked via the presence of SECURE_PROXY_SSL_HEADER in production settings)
+                has_proxy = getattr(settings, 'SECURE_PROXY_SSL_HEADER', None) is not None
+                if has_proxy or settings.DEBUG:
+                    ip = x_forwarded_for.split(',')[0].strip()
+                else:
+                    ip = request.META.get('REMOTE_ADDR')
+            else:
+                ip = request.META.get('REMOTE_ADDR')
 
         # 3. Determine the rate limit parameters based on request path
         path = request.path

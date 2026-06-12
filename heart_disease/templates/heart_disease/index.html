@@ -692,6 +692,49 @@
   .fact-dot.active {
     background: var(--lime) !important;
   }
+
+  /* ── Scroll Reveal Animations ── */
+  .scroll-reveal {
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform, opacity;
+  }
+  .reveal-fade-up {
+    transform: translateY(40px);
+  }
+  .reveal-fade-down {
+    transform: translateY(-40px);
+  }
+  .reveal-fade-left {
+    transform: translateX(-40px);
+  }
+  .reveal-fade-right {
+    transform: translateX(40px);
+  }
+  .reveal-scale-in {
+    transform: scale(0.95);
+  }
+  
+  /* Active state */
+  .scroll-reveal.reveal-active {
+    opacity: 1;
+    transform: translate(0) scale(1);
+  }
+  
+  /* Stagger delays */
+  .delay-100 { transition-delay: 100ms; }
+  .delay-200 { transition-delay: 200ms; }
+  .delay-300 { transition-delay: 300ms; }
+  .delay-400 { transition-delay: 400ms; }
+  .delay-500 { transition-delay: 500ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
 </style>
 {% endblock %}
 
@@ -817,13 +860,13 @@
 
 <!-- ── Fitur unggulan ── -->
 <section class="container mt-4 mb-5">
-  <div class="text-center mb-5">
+  <div class="text-center mb-5 scroll-reveal reveal-fade-up">
     <h2 class="section-title">{% if current_lang == 'en' %}Key System Features{% else %}Fitur Utama Sistem{% endif %}</h2>
     <p class="section-sub">{% if current_lang == 'en' %}Built with modern machine learning technology for reliable results{% else %}Dibangun Dengan Teknologi Machine Learning Modern Untuk Hasil Yang Dapat Dipercaya{% endif %}</p>
   </div>
   <div class="row g-4">
 
-    <div class="col-md-4">
+    <div class="col-md-4 scroll-reveal reveal-fade-up delay-100">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-tree-fill fs-3" style="color:var(--lime);"></i>
@@ -839,7 +882,7 @@
       </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 scroll-reveal reveal-fade-up delay-200">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-layers-fill fs-3" style="color:var(--lime);"></i>
@@ -855,7 +898,7 @@
       </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 scroll-reveal reveal-fade-up delay-300">
       <div class="card-custom feature-card p-4 h-100 text-center">
         <div class="feature-icon-wrap" style="background:rgba(170,255,0,0.1);">
           <i class="bi bi-bar-chart-fill fs-3" style="color:var(--lime);"></i>
@@ -878,16 +921,16 @@
 
 <!-- ── Interactive Heart Anatomy Infographic ── -->
 <section class="container mb-5 mt-5" id="anatomy-section">
-  <div class="text-center mb-5">
+  <div class="text-center mb-5 scroll-reveal reveal-fade-up">
     <h2 class="section-title">{% if current_lang == 'en' %}Interactive Heart Anatomy{% else %}Anatomi Jantung Interaktif{% endif %}</h2>
     <p class="section-sub">{% if current_lang == 'en' %}Click on the parts of the heart to learn about their functions and connection to cardiovascular diseases.{% else %}Klik Pada Bagian Anatomi Jantung Untuk Mempelajari Fungsinya Serta Hubungannya Dengan Penyakit Kardiovaskular.{% endif %}</p>
   </div>
 
   <div class="card-custom p-4 p-md-5" style="background: rgba(18, 20, 18, 0.6); border: 1px solid rgba(170,255,0,0.15); border-radius: 28px; backdrop-filter: blur(20px);">
-    <div class="row align-items-center gy-4">
+    <div class="row align-items-center overflow-hidden gy-4">
       
       <!-- Left: SVG Diagram -->
-      <div class="col-lg-6 text-center">
+      <div class="col-lg-6 text-center scroll-reveal reveal-fade-left">
         <div class="anatomy-svg-wrapper p-3" style="background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;">
           <!-- Grid background -->
           <div class="anatomy-grid-bg" style="position:absolute; inset:0; opacity:0.04; background-image: linear-gradient(rgba(170,255,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(170,255,0,0.5) 1px, transparent 1px); background-size: 20px 20px;"></div>
@@ -931,7 +974,7 @@
       </div>
 
       <!-- Right: Details Card -->
-      <div class="col-lg-6">
+      <div class="col-lg-6 scroll-reveal reveal-fade-right">
         <div id="anatomy-info-card" class="p-4 h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; min-height: 280px; transition: all 0.3s ease;">
           
           <!-- Default State -->
@@ -1413,13 +1456,43 @@
     startFactTimer();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (factItems.length > 0) {
+  function initPageInteractions() {
+    // ── Fun Facts Carousel ──
+    if (typeof factItems !== 'undefined' && factItems.length > 0) {
       factItems[0].style.opacity = '1';
       factItems[0].style.transform = 'translateY(0)';
       startFactTimer();
     }
-  });
+
+    // ── Scroll Reveal Observer ──
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    if (revealElements.length === 0) return;
+    
+    const observerOptions = {
+      root: null, // Viewport (works perfectly for both desktop custom scrollbar and mobile)
+      rootMargin: '0px 0px -40px 0px',
+      threshold: 0.02 // More responsive trigger threshold
+    };
+    
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    revealElements.forEach(el => {
+      revealObserver.observe(el);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPageInteractions);
+  } else {
+    initPageInteractions();
+  }
 </script>
 {% endblock %}
 
@@ -1428,15 +1501,15 @@
   <div class="container">
     
     <!-- Title -->
-    <div class="text-center mb-5">
+    <div class="text-center mb-5 scroll-reveal reveal-fade-up">
       <h2 class="section-title">{% if current_lang == 'en' %}Contact Us{% else %}Hubungi Kami{% endif %}</h2>
       <p class="section-sub">{% if current_lang == 'en' %}We would love to hear from you.{% else %}Kami Senang Mendengar Dari Anda.{% endif %}</p>
     </div>
 
     <!-- Contact Row -->
-    <div class="row g-5 align-items-stretch">
+    <div class="row g-5 align-items-stretch overflow-hidden">
       <!-- Left: Get in touch -->
-      <div class="col-lg-5 d-flex flex-column justify-content-between py-2">
+      <div class="col-lg-5 d-flex flex-column justify-content-between py-2 scroll-reveal reveal-fade-left">
         <div>
           <h4 class="fw-extrabold text-white mb-3" style="font-size:1.8rem; font-weight:800; letter-spacing:-0.5px;">{% if current_lang == 'en' %}Get in touch{% else %}Mari Terhubung{% endif %}</h4>
           <p class="text-muted mb-5">{% if current_lang == 'en' %}Feel free to reach out to us with any questions, inquiries, or feedback. Our clinical and systems team will respond as soon as possible.{% else %}Silakan Hubungi Kami Untuk Pertanyaan, Informasi, Atau Masukan. Tim Klinis Dan Sistem Kami Akan Merespons Secepatnya.{% endif %}</p>
@@ -1488,7 +1561,7 @@
       </div>
 
       <!-- Right: Send a message Form -->
-      <div class="col-lg-7">
+      <div class="col-lg-7 scroll-reveal reveal-fade-right">
         <div class="card-custom p-4 p-md-5 h-100" style="background: rgba(18, 20, 18, 0.65); border: 1px solid rgba(255,255,255,0.06); border-radius:24px; backdrop-filter: blur(15px);">
           <h4 class="fw-extrabold text-white mb-4" style="font-weight:800; letter-spacing:-0.5px;">{% if current_lang == 'en' %}Send a message{% else %}Kirim Pesan{% endif %}</h4>
           
@@ -1530,7 +1603,7 @@
     </div>
 
     <!-- Map: Spadem Merauke -->
-    <div class="map-container-wrap">
+    <div class="map-container-wrap scroll-reveal reveal-scale-in">
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.437194689408!2d140.4071424!3d-8.4988736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d17c37617b07db3%3A0xe54e0ad52f82ba1c!2sSpadem%2C%20Kec.%20Merauke%2C%20Kabupaten%20Merauke%2C%20Papua!5e0!3m2!1sid!2sid!4v1717887723901!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 
@@ -1538,7 +1611,7 @@
     <div class="my-5" style="height: 3px; background: rgba(255, 255, 255, 0.2); width: 100%; border-radius: 2px;"></div>
 
     <!-- ── Fun Facts Carousel ── -->
-    <div id="facts-section" class="card-custom p-4 p-md-5 mt-4 mb-4" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(170, 255, 0, 0.15); border-radius: 28px; backdrop-filter: blur(20px); position: relative; overflow: hidden;">
+    <div id="facts-section" class="card-custom p-4 p-md-5 mt-4 mb-4 scroll-reveal reveal-scale-in" style="background: rgba(18, 20, 18, 0.5); border: 1px solid rgba(170, 255, 0, 0.15); border-radius: 28px; backdrop-filter: blur(20px); position: relative; overflow: hidden;">
       <!-- Decorative background elements -->
       <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(170, 255, 0, 0.08) 0%, transparent 70%); pointer-events: none; border-radius: 50%;"></div>
       
