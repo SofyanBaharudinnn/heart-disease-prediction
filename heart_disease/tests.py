@@ -27,6 +27,20 @@ class RegistrationAccessControlTests(TestCase):
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
 
+    def test_registration_without_numbers_fails(self):
+        """Verify that registration fails if the password does not contain any numbers."""
+        register_url = reverse('register')
+        post_data = {
+            'username': 'no_number_user',
+            'password1': 'onlyletters',
+            'password2': 'onlyletters',
+        }
+        response = self.client.post(register_url, post_data)
+        
+        # Should not redirect (should remain on register page with error)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='no_number_user').exists())
+
 
 # pyrefly: ignore [missing-import]
 from django.test import override_settings
