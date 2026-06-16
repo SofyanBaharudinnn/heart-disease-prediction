@@ -88,6 +88,12 @@ def load_dataset():
     # Hapus duplikat & nilai hilang
     df.drop_duplicates(inplace=True)
     df.dropna(inplace=True)
+    
+    # Perbaiki inversi target: di dataset asli, 1 = normal/tidak sakit, 0 = sakit jantung.
+    # Kita balik agar 1 = sakit jantung (positif) dan 0 = normal/tidak sakit (negatif).
+    if 'target' in df.columns:
+        df['target'] = 1 - df['target']
+        
     return df, None
 
 
@@ -262,7 +268,9 @@ def generate_distribution_plots(df):
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Target distribution
-    target_counts = df['target'].value_counts()
+    # Urutkan berdasarkan index agar 0 (Tidak Sakit) berpasangan dengan label ke-1,
+    # dan 1 (Sakit Jantung) berpasangan dengan label ke-2 secara konsisten.
+    target_counts = df['target'].value_counts().sort_index()
     labels = ['Tidak Sakit Jantung', 'Sakit Jantung']
     colors = [COLORS['accent'], COLORS['secondary']]
     axes[0].pie(target_counts, labels=labels, colors=colors,
