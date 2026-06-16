@@ -26,7 +26,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
 # pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
+# pyrefly: ignore [missing-import]
 from django.core.validators import validate_email
+# pyrefly: ignore [missing-import]
 from django.core.exceptions import ValidationError
 
 from .ml_model import (

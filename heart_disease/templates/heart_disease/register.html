@@ -598,12 +598,12 @@
       const segs   = ['seg1','seg2','seg3','seg4'].map(id => document.getElementById(id));
       const colors = ['#EF4444','#F59E0B','#10B981','#059669'];
       let score    = 0;
-      if (val.length >= 8)             score++;
-      if (/[A-Z]/.test(val))           score++;
-      if (/[0-9]/.test(val))           score++;
-      if (/[^A-Za-z0-9]/.test(val))   score++;
+      if (val.length >= 8)                                 score++;
+      if (/[a-z]/.test(val))                               score++;
+      if (/[A-Z]/.test(val) || /[^A-Za-z0-9]/.test(val))   score++;
+      if (/[0-9]/.test(val))                               score++;
       segs.forEach((seg, i) => {
-        seg.style.background = i < score ? colors[Math.max(score - 1, 0)] : '#D1FAE5';
+        seg.style.background = i < score ? colors[Math.max(score - 1, 0)] : '#2A2A2A';
       });
     }
 
