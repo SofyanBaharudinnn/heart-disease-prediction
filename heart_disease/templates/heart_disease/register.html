@@ -537,11 +537,9 @@
               <div class="strength-seg" id="seg4"></div>
             </div>
             <div class="field-help mt-2">
-              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be too similar to your personal information{% else %}Tidak boleh terlalu mirip informasi pribadi Anda{% endif %}</div>
-              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}At least 8 characters{% else %}Minimal 8 karakter{% endif %}</div>
-              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Must contain numbers{% else %}Harus mengandung angka{% endif %}</div>
-              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be a commonly used password{% else %}Tidak boleh kata sandi yang umum digunakan{% endif %}</div>
-              <div class="help-item"><i class="bi bi-dot"></i> {% if current_lang == 'en' %}Cannot be entirely numeric{% else %}Tidak boleh sepenuhnya angka{% endif %}</div>
+              <div class="help-item">{% if current_lang == 'en' %}1. At least 8 Characters{% else %}1. Minimal 8 Karakter{% endif %}</div>
+              <div class="help-item">{% if current_lang == 'en' %}2. Must Contain Numbers{% else %}2. Harus Mengandung Angka{% endif %}</div>
+              <div class="help-item">{% if current_lang == 'en' %}3. Cannot Be the Same as Username{% else %}3. Tidak Boleh Sama Dengan Nama Pengguna{% endif %}</div>
             </div>
           </div>
 
