@@ -234,7 +234,11 @@
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Age{% else %}Usia{% endif %}</span><span class="val">{{ record.age }} {% if current_lang == 'en' %}Years{% else %}Tahun{% endif %}</span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Gender{% else %}Jenis Kelamin{% endif %}</span><span class="val">{% if record.sex == 1 %}{% if current_lang == 'en' %}Male{% else %}Laki-laki{% endif %}{% else %}{% if current_lang == 'en' %}Female{% else %}Perempuan{% endif %}{% endif %}</span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Chest Pain (cp){% else %}Nyeri Dada (cp){% endif %}</span><span class="val">
-                {% if record.cp == 0 %}Typical Angina{% elif record.cp == 1 %}Atypical Angina{% elif record.cp == 2 %}Non-anginal Pain{% else %}Asymptomatic{% endif %}
+                {% if current_lang == 'en' %}
+                  {% if record.cp == 0 %}Typical Angina{% elif record.cp == 1 %}Atypical Angina{% elif record.cp == 2 %}Non-anginal Pain{% else %}Asymptomatic{% endif %}
+                {% else %}
+                  {% if record.cp == 0 %}Typical Angina (Angina Pektoris Tipikal){% elif record.cp == 1 %}Atypical Angina (Angina Pektoris Atipikal){% elif record.cp == 2 %}Non-anginal Pain (Nyeri Dada Non-Kardiak){% else %}Asymptomatic (Asimtomatik){% endif %}
+                {% endif %}
               </span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Resting Blood Pressure (trestbps){% else %}Tekanan Darah Istirahat (trestbps){% endif %}</span><span class="val">{{ record.trestbps }} mmHg</span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Cholesterol (chol){% else %}Kolesterol (chol){% endif %}</span><span class="val">{{ record.chol }} mg/dl</span></div>
@@ -250,7 +254,11 @@
             </div>
             <div class="p-3">
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Resting ECG (restecg){% else %}EKG Istirahat (restecg){% endif %}</span><span class="val">
-                {% if record.restecg == 0 %}Normal{% elif record.restecg == 1 %}ST-T Abnormality{% else %}LVH{% endif %}
+                {% if current_lang == 'en' %}
+                  {% if record.restecg == 0 %}Normal{% elif record.restecg == 1 %}ST-T Abnormality{% else %}LVH{% endif %}
+                {% else %}
+                  {% if record.restecg == 0 %}Normal{% elif record.restecg == 1 %}ST-T Wave Abnormality (Abnormalitas Gelombang ST-T){% else %}Left Ventricular Hypertrophy (Hipertrofi Ventrikel Kiri){% endif %}
+                {% endif %}
               </span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Maximum Heart Rate (thalach){% else %}Detak Jantung Maksimal (thalach){% endif %}</span><span class="val">{{ record.thalach }} bpm</span></div>
               <div class="data-row"><span class="key">{% if current_lang == 'en' %}Exercise Angina (exang){% else %}Angina Olahraga (exang){% endif %}</span><span class="val">{% if record.exang == 1 %}{% if current_lang == 'en' %}Yes{% else %}Ya{% endif %}{% else %}{% if current_lang == 'en' %}No{% else %}Tidak{% endif %}{% endif %}</span></div>

@@ -76,10 +76,17 @@
             <td><strong>{{ h.age }}</strong> {% if current_lang == 'en' %}y/o{% else %}thn{% endif %}</td>
             <td>{% if h.sex == 1 %}<i class="bi bi-gender-male text-primary me-1"></i>{% if current_lang == 'en' %}M{% else %}L{% endif %}{% else %}<i class="bi bi-gender-female text-danger me-1"></i>{% if current_lang == 'en' %}F{% else %}P{% endif %}{% endif %}</td>
             <td>
-              {% if h.cp == 0 %}Typical
-              {% elif h.cp == 1 %}Atypical
-              {% elif h.cp == 2 %}Non-anginal
-              {% else %}Asymptomatic{% endif %}
+              {% if current_lang == 'en' %}
+                {% if h.cp == 0 %}Typical
+                {% elif h.cp == 1 %}Atypical
+                {% elif h.cp == 2 %}Non-anginal
+                {% else %}Asymptomatic{% endif %}
+              {% else %}
+                {% if h.cp == 0 %}Tipikal
+                {% elif h.cp == 1 %}Atipikal
+                {% elif h.cp == 2 %}Non-Angina
+                {% else %}Asimtomatik{% endif %}
+              {% endif %}
             </td>
             <td>{{ h.trestbps }} mmHg</td>
             <td>{{ h.chol }} mg/dl</td>
@@ -241,10 +248,17 @@
                 <li class="list-group-item d-flex justify-content-between px-0">
                   <span style="color:var(--muted)">{% if current_lang == 'en' %}Chest Pain Type (cp){% else %}Jenis Nyeri Dada (cp){% endif %}</span>
                   <strong>
-                    {% if h.cp == 0 %}Typical Angina
-                    {% elif h.cp == 1 %}Atypical Angina
-                    {% elif h.cp == 2 %}Non-anginal Pain
-                    {% else %}Asymptomatic{% endif %}
+                    {% if current_lang == 'en' %}
+                      {% if h.cp == 0 %}Typical Angina
+                      {% elif h.cp == 1 %}Atypical Angina
+                      {% elif h.cp == 2 %}Non-anginal Pain
+                      {% else %}Asymptomatic{% endif %}
+                    {% else %}
+                      {% if h.cp == 0 %}Typical Angina (Angina Pektoris Tipikal)
+                      {% elif h.cp == 1 %}Atypical Angina (Angina Pektoris Atipikal)
+                      {% elif h.cp == 2 %}Non-anginal Pain (Nyeri Dada Non-Kardiak)
+                      {% else %}Asymptomatic (Asimtomatik){% endif %}
+                    {% endif %}
                   </strong>
                 </li>
                 <li class="list-group-item d-flex justify-content-between px-0">
@@ -269,9 +283,15 @@
                 <li class="list-group-item d-flex justify-content-between px-0">
                   <span style="color:var(--muted)">{% if current_lang == 'en' %}Resting EKG (restecg){% else %}EKG Istirahat (restecg){% endif %}</span>
                   <strong>
-                    {% if h.restecg == 0 %}Normal
-                    {% elif h.restecg == 1 %}ST-T Wave Abnormality
-                    {% else %}Left Ventricular Hypertrophy{% endif %}
+                    {% if current_lang == 'en' %}
+                      {% if h.restecg == 0 %}Normal
+                      {% elif h.restecg == 1 %}ST-T Wave Abnormality
+                      {% else %}Left Ventricular Hypertrophy{% endif %}
+                    {% else %}
+                      {% if h.restecg == 0 %}Normal
+                      {% elif h.restecg == 1 %}ST-T Wave Abnormality (Abnormalitas Gelombang ST-T)
+                      {% else %}Left Ventricular Hypertrophy (Hipertrofi Ventrikel Kiri){% endif %}
+                    {% endif %}
                   </strong>
                 </li>
                 <li class="list-group-item d-flex justify-content-between px-0">
