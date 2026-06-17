@@ -64,7 +64,7 @@ FEATURE_INFO = {
                              (2,'Non-anginal Pain (Nyeri Dada Non-Kardiak)'),(3,'Asymptomatic (Asimtomatik)')]},
     'trestbps': {'label': 'Tekanan Darah Istirahat (mmHg)', 'min': 90,  'max': 200, 'step': 1},
     'chol':     {'label': 'Kolesterol (mg/dl)',             'min': 100, 'max': 600, 'step': 1},
-    'fbs':      {'label': 'Gula Darah Puasa > 120 mg/dl',  'min': 0,   'max': 1,   'step': 1,
+    'fbs':      {'label': 'Gula Darah Puasa > 120 mg/dl (Fasting Blood Sugar - FBS)',  'min': 0,   'max': 1,   'step': 1,
                  'choices': [(0,'Tidak'), (1,'Ya')]},
     'restecg':  {'label': 'Hasil ECG Istirahat',            'min': 0,   'max': 2,   'step': 1,
                  'choices': [(0,'Normal'),(1,'ST-T Wave Abnormality (Abnormalitas Gelombang ST-T)'),(2,'Left Ventricular Hypertrophy (Hipertrofi Ventrikel Kiri)')]},
