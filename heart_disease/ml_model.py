@@ -4,6 +4,14 @@ Modul Random Forest dengan Multi-Holdout Validation
 untuk prediksi penyakit jantung.
 """
 
+import sys
+# NumPy 2.x to 1.x compatibility shim for loading pickles trained in Colab
+try:
+    import numpy._core
+except ImportError:
+    import numpy.core as _core
+    sys.modules['numpy._core'] = _core
+
 import os
 import io
 import base64
