@@ -377,7 +377,12 @@ def predict_view(request):
             messages.error(request, f'Error saat prediksi: {str(e)}')
             return redirect('predict')
 
-    context = {'feature_info': FEATURE_INFO}
+    from .ml_model import MODEL_PATH, SCALER_PATH
+    model_ready = os.path.exists(MODEL_PATH) and os.path.exists(SCALER_PATH)
+    context = {
+        'feature_info': FEATURE_INFO,
+        'model_ready': model_ready,
+    }
     return render(request, 'heart_disease/predict.html', context)
 
 

@@ -2069,13 +2069,9 @@
       class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
       <i class="bi bi-bar-chart-line"></i> <span>{{ t.menu_dashboard }}</span>
     </a>
-    <a href="{% url 'dataset_management' %}"
-      class="sidebar-link {% if request.resolver_match.url_name == 'dataset_management' %}active{% endif %}">
-      <i class="bi bi-database-fill-gear"></i> <span>{{ t.menu_dataset }}</span>
-    </a>
-    <a href="{% url 'train_page' %}"
-      class="sidebar-link {% if request.resolver_match.url_name == 'train_page' %}active{% endif %}">
-      <i class="bi bi-sliders"></i> <span>{{ t.menu_training }}</span>
+    <a href="{% url 'model_integration' %}"
+      class="sidebar-link {% if request.resolver_match.url_name == 'model_integration' %}active{% endif %}">
+      <i class="bi bi-cpu-fill"></i> <span>{{ t.menu_model_integration }}</span>
     </a>
     {% endif %}
 

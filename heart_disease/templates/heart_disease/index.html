@@ -967,15 +967,29 @@
   </div>
 </div>
 
-<!-- ── Status dataset ── -->
+<!-- ── Status Model ── -->
 <section class="container mt-4">
-  {% if not dataset_ready %}
-  <div class="alert alert-custom d-flex align-items-start gap-3" style="background:rgba(255,170,0,0.12);border:1px solid rgba(255,170,0,0.3);color:#FFD166;border-radius:16px;">
-    <i class="bi bi-exclamation-triangle-fill fs-4 mt-1" style="color:#FFD166;"></i>
+  {% if not model_ready %}
+  <div class="alert alert-custom d-flex align-items-start gap-3" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.3);color:#FF8080;border-radius:16px;">
+    <i class="bi bi-exclamation-triangle-fill fs-4 mt-1" style="color:#FF8080;"></i>
     <div>
-      <strong>Dataset Belum Tersedia</strong><br>
-      Upload file <code style="color:#AAFF00;">heart.csv</code> dari Kaggle ke folder <code style="color:#AAFF00;">dataset/</code>.
-      <a href="https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset" target="_blank" style="color:var(--lime);font-weight:700;">Download di sini →</a>
+      {% if current_lang == 'en' %}
+        <strong>Prediction Model Not Active</strong><br>
+        The prediction system requires the Random Forest model and Scaler files to be uploaded. 
+        {% if request.user.is_authenticated and request.user.is_staff %}
+          Please go to the <a href="{% url 'model_integration' %}" style="color:var(--lime);font-weight:700;">Model Integration</a> page to upload them.
+        {% else %}
+          Please contact the administrator to upload the required model files.
+        {% endif %}
+      {% else %}
+        <strong>Model Prediksi Belum Aktif</strong><br>
+        Sistem prediksi memerlukan file model Random Forest dan Scaler terunggah untuk berfungsi.
+        {% if request.user.is_authenticated and request.user.is_staff %}
+          Silakan buka halaman <a href="{% url 'model_integration' %}" style="color:var(--lime);font-weight:700;">Integrasi Model</a> untuk mengunggahnya.
+        {% else %}
+          Silakan hubungi administrator untuk mengunggah file model yang diperlukan.
+        {% endif %}
+      {% endif %}
     </div>
   </div>
   {% endif %}

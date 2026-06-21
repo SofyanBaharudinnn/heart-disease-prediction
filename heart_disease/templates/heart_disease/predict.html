@@ -16,6 +16,15 @@
           <i class="bi bi-clipboard2-pulse"></i> {{ t.predict_form_card_header }}
         </div>
         <div class="p-4">
+          {% if not model_ready %}
+          <div class="alert alert-danger alert-custom d-flex align-items-center gap-3 mb-4" role="alert" style="background: rgba(255, 77, 77, 0.08); border: 1px solid rgba(255, 77, 77, 0.2); color: #FF8080;">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+              <strong>{% if current_lang == 'en' %}Prediction Disabled{% else %}Prediksi Dinonaktifkan{% endif %}</strong> – 
+              {% if current_lang == 'en' %}The Machine Learning model and Scaler are not active. Predictions cannot be processed until they are uploaded by the administrator.{% else %}Model Machine Learning dan Scaler belum aktif. Prediksi tidak dapat diproses sampai file diunggah oleh administrator.{% endif %}
+            </div>
+          </div>
+          {% endif %}
           <form id="prediction-form" method="post" action="{% url 'predict' %}">
             {% csrf_token %}
 
@@ -158,7 +167,7 @@
             </div>
 
             <div class="d-flex flex-column flex-sm-row gap-3">
-              <button type="submit" class="btn-primary-custom btn flex-grow-1 w-100 w-sm-auto text-center">
+              <button type="submit" class="btn-primary-custom btn flex-grow-1 w-100 w-sm-auto text-center" {% if not model_ready %}disabled{% endif %}>
                 <i class="bi bi-cpu me-2"></i>{{ t.predict_form_btn_predict }}
               </button>
               <button type="reset" class="btn-outline-custom btn w-100 w-sm-auto text-center">

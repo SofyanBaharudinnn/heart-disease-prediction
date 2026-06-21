@@ -4,6 +4,8 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 # pyrefly: ignore [missing-import]
 from django.urls import reverse
+import os
+import shutil
 
 class RegistrationAccessControlTests(TestCase):
     def setUp(self):
@@ -168,5 +170,144 @@ class ManageInquiriesTests(TestCase):
         
         # Verify deleted in DB
         self.assertFalse(ContactMessage.objects.filter(id=self.inquiry.id).exists())
+
+
+import pickle
+from django.core.files.uploadedfile import SimpleUploadedFile
+from heart_disease.models import ModelMetrics
+
+class ModelIntegrationTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = User.objects.create_user(
+            username='admin_test',
+            email='admin@example.com',
+            password='password123'
+        )
+        self.admin_user.is_staff = True
+        self.admin_user.save()
+        
+        self.regular_user = User.objects.create_user(
+            username='regular_test',
+            email='user@example.com',
+            password='password123'
+        )
+        
+    def test_anonymous_and_regular_user_cannot_access_integration(self):
+        # View page
+        response = self.client.get(reverse('model_integration'))
+        self.assertEqual(response.status_code, 302)
+        
+        # Upload POST
+        response = self.client.post(reverse('upload_model'))
+        self.assertEqual(response.status_code, 302)
+        
+        # Delete POST
+        response = self.client.post(reverse('delete_model_metrics', args=[1]))
+        self.assertEqual(response.status_code, 302)
+        
+        # Logged in as regular user
+        self.client.login(username='regular_test', password='password123')
+        
+        response = self.client.get(reverse('model_integration'))
+        self.assertEqual(response.status_code, 302)
+        
+        response = self.client.post(reverse('upload_model'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_can_access_integration_page(self):
+        self.client.login(username='admin_test', password='password123')
+        response = self.client.get(reverse('model_integration'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'heart_disease/model_integration.html')
+
+    def test_upload_invalid_file_extension(self):
+        self.client.login(username='admin_test', password='password123')
+        
+        # Uploading txt file instead of pkl
+        model_file = SimpleUploadedFile("model.txt", b"dummy model", content_type="text/plain")
+        scaler_file = SimpleUploadedFile("scaler.txt", b"dummy scaler", content_type="text/plain")
+        
+        response = self.client.post(reverse('upload_model'), {
+            'model_file': model_file,
+            'scaler_file': scaler_file,
+            'accuracy': 85.0,
+            'precision': 84.0,
+            'recall': 83.0,
+            'f1_score': 82.0,
+            'roc_auc': 81.0,
+        })
+        self.assertEqual(response.status_code, 302)
+        
+        # Verify no ModelMetrics was created
+        self.assertFalse(ModelMetrics.objects.exists())
+
+    def test_upload_valid_model_and_metrics(self):
+        self.client.login(username='admin_test', password='password123')
+        
+        # Create dummy pkl content
+        model_data = pickle.dumps("dummy_model")
+        scaler_data = pickle.dumps("dummy_scaler")
+        
+        model_file = SimpleUploadedFile("random_forest_model.pkl", model_data, content_type="application/octet-stream")
+        scaler_file = SimpleUploadedFile("scaler.pkl", scaler_data, content_type="application/octet-stream")
+        
+        # Back up existing files in media/models/ if any to avoid deleting them during cleanup
+        from heart_disease.ml_model import MODEL_PATH, SCALER_PATH
+        model_backup = MODEL_PATH + '.bak'
+        scaler_backup = SCALER_PATH + '.bak'
+        
+        model_exists = os.path.exists(MODEL_PATH)
+        scaler_exists = os.path.exists(SCALER_PATH)
+        
+        if model_exists:
+            shutil.copy2(MODEL_PATH, model_backup)
+        if scaler_exists:
+            shutil.copy2(SCALER_PATH, scaler_backup)
+            
+        try:
+            response = self.client.post(reverse('upload_model'), {
+                'model_file': model_file,
+                'scaler_file': scaler_file,
+                'accuracy': 85.5,
+                'precision': 84.4,
+                'recall': 83.3,
+                'f1_score': 82.2,
+                'roc_auc': 81.1,
+            })
+            self.assertEqual(response.status_code, 302)
+            
+            # Verify file was written to disk
+            self.assertTrue(os.path.exists(MODEL_PATH))
+            self.assertTrue(os.path.exists(SCALER_PATH))
+            
+            # Verify metric entry in DB
+            metric = ModelMetrics.objects.first()
+            self.assertIsNotNone(metric)
+            self.assertAlmostEqual(metric.accuracy, 0.855)
+            self.assertAlmostEqual(metric.precision, 0.844)
+            self.assertAlmostEqual(metric.recall, 0.833)
+            self.assertAlmostEqual(metric.f1_score, 0.822)
+            self.assertAlmostEqual(metric.roc_auc, 0.811)
+            
+            # Test delete model metrics
+            delete_url = reverse('delete_model_metrics', args=[metric.id])
+            delete_response = self.client.post(delete_url)
+            self.assertEqual(delete_response.status_code, 302)
+            
+            # Verify metric deleted in DB and files deleted from disk
+            self.assertFalse(ModelMetrics.objects.filter(id=metric.id).exists())
+            self.assertFalse(os.path.exists(MODEL_PATH))
+            self.assertFalse(os.path.exists(SCALER_PATH))
+            
+        finally:
+            # Restore backups if any
+            if model_exists:
+                shutil.copy2(model_backup, MODEL_PATH)
+                os.remove(model_backup)
+            if scaler_exists:
+                shutil.copy2(scaler_backup, SCALER_PATH)
+                os.remove(scaler_backup)
+
 
 
