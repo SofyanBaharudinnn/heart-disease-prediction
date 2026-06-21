@@ -66,10 +66,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Preconnect for faster DNS + non-blocking load -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"></noscript>
 
   <style>
     :root {
@@ -139,8 +142,11 @@
       --btn-close-filter:    none;
     }
 
-    body, .sidebar-custom, .card-custom, .table-custom td, .form-control-custom, .form-select-custom, .modal-content, a, span, p, h1, h2, h3, h4, h5, h6 {
-      transition: background 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
+    /* Theme transitions — hanya pada desktop agar mobile tidak lag saat scroll */
+    @media (min-width: 768px) {
+      body, .sidebar-custom, .card-custom, .table-custom td, .form-control-custom, .form-select-custom, .modal-content {
+        transition: background 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
+      }
     }
 
     *,
@@ -1155,12 +1161,12 @@
         width: 260px;
         z-index: 1040;
         transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.25s ease;
         box-shadow: none;
       }
       .sidebar-custom.show {
         transform: translateX(0);
-        box-shadow: 10px 0 30px rgba(0,0,0,0.6);
+        box-shadow: 8px 0 20px rgba(0,0,0,0.5);
       }
       .main-wrapper {
         height: auto !important;
@@ -1185,12 +1191,12 @@
       .sidebar-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.65);
+        /* Hapus backdrop-filter pada overlay mobile = hemat GPU */
         z-index: 1030;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.25s ease;
       }
       .sidebar-overlay.show {
         opacity: 1;
@@ -1204,6 +1210,39 @@
       }
       .stat-value {
         font-size: 1.4rem;
+      }
+
+      /* ── Optimasi performa mobile: matikan efek berat ── */
+      /* Hapus backdrop-filter blur pada semua elemen — sangat mahal di mobile */
+      .user-profile-card,
+      .btn-lang-toggle,
+      .hero-badge,
+      .footer-custom {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      /* Matikan box-shadow berat di mobile */
+      .card-custom {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+      }
+
+      /* Kurangi transisi tombol di mobile */
+      .btn-primary-custom,
+      .btn-secondary-custom,
+      .btn-outline-custom,
+      .btn-logout-pro,
+      .btn-login-pro,
+      .sidebar-link {
+        transition: none !important;
+      }
+
+      /* Matikan hover transform di mobile (tidak berguna di touch) */
+      .stat-card:hover,
+      .btn-primary-custom:hover,
+      .btn-logout-pro:hover,
+      .btn-login-pro:hover {
+        transform: none !important;
       }
     }
 

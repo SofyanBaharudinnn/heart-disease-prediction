@@ -728,11 +728,134 @@
   .delay-400 { transition-delay: 400ms; }
   .delay-500 { transition-delay: 500ms; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .scroll-reveal {
-      opacity: 1 !important;
-      transform: none !important;
+  /* ── Optimasi Performa Mobile (index.html) ── */
+  @media (max-width: 767.98px) {
+    /* Matikan Three.js canvas - sangat berat di mobile */
+    #hero-canvas {
+      display: none !important;
+    }
+
+    /* Matikan animasi orbit yang mahal */
+    .orbit-ring, .orbit-dot {
+      display: none !important;
+    }
+
+    /* Matikan pulse-ring di mobile */
+    .pulse-ring {
+      display: none !important;
+    }
+
+    /* Sederhanakan hero section */
+    .hero-section {
+      padding: 3rem 0 4rem;
+    }
+
+    /* Matikan grid overlay background di hero (costly paint) */
+    .hero-section::before {
+      display: none !important;
+    }
+
+    /* Sederhanakan hero card — backdrop-filter sangat berat */
+    .hero-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(20, 22, 20, 0.95) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
       transition: none !important;
+    }
+
+    /* Matikan hero-stat-box hover transform di mobile */
+    .hero-stat-box {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transition: none !important;
+    }
+    .hero-stat-box:hover {
+      transform: none !important;
+    }
+
+    /* Matikan feature card backdrop-filter */
+    .feature-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(18, 20, 18, 0.98) !important;
+      transition: none !important;
+    }
+    .feature-card:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    /* Matikan shimmer sweep di mobile */
+    .feature-card::before {
+      display: none !important;
+    }
+
+    /* Orb hanya animasi float saja, matikan glow berat */
+    .orb-icon {
+      box-shadow: 0 4px 12px rgba(170,255,0,0.3) !important;
+      animation: none !important;
+    }
+
+    /* Kurangi icon-float animation delay & durasi */
+    .icon-float {
+      animation: none !important;
+    }
+
+    /* Hero title lebih kecil di mobile */
+    .hero-title {
+      font-size: 2.2rem !important;
+    }
+
+    /* Anatomy section: matikan backdrop-filter */
+    #anatomy-section .card-custom {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Facts section: matikan backdrop-filter */
+    #facts-section {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Contact form card: sederhanakan */
+    .footer-contact-section .card-custom {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Marquee: kurangi beban animasi */
+    .marquee-content {
+      animation-duration: 35s !important;
+    }
+
+    /* Scroll reveal: percepat animasi */
+    .scroll-reveal {
+      transition: opacity 0.4s ease, transform 0.4s ease !important;
+    }
+
+    /* Matikan scan line di mobile */
+    .hero-card-scan {
+      display: none !important;
+    }
+
+    /* Matikan data nodes di mobile */
+    .data-nodes {
+      display: none !important;
+    }
+
+    /* Map di mobile: kurangi tinggi */
+    .map-container-wrap iframe {
+      height: 250px !important;
+    }
+  }
+
+  /* Matikan SEMUA animasi jika pengguna prefer no motion */
+  @media (prefers-reduced-motion: reduce) {
+    .orbit-ring, .orbit-dot, .pulse-ring, #hero-canvas,
+    .icon-float, .orb-icon, .hero-card-scan, .data-nodes {
+      animation: none !important;
+      display: none !important;
     }
   }
 </style>
@@ -1014,11 +1137,19 @@
 
 {% block extra_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
-<!-- Three.js for 3D background -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<!-- Three.js for 3D background: hanya load di desktop -->
 <script>
-  // ── Vanilla Tilt on Feature Cards ──
-  if (typeof VanillaTilt !== 'undefined') {
+  // Hanya load Three.js di desktop (min-width 768px)
+  if (window.innerWidth >= 768) {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+</script>
+<script>
+  // ── Vanilla Tilt on Feature Cards (desktop only) ──
+  if (typeof VanillaTilt !== 'undefined' && window.innerWidth >= 768) {
     VanillaTilt.init(document.querySelectorAll(".feature-card"), {
       max: 12,
       speed: 500,
@@ -1028,9 +1159,9 @@
     });
   }
 
-  // ── 3D Tilt on Hero Card (manual mouse tracking) ──
+  // ── 3D Tilt on Hero Card (desktop only) ──
   const heroCard = document.getElementById('hero-card-3d');
-  if (heroCard) {
+  if (heroCard && window.innerWidth >= 768) {
     heroCard.addEventListener('mousemove', (e) => {
       const rect = heroCard.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
@@ -1048,14 +1179,21 @@
     });
   }
 
-  // ── Three.js Neural Network Background (Red) ──
+  // ── Three.js Neural Network Background (desktop only) ──
   (function() {
-    const canvas = document.getElementById('hero-canvas');
-    if (!canvas || typeof THREE === 'undefined') return;
+    if (window.innerWidth < 768) return; // Skip di mobile
+    // Tunggu Three.js load (async)
+    function initThreeJS() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas || typeof THREE === 'undefined') {
+        // Retry setelah 200ms jika Three.js belum load
+        setTimeout(initThreeJS, 200);
+        return;
+      }
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // cap pixelRatio untuk performa
+      renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
@@ -1184,6 +1322,8 @@
       renderer.render(scene, camera);
     }
     animate();
+  } // end initThreeJS
+  initThreeJS();
   })();
 
 
@@ -1223,10 +1363,12 @@
   const heroSection = document.getElementById('hero-section');
   if (heroSection) heroObserver.observe(heroSection);
 
-  // ── Dynamic Data Nodes ──
+  // ── Dynamic Data Nodes (jumlah dikurangi di mobile) ──
   (function() {
     const container = document.getElementById('data-nodes');
     if (!container) return;
+    // Di mobile, sembunyikan container via CSS, skip JS juga
+    if (window.innerWidth < 768) return;
     const NODES = 18;
     for (let i = 0; i < NODES; i++) {
       const node = document.createElement('div');
