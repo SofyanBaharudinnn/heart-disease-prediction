@@ -173,6 +173,7 @@ class ManageInquiriesTests(TestCase):
 
 
 import pickle
+# pyrefly: ignore [missing-import]
 from django.core.files.uploadedfile import SimpleUploadedFile
 from heart_disease.models import ModelMetrics
 

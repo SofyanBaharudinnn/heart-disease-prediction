@@ -376,8 +376,12 @@ def predict_view(request):
             return render(request, 'heart_disease/result.html', context)
 
         except Exception as e:
-            messages.error(request, f'Error saat prediksi: {str(e)}')
-            return redirect('predict')
+            import traceback
+            from django.http import HttpResponse
+            return HttpResponse(
+                f"<h3>Error saat prediksi: {str(e)}</h3><br><pre>{traceback.format_exc()}</pre>",
+                status=500
+            )
 
     from .ml_model import MODEL_PATH, SCALER_PATH
     model_ready = os.path.exists(MODEL_PATH) and os.path.exists(SCALER_PATH)
