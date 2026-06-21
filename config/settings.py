@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files di production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'heart_disease.middleware.RateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -93,6 +94,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise: compressed static files caching di production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

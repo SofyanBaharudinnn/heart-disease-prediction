@@ -21,3 +21,12 @@ dataset/heart_backup.csv
 *.log
 scratch/
 staticfiles/
+
+# Binary & besar
+ngrok.exe
+*.exe
+*.pdf
+laporan_evaluasi_model.pdf
+
+# Environment variables
+.env
