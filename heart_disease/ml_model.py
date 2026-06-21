@@ -7,8 +7,10 @@ untuk prediksi penyakit jantung.
 import sys
 # NumPy 2.x to 1.x compatibility shim for loading pickles trained in Colab
 try:
+    # pyrefly: ignore [missing-import]
     import numpy._core
 except ImportError:
+    # pyrefly: ignore [missing-import]
     import numpy.core as _core
     sys.modules['numpy._core'] = _core
 
@@ -16,8 +18,10 @@ import os
 import io
 import base64
 import warnings
+# pyrefly: ignore [missing-import]
 import numpy as np
 import pandas as pd
+# pyrefly: ignore [missing-import]
 import joblib
 
 # matplotlib & seaborn: lazy import (hanya diload saat training, bukan saat startup)
@@ -29,8 +33,10 @@ def _ensure_matplotlib():
     """Load matplotlib dan seaborn saat pertama kali dibutuhkan."""
     global plt, sns
     if plt is None:
+        # pyrefly: ignore [missing-import]
         import matplotlib
         matplotlib.use('Agg')
+        # pyrefly: ignore [missing-import]
         import matplotlib.pyplot as _plt
         import seaborn as _sns
         plt = _plt
