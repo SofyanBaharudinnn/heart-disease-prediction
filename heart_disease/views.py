@@ -69,6 +69,8 @@ def get_local_network_ip():
     """Deteksi IP LAN mesin agar QR code bisa diakses dari HP di jaringan yang sama."""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Set timeout agar tidak hang di PythonAnywhere yang memblokir koneksi UDP keluar
+        s.settimeout(0.2)
         # Tidak perlu koneksi nyata — hanya untuk mendapatkan interface yang digunakan
         s.connect(("8.8.8.8", 80))
         ip = s.getsockname()[0]
