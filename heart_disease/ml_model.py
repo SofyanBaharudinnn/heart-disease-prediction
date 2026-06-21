@@ -8,17 +8,25 @@ import os
 import io
 import base64
 import warnings
-# pyrefly: ignore [missing-import]
 import numpy as np
 import pandas as pd
-# pyrefly: ignore [missing-import]
-import matplotlib
-matplotlib.use('Agg')
-# pyrefly: ignore [missing-import]
-import matplotlib.pyplot as plt
-import seaborn as sns
-# pyrefly: ignore [missing-import]
 import joblib
+
+# matplotlib & seaborn: lazy import (hanya diload saat training, bukan saat startup)
+# Ini penting agar server bisa jalan meski matplotlib tidak terinstall
+plt = None
+sns = None
+
+def _ensure_matplotlib():
+    """Load matplotlib dan seaborn saat pertama kali dibutuhkan."""
+    global plt, sns
+    if plt is None:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as _plt
+        import seaborn as _sns
+        plt = _plt
+        sns = _sns
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -98,6 +106,7 @@ def load_dataset():
 
 
 def plot_to_base64(fig):
+    _ensure_matplotlib()
     buf = io.BytesIO()
     fig.savefig(buf, format='png', bbox_inches='tight', dpi=120,
                 facecolor='white', edgecolor='none')
@@ -192,6 +201,7 @@ def multi_holdout_validation(X, y, n_splits=5, test_size=0.3,
 
 # ─── Plot generators ─────────────────────────────────────────────────────────
 def generate_confusion_matrix_plot(y_true, y_pred):
+    _ensure_matplotlib()
     cm = confusion_matrix(y_true, y_pred)
     fig, ax = plt.subplots(figsize=(6, 5))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -206,6 +216,7 @@ def generate_confusion_matrix_plot(y_true, y_pred):
 
 
 def generate_roc_curve_plot(y_true, y_prob):
+    _ensure_matplotlib()
     fpr, tpr, _ = roc_curve(y_true, y_prob)
     auc_val = roc_auc_score(y_true, y_prob)
     fig, ax = plt.subplots(figsize=(6, 5))
@@ -223,6 +234,7 @@ def generate_roc_curve_plot(y_true, y_prob):
 
 
 def generate_feature_importance_plot(model, feature_names):
+    _ensure_matplotlib()
     importances = pd.Series(model.feature_importances_, index=feature_names)
     importances = importances.sort_values(ascending=True)
 
@@ -238,6 +250,7 @@ def generate_feature_importance_plot(model, feature_names):
 
 
 def generate_holdout_comparison_plot(results):
+    _ensure_matplotlib()
     folds      = [r['fold']      for r in results]
     accuracies = [r['accuracy']  for r in results]
     f1s        = [r['f1']        for r in results]
@@ -265,6 +278,7 @@ def generate_holdout_comparison_plot(results):
 
 def generate_distribution_plots(df):
     """Distribusi target + usia vs kolesterol."""
+    _ensure_matplotlib()
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
     # Target distribution
@@ -285,6 +299,7 @@ def generate_distribution_plots(df):
     axes[1].set_xlabel('Usia', fontsize=11)
     axes[1].set_ylabel('Kolesterol', fontsize=11)
     axes[1].set_title('Usia vs Kolesterol', fontsize=13, fontweight='bold')
+    axes[1].grid(True, alpha=0.3)
     # pyrefly: ignore [missing-import]
     from matplotlib.patches import Patch
     legend_elements = [
@@ -299,6 +314,7 @@ def generate_distribution_plots(df):
 
 
 def generate_correlation_heatmap(df):
+    _ensure_matplotlib()
     fig, ax = plt.subplots(figsize=(10, 8))
     corr = df.corr()
     mask = np.triu(np.ones_like(corr, dtype=bool))
