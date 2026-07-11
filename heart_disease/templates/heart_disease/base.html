@@ -233,7 +233,8 @@
       margin-top: 0.7rem;
     }
 
-    .sidebar-link {
+    .sidebar-link,
+    .sidebar-link-btn {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -249,12 +250,14 @@
       overflow: hidden;
     }
 
-    .sidebar-link i {
+    .sidebar-link i,
+    .sidebar-link-btn i {
       font-size: 1rem;
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .sidebar-link:hover {
+    .sidebar-link:hover,
+    .sidebar-link-btn:hover {
       background: var(--sidebar-hover-bg);
       color: var(--text-main);
     }
@@ -2076,6 +2079,10 @@
     {% endif %}
 
     {% if request.user.is_authenticated %}
+    <button type="button" class="sidebar-link sidebar-link-btn" id="sidebar-glossary-btn" onclick="openGlossaryModal()">
+      <i class="bi bi-book-half"></i>
+      <span>{% if current_lang == 'en' %}Medical Terms{% else %}Istilah Medis{% endif %}</span>
+    </button>
     <a href="{% url 'predict' %}"
       class="sidebar-link {% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
       <i class="bi bi-cpu"></i> <span>{{ t.menu_predict }}</span>
@@ -2803,6 +2810,395 @@
     });
   </script>
   {% block extra_js %}{% endblock %}
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!--  GLOBAL MODAL: KAMUS ISTILAH MEDIS                                   -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="global-glossary-overlay" class="gloss-overlay" onclick="handleGlossOverlayClick(event)">
+    <div class="gloss-modal" role="dialog" aria-modal="true" aria-labelledby="gloss-modal-title">
+
+      <!-- Header -->
+      <div class="gloss-header">
+        <div class="gloss-header-left">
+          <div class="gloss-header-icon">
+            <i class="bi bi-book-half"></i>
+          </div>
+          <div>
+            <h4 id="gloss-modal-title" class="gloss-title">{{ t.glossary_title|default:'Kamus Istilah Medis' }}</h4>
+            <p class="gloss-subtitle">{{ t.glossary_subtitle|default:'Penjelasan istilah klinis untuk orang awam.' }}</p>
+          </div>
+        </div>
+        <button class="gloss-close" onclick="closeGlossaryModal()" aria-label="Tutup">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="gloss-search-wrap">
+        <i class="bi bi-search gloss-search-icon"></i>
+        <input type="text" id="gloss-search" class="gloss-search"
+               placeholder="{{ t.glossary_search_placeholder|default:'Cari istilah...' }}"
+               oninput="filterGloss(this.value)" autocomplete="off">
+        <button class="gloss-clear-btn" id="gloss-clear" onclick="clearGlossSearch()" style="display:none;">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+
+      <!-- Count -->
+      <div class="gloss-count-bar">
+        <span id="gloss-count"></span>
+      </div>
+
+      <!-- Cards -->
+      <div class="gloss-body" id="gloss-body">
+        {% if t.glossary_terms %}
+          {% for item in t.glossary_terms %}
+          <div class="gcard" data-term="{{ item.term|lower }}" data-short="{{ item.short|lower }}">
+            <div class="gcard-header" onclick="toggleGcard(this)" role="button" tabindex="0"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGcard(this);}">
+              <div class="gcard-icon" style="background:{{ item.color }}15;border:1.5px solid {{ item.color }}35;">
+                <i class="bi {{ item.icon }}" style="color:{{ item.color }};"></i>
+              </div>
+              <div class="gcard-info">
+                <div class="gcard-term">{{ item.term }}</div>
+                <div class="gcard-short">{{ item.short }}</div>
+              </div>
+              <div class="gcard-chev"><i class="bi bi-chevron-down"></i></div>
+            </div>
+            <div class="gcard-body">
+              <div class="gcard-body-inner">
+                <div class="gsec">
+                  <div class="gsec-label"><i class="bi bi-info-circle me-1"></i>{% if current_lang == 'en' %}Explanation{% else %}Penjelasan{% endif %}</div>
+                  <p class="gsec-text">{{ item.detail }}</p>
+                </div>
+                <div class="gsec gsec-normal">
+                  <div class="gsec-label" style="color:var(--accent);"><i class="bi bi-check2-circle me-1"></i>{% if current_lang == 'en' %}Normal Range{% else %}Rentang Normal{% endif %}</div>
+                  <p class="gsec-text">{{ item.normal }}</p>
+                </div>
+                <div class="gtags">
+                  {% for tag in item.tags %}<span class="gtag">{{ tag }}</span>{% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+        <div id="gloss-no-result" class="gloss-no-result" style="display:none;">
+          <i class="bi bi-search" style="font-size:2.5rem;opacity:.2;"></i>
+          <p>{{ t.glossary_no_result|default:'Tidak ada istilah yang cocok.' }}</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="gloss-footer">
+        <span class="gloss-footer-note">
+          <i class="bi bi-info-circle me-1"></i>
+          {% if current_lang == 'en' %}Tap a term to expand.{% else %}Ketuk istilah untuk membuka penjelasan.{% endif %}
+        </span>
+        <button class="gloss-footer-close" onclick="closeGlossaryModal()">
+          <i class="bi bi-x-circle me-1"></i>{% if current_lang == 'en' %}Close{% else %}Tutup{% endif %}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* ── Sidebar Glossary Button ────────────────── */
+    .sidebar-link-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      position: relative;
+    }
+    .sidebar-glossary-badge {
+      margin-left: auto;
+      background: var(--accent);
+      color: #0A0A0A;
+      border-radius: 50px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      transition: transform 0.2s;
+    }
+    #sidebar-glossary-btn:hover .sidebar-glossary-badge,
+    #sidebar-glossary-btn.active .sidebar-glossary-badge {
+      transform: scale(1.2);
+    }
+
+    /* ── Overlay ────────────────────────────────── */
+    .gloss-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,5,0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 299999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .gloss-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal ──────────────────────────────────── */
+    .gloss-modal {
+      width: 100%;
+      max-width: 760px;
+      max-height: 88vh;
+      background: #141414;
+      border: 1px solid rgba(170,255,0,0.2);
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.75), 0 0 60px rgba(170,255,0,0.06);
+      transform: translateY(28px) scale(0.97);
+      transition: transform 0.38s cubic-bezier(0.34,1.28,0.64,1), opacity 0.3s ease;
+      opacity: 0;
+      overflow: hidden;
+    }
+    .gloss-overlay.open .gloss-modal {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* ── Header ─────────────────────────────────── */
+    .gloss-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem 1.8rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .gloss-header-left { display: flex; align-items: flex-start; gap: 1rem; }
+    .gloss-header-icon {
+      width: 46px; height: 46px;
+      background: rgba(170,255,0,0.1);
+      border: 1.5px solid rgba(170,255,0,0.28);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--accent); flex-shrink: 0;
+    }
+    .gloss-title { font-size: 1.12rem; font-weight: 800; color: #fff; margin: 0 0 2px; letter-spacing: -0.3px; }
+    .gloss-subtitle { font-size: 0.78rem; color: var(--muted); margin: 0; line-height: 1.4; }
+    .gloss-close {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+      border-radius: 50%; width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; cursor: pointer;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .gloss-close:hover { background: rgba(255,77,77,0.15); border-color: rgba(255,77,77,0.4); color: #ff6b6b; transform: rotate(90deg); }
+
+    /* ── Search ─────────────────────────────────── */
+    .gloss-search-wrap { position: relative; margin: 1rem 1.8rem 0; flex-shrink: 0; }
+    .gloss-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
+    .gloss-search {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.65rem 2.5rem 0.65rem 2.6rem;
+      color: #fff; font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .gloss-search:focus { border-color: rgba(170,255,0,0.4); box-shadow: 0 0 0 3px rgba(170,255,0,0.08); }
+    .gloss-search::placeholder { color: rgba(255,255,255,0.24); }
+    .gloss-clear-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); font-size: 1rem; cursor: pointer; transition: color 0.2s; }
+    .gloss-clear-btn:hover { color: #ff6b6b; }
+
+    /* ── Count ──────────────────────────────────── */
+    .gloss-count-bar { padding: 0.45rem 1.8rem 0; font-size: 0.74rem; color: var(--muted); flex-shrink: 0; }
+
+    /* ── Body ───────────────────────────────────── */
+    .gloss-body {
+      overflow-y: auto; padding: 0.75rem 1.8rem 1rem;
+      flex: 1; display: flex; flex-direction: column; gap: 8px;
+    }
+    .gloss-body::-webkit-scrollbar { width: 5px; }
+    .gloss-body::-webkit-scrollbar-track { background: transparent; }
+    .gloss-body::-webkit-scrollbar-thumb { background: rgba(170,255,0,0.2); border-radius: 10px; }
+
+    /* ── Card ───────────────────────────────────── */
+    .gcard {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .gcard:hover { border-color: rgba(255,255,255,0.13); }
+    .gcard.open { border-color: rgba(170,255,0,0.22); box-shadow: 0 0 18px rgba(170,255,0,0.04); }
+    .gcard-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0.85rem 1rem; cursor: pointer; user-select: none;
+      transition: background 0.18s;
+      border-radius: 12px 12px 0 0;
+    }
+    .gcard-header:hover { background: rgba(255,255,255,0.02); }
+    .gcard-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .gcard-info { flex: 1; min-width: 0; }
+    .gcard-term { font-size: 0.86rem; font-weight: 700; color: #fff; line-height: 1.3; }
+    .gcard-short { font-size: 0.74rem; color: var(--muted); margin-top: 2px; line-height: 1.4; white-space: normal; overflow: visible; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .gcard.open .gcard-short { -webkit-line-clamp: unset; overflow: visible; }
+    .gcard-chev { color: var(--muted); font-size: 0.82rem; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
+    .gcard.open .gcard-chev { transform: rotate(180deg); color: var(--accent); }
+
+    /* ── Card Body ──────────────────────────────── */
+    .gcard-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      padding: 0 1rem;
+    }
+    .gcard.open .gcard-body {
+      grid-template-rows: 1fr;
+      padding-bottom: 1.2rem;
+    }
+    .gcard-body-inner {
+      overflow: hidden;
+    }
+    .gsec { margin-bottom: 0.85rem; }
+    .gsec-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(170,255,0,0.55); margin-bottom: 5px; }
+    .gsec-text { font-size: 0.82rem; color: rgba(255,255,255,0.75); line-height: 1.65; margin: 0; }
+    .gsec-normal { background: rgba(170,255,0,0.04); border-radius: 8px; padding: 0.65rem 0.8rem; }
+    .gsec-normal .gsec-label { color: var(--accent); }
+
+    /* ── Tags ───────────────────────────────────── */
+    .gtags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.4rem; }
+    .gtag { font-size: 0.68rem; font-weight: 600; padding: 2px 9px; border-radius: 50px; background: rgba(170,255,0,0.07); border: 1px solid rgba(170,255,0,0.2); color: rgba(170,255,0,0.7); text-transform: capitalize; }
+
+    /* ── No result ──────────────────────────────── */
+    .gloss-no-result { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 2.5rem 1rem; color: var(--muted); text-align: center; }
+    .gloss-no-result p { font-size: 0.86rem; margin: 0; }
+
+    /* ── Footer ─────────────────────────────────── */
+    .gloss-footer { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.8rem; border-top: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; gap: 1rem; }
+    .gloss-footer-note { font-size: 0.74rem; color: var(--muted); }
+    .gloss-footer-close { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--muted); border-radius: 8px; padding: 0.38rem 0.85rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+    .gloss-footer-close:hover { background: rgba(255,77,77,0.12); border-color: rgba(255,77,77,0.3); color: #ff6b6b; }
+
+    /* ── Responsive ─────────────────────────────── */
+    @media (max-width: 600px) {
+      .gloss-header { padding: 1.2rem 1.2rem 0.8rem; }
+      .gloss-search-wrap { margin: 0.8rem 1.2rem 0; }
+      .gloss-count-bar { padding: 0.4rem 1.2rem 0; }
+      .gloss-body { padding: 0.6rem 1.2rem 0.8rem; }
+      .gloss-footer { padding: 0.75rem 1.2rem; flex-wrap: wrap; }
+      .gloss-subtitle { display: none; }
+    }
+  </style>
+
+  <script>
+    /* ═══════════════════════════════════════════════
+       GLOBAL GLOSSARY — Medical Term Dictionary
+    ═══════════════════════════════════════════════ */
+    (function () {
+      var glossOverlay  = null;
+      var glossSearch   = null;
+      var glossClear    = null;
+      var glossCount    = null;
+      var glossNoResult = null;
+      var glossCards    = [];
+
+      function initGloss() {
+        glossOverlay  = document.getElementById('global-glossary-overlay');
+        glossSearch   = document.getElementById('gloss-search');
+        glossClear    = document.getElementById('gloss-clear');
+        glossCount    = document.getElementById('gloss-count');
+        glossNoResult = document.getElementById('gloss-no-result');
+        glossCards    = Array.from(document.querySelectorAll('.gcard'));
+        updateGlossCount(glossCards.length);
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && glossOverlay && glossOverlay.classList.contains('open')) {
+            closeGlossaryModal();
+          }
+        });
+      }
+
+      window.openGlossaryModal = function () {
+        if (!glossOverlay) initGloss();
+        if (!glossOverlay) return;
+        glossOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(function () { if (glossSearch) glossSearch.focus(); }, 360);
+      };
+
+      window.closeGlossaryModal = function () {
+        if (!glossOverlay) return;
+        glossOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+        if (glossSearch) { glossSearch.value = ''; filterGloss(''); }
+      };
+
+      window.handleGlossOverlayClick = function (e) {
+        if (e.target === glossOverlay) closeGlossaryModal();
+      };
+
+      window.toggleGcard = function (header) {
+        var card = header.closest('.gcard');
+        if (!card) return;
+        var isOpen = card.classList.contains('open');
+        glossCards.forEach(function (c) { c.classList.remove('open'); });
+        if (!isOpen) {
+          card.classList.add('open');
+          setTimeout(function () { card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+        }
+      };
+
+      window.filterGloss = function (query) {
+        if (!glossCards.length) { glossCards = Array.from(document.querySelectorAll('.gcard')); }
+        var q = query.trim().toLowerCase();
+        var visible = 0;
+        glossCards.forEach(function (card) {
+          var termMatch  = (card.getAttribute('data-term')  || '').includes(q);
+          var shortMatch = (card.getAttribute('data-short') || '').includes(q);
+          var show = q === '' || termMatch || shortMatch;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        if (glossClear)    glossClear.style.display    = q ? 'inline-flex' : 'none';
+        if (glossNoResult) glossNoResult.style.display = visible === 0 ? 'flex' : 'none';
+        updateGlossCount(visible);
+      };
+
+      window.clearGlossSearch = function () {
+        if (glossSearch) { glossSearch.value = ''; glossSearch.focus(); }
+        filterGloss('');
+      };
+
+      function updateGlossCount(n) {
+        if (!glossCount) return;
+        glossCount.textContent = n + ' istilah';
+      }
+
+      document.addEventListener('DOMContentLoaded', initGloss);
+    })();
+  </script>
 </body>
 
 </html>
