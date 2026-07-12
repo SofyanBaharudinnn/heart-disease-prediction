@@ -217,39 +217,21 @@ TRANSLATIONS = {
         'glossary_no_result': 'Tidak ada istilah yang cocok dengan pencarian Anda.',
         'glossary_terms': [
             {
-                'term': 'Usia (Age)',
-                'icon': 'bi-person-fill',
-                'color': '#4fc3f7',
-                'short': 'Umur pasien dalam satuan tahun.',
-                'detail': 'Semakin bertambah usia, risiko penyakit jantung umumnya semakin meningkat.',
-                'normal': 'Tidak ada batasan "normal" khusus. Semakin tua, semakin penting untuk memantau faktor risiko lainnya.',
-                'tags': ['dasar', 'demografis']
-            },
-            {
-                'term': 'Jenis Kelamin (Sex)',
-                'icon': 'bi-gender-ambiguous',
-                'color': '#f48fb1',
-                'short': 'Jenis kelamin pasien.',
-                'detail': 'Pada beberapa penelitian, laki-laki memiliki risiko penyakit jantung lebih tinggi dibanding perempuan pada usia yang sama.',
-                'normal': 'Dipengaruhi oleh faktor hormonal dan biologis bawaan.',
-                'tags': ['dasar', 'demografis']
-            },
-            {
-                'term': 'Tipe Nyeri Dada (Chest Pain Type)',
-                'icon': 'bi-bandaid-fill',
+                'term': 'Angina Akibat Olahraga (Exercise Induced Angina)',
+                'icon': 'bi-exclamation-octagon-fill',
                 'color': '#ef5350',
-                'short': 'Menunjukkan jenis nyeri dada yang pernah dirasakan pasien.',
-                'detail': 'Nyeri dada merupakan salah satu gejala yang sering berhubungan dengan penyakit jantung.',
-                'normal': 'Pemeriksaan klinis diperlukan untuk membedakan asal nyeri dada.',
-                'tags': ['dasar', 'gejala']
+                'short': 'Nyeri dada saat berolahraga atau melakukan aktivitas berat.',
+                'detail': 'Menanyakan apakah Anda pernah merasakan nyeri dada saat berolahraga atau melakukan aktivitas berat.',
+                'normal': '0 = Tidak (tidak ada nyeri dada). 1 = Ya (terdapat nyeri dada saat beraktivitas).',
+                'tags': ['pemeriksaan', 'gejala', 'kardiovaskular']
             },
             {
-                'term': 'Typical Angina',
-                'icon': 'bi-heart-break-fill',
-                'color': '#e53935',
-                'short': 'Nyeri dada khas akibat penyakit jantung koroner.',
-                'detail': 'Nyeri dada yang biasanya muncul saat berjalan, naik tangga, atau berolahraga, kemudian berkurang setelah istirahat. Ini merupakan gejala yang paling sering berhubungan dengan penyakit jantung.',
-                'normal': 'Memerlukan pemeriksaan rekam jantung (EKG) atau uji latih beban.',
+                'term': 'Asymptomatic',
+                'icon': 'bi-emoji-smile-fill',
+                'color': '#4caf50',
+                'short': 'Tidak merasakan gejala nyeri dada.',
+                'detail': 'Tidak pernah merasakan nyeri dada sama sekali.',
+                'normal': 'Kondisi bebas dari keluhan nyeri dada.',
                 'tags': ['gejala', 'nyeri dada']
             },
             {
@@ -262,40 +244,40 @@ TRANSLATIONS = {
                 'tags': ['gejala', 'nyeri dada']
             },
             {
-                'term': 'Non-anginal Pain',
-                'icon': 'bi-activity',
-                'color': '#81c784',
-                'short': 'Nyeri dada yang kemungkinan bukan berasal dari jantung.',
-                'detail': 'Nyeri dada yang kemungkinan bukan berasal dari jantung, misalnya karena otot, asam lambung, atau penyebab lainnya.',
-                'normal': 'Dapat ditangani sesuai dengan penyebab non-kardiaknya.',
-                'tags': ['gejala', 'nyeri dada']
-            },
-            {
-                'term': 'Asymptomatic',
-                'icon': 'bi-emoji-smile-fill',
-                'color': '#4caf50',
-                'short': 'Tidak merasakan gejala nyeri dada.',
-                'detail': 'Tidak pernah merasakan nyeri dada sama sekali.',
-                'normal': 'Kondisi bebas dari keluhan nyeri dada.',
-                'tags': ['gejala', 'nyeri dada']
-            },
-            {
-                'term': 'Tekanan Darah Istirahat (Resting Blood Pressure)',
-                'icon': 'bi-activity',
-                'color': '#ef5350',
-                'short': 'Tekanan darah saat tubuh sedang dalam keadaan tenang atau tidak beraktivitas.',
-                'detail': 'Tekanan darah tinggi memaksa jantung bekerja lebih keras dan dapat merusak pembuluh darah serta organ vital jika tidak terkontrol.',
-                'normal': 'Normal: < 120 mmHg. Pra-hipertensi: 120–129 mmHg. Hipertensi: ≥ 130 mmHg.',
+                'term': 'Detak Jantung Maksimum (Maximum Heart Rate / Thalach)',
+                'icon': 'bi-lightning-fill',
+                'color': '#ffee58',
+                'short': 'Detak jantung paling tinggi yang dapat dicapai saat beraktivitas.',
+                'detail': 'Kemampuan jantung untuk mencapai detak jantung maksimal yang memadai mencerminkan kondisi kebugaran kardiovaskular yang baik.',
+                'normal': 'Nilai normal bervariasi berdasarkan usia (estimasi umum: 220 - usia).',
                 'tags': ['vital', 'kardiovaskular']
             },
             {
-                'term': 'Kolesterol (Cholesterol)',
-                'icon': 'bi-droplet-fill',
-                'color': '#ffa726',
-                'short': 'Jumlah kolesterol dalam darah.',
-                'detail': 'Kolesterol yang terlalu tinggi dapat menyumbat pembuluh darah.',
-                'normal': 'Ideal: < 200 mg/dl. Batas tinggi: 200-239 mg/dl. Tinggi: ≥ 240 mg/dl.',
-                'tags': ['vital', 'metabolik']
+                'term': 'Downsloping',
+                'icon': 'bi-arrow-down-right-circle-fill',
+                'color': '#e53935',
+                'short': 'Pola EKG yang paling sering dikaitkan dengan penyakit jantung.',
+                'detail': 'Pola EKG pasca latihan fisik menunjukkan kurva yang menurun ke bawah secara abnormal.',
+                'normal': 'Tanda klinis iskemia jantung yang signifikan, memerlukan evaluasi medis kardiologi segera.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
+            },
+            {
+                'term': 'Fixed Defect',
+                'icon': 'bi-x-circle-fill',
+                'color': '#757575',
+                'short': 'Ada bagian otot jantung yang sudah mengalami kerusakan permanen.',
+                'detail': 'Menunjukkan area otot jantung yang mengalami kerusakan permanen atau bekas serangan jantung (infark).',
+                'normal': 'Area jaringan parut yang tidak lagi menghantarkan aliran darah secara aktif.',
+                'tags': ['pemeriksaan', 'hematologi']
+            },
+            {
+                'term': 'Flat',
+                'icon': 'bi-arrow-right-circle-fill',
+                'color': '#ffb300',
+                'short': 'Ada kemungkinan aliran darah ke jantung mulai terganggu.',
+                'detail': 'Pola EKG pasca latihan fisik menunjukkan kurva datar yang tidak mengalami kenaikan normal.',
+                'normal': 'Menunjukkan kemungkinan gangguan perfusi darah ringan atau awal.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
             },
             {
                 'term': 'Gula Darah Puasa (FBS)',
@@ -316,24 +298,6 @@ TRANSLATIONS = {
                 'tags': ['pemeriksaan', 'kardiovaskular']
             },
             {
-                'term': 'Normal',
-                'icon': 'bi-check-circle-fill',
-                'color': '#4caf50',
-                'short': 'Rekam jantung menunjukkan kondisi yang baik.',
-                'detail': 'Aktivitas listrik jantung menunjukkan irama dan grafik konduksi yang normal tanpa ada tanda kerusakan.',
-                'normal': 'Kondisi jantung dalam keadaan baik pada saat pemeriksaan.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
-                'term': 'ST-T Abnormal',
-                'icon': 'bi-exclamation-circle-fill',
-                'color': '#ff8f00',
-                'short': 'Perubahan grafik rekam listrik jantung yang abnormal.',
-                'detail': 'Ada perubahan pada hasil rekam jantung yang bisa mengarah pada gangguan jantung.',
-                'normal': 'Indikasi awal perlunya pemeriksaan beban latihan fisik atau EKG serial.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
                 'term': 'Hipertrofi Ventrikel Kiri',
                 'icon': 'bi-heart-pulse',
                 'color': '#e53935',
@@ -343,67 +307,13 @@ TRANSLATIONS = {
                 'tags': ['pemeriksaan', 'kardiovaskular']
             },
             {
-                'term': 'Detak Jantung Maksimum (Maximum Heart Rate / Thalach)',
-                'icon': 'bi-lightning-fill',
-                'color': '#ffee58',
-                'short': 'Detak jantung paling tinggi yang dapat dicapai saat beraktivitas.',
-                'detail': 'Kemampuan jantung untuk mencapai detak jantung maksimal yang memadai mencerminkan kondisi kebugaran kardiovaskular yang baik.',
-                'normal': 'Nilai normal bervariasi berdasarkan usia (estimasi umum: 220 - usia).',
-                'tags': ['vital', 'kardiovaskular']
-            },
-            {
-                'term': 'Angina Akibat Olahraga (Exercise Induced Angina)',
-                'icon': 'bi-exclamation-octagon-fill',
-                'color': '#ef5350',
-                'short': 'Nyeri dada saat berolahraga atau melakukan aktivitas berat.',
-                'detail': 'Menanyakan apakah Anda pernah merasakan nyeri dada saat berolahraga atau melakukan aktivitas berat.',
-                'normal': '0 = Tidak (tidak ada nyeri dada). 1 = Ya (terdapat nyeri dada saat beraktivitas).',
-                'tags': ['pemeriksaan', 'gejala', 'kardiovaskular']
-            },
-            {
-                'term': 'ST Depression (Oldpeak)',
-                'icon': 'bi-graph-down',
-                'color': '#78909c',
-                'short': 'Nilai perubahan kerja jantung saat beraktivitas dibanding saat istirahat.',
-                'detail': 'Mengukur depresi segmen ST pada grafik EKG akibat aktivitas fisik. Semakin tinggi nilainya, semakin besar kemungkinan adanya kekurangan aliran darah ke jantung.',
-                'normal': 'Normal: 0.0 (tidak ada depresi). Nilai > 1.0 menunjukkan adanya tanda beban kerja jantung yang abnormal.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
-                'term': 'Slope ST',
-                'icon': 'bi-graph-up',
-                'color': '#66bb6a',
-                'short': 'Bentuk perubahan hasil EKG setelah beraktivitas.',
-                'detail': 'Menunjukkan bagaimana pola pemulihan grafik listrik jantung pasca latihan fisik berat.',
-                'normal': 'Mengukur respon segmen EKG pasca aktivitas fisik.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
-                'term': 'Upsloping',
-                'icon': 'bi-arrow-up-right-circle-fill',
-                'color': '#4caf50',
-                'short': 'Pola EKG yang cenderung normal.',
-                'detail': 'Arah pemulihan segmen ST ke atas pasca latihan fisik.',
-                'normal': 'Respon kelistrikan jantung yang normal dan baik terhadap aktivitas fisik.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
-                'term': 'Flat',
-                'icon': 'bi-arrow-right-circle-fill',
-                'color': '#ffb300',
-                'short': 'Ada kemungkinan aliran darah ke jantung mulai terganggu.',
-                'detail': 'Pola EKG pasca latihan fisik menunjukkan kurva datar yang tidak mengalami kenaikan normal.',
-                'normal': 'Menunjukkan kemungkinan gangguan perfusi darah ringan atau awal.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
-            },
-            {
-                'term': 'Downsloping',
-                'icon': 'bi-arrow-down-right-circle-fill',
-                'color': '#e53935',
-                'short': 'Pola EKG yang paling sering dikaitkan dengan penyakit jantung.',
-                'detail': 'Pola EKG pasca latihan fisik menunjukkan kurva yang menurun ke bawah secara abnormal.',
-                'normal': 'Tanda klinis iskemia jantung yang signifikan, memerlukan evaluasi medis kardiologi segera.',
-                'tags': ['pemeriksaan', 'kardiovaskular']
+                'term': 'Jenis Kelamin (Sex)',
+                'icon': 'bi-gender-ambiguous',
+                'color': '#f48fb1',
+                'short': 'Jenis kelamin pasien.',
+                'detail': 'Pada beberapa penelitian, laki-laki memiliki risiko penyakit jantung lebih tinggi dibanding perempuan pada usia yang sama.',
+                'normal': 'Dipengaruhi oleh faktor hormonal dan biologis bawaan.',
+                'tags': ['dasar', 'demografis']
             },
             {
                 'term': 'Jumlah Pembuluh Mayor (CA)',
@@ -415,13 +325,31 @@ TRANSLATIONS = {
                 'tags': ['pemeriksaan', 'kardiovaskular']
             },
             {
-                'term': 'Thal',
-                'icon': 'bi-clipboard2-pulse-fill',
-                'color': '#ec407a',
-                'short': 'Hasil pemeriksaan aliran darah ke otot jantung menggunakan tes khusus.',
-                'detail': 'Hasil pemeriksaan aliran darah ke otot jantung menggunakan tes khusus (Thallium Stress Test).',
-                'normal': 'Mendeteksi sirkulasi darah di bilik jantung saat stres fisik.',
-                'tags': ['pemeriksaan', 'hematologi']
+                'term': 'Kolesterol (Cholesterol)',
+                'icon': 'bi-droplet-fill',
+                'color': '#ffa726',
+                'short': 'Jumlah kolesterol dalam darah.',
+                'detail': 'Kolesterol yang terlalu tinggi dapat menyumbat pembuluh darah.',
+                'normal': 'Ideal: < 200 mg/dl. Batas tinggi: 200-239 mg/dl. Tinggi: ≥ 240 mg/dl.',
+                'tags': ['vital', 'metabolik']
+            },
+            {
+                'term': 'Non-anginal Pain',
+                'icon': 'bi-activity',
+                'color': '#81c784',
+                'short': 'Nyeri dada yang kemungkinan bukan berasal dari jantung.',
+                'detail': 'Nyeri dada yang kemungkinan bukan berasal dari jantung, misalnya karena otot, asam lambung, atau penyebab lainnya.',
+                'normal': 'Dapat ditangani sesuai dengan penyebab non-kardiaknya.',
+                'tags': ['gejala', 'nyeri dada']
+            },
+            {
+                'term': 'Normal',
+                'icon': 'bi-check-circle-fill',
+                'color': '#4caf50',
+                'short': 'Rekam jantung menunjukkan kondisi yang baik.',
+                'detail': 'Aktivitas listrik jantung menunjukkan irama dan grafik konduksi yang normal tanpa ada tanda kerusakan.',
+                'normal': 'Kondisi jantung dalam keadaan baik pada saat pemeriksaan.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
             },
             {
                 'term': 'Normal (Thal)',
@@ -430,15 +358,6 @@ TRANSLATIONS = {
                 'short': 'Aliran darah ke jantung baik.',
                 'detail': 'Hasil pemeriksaan menunjukkan suplai dan aliran darah koroner ke seluruh bagian otot jantung berjalan normal.',
                 'normal': 'Kondisi sirkulasi koroner normal.',
-                'tags': ['pemeriksaan', 'hematologi']
-            },
-            {
-                'term': 'Fixed Defect',
-                'icon': 'bi-x-circle-fill',
-                'color': '#757575',
-                'short': 'Ada bagian otot jantung yang sudah mengalami kerusakan permanen.',
-                'detail': 'Menunjukkan area otot jantung yang mengalami kerusakan permanen atau bekas serangan jantung (infark).',
-                'normal': 'Area jaringan parut yang tidak lagi menghantarkan aliran darah secara aktif.',
                 'tags': ['pemeriksaan', 'hematologi']
             },
             {
@@ -451,6 +370,69 @@ TRANSLATIONS = {
                 'tags': ['pemeriksaan', 'hematologi']
             },
             {
+                'term': 'Slope ST',
+                'icon': 'bi-graph-up',
+                'color': '#66bb6a',
+                'short': 'Bentuk perubahan hasil EKG setelah beraktivitas.',
+                'detail': 'Menunjukkan bagaimana pola pemulihan grafik listrik jantung pasca latihan fisik berat.',
+                'normal': 'Mengukur respon segmen EKG pasca aktivitas fisik.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
+            },
+            {
+                'term': 'ST Depression',
+                'icon': 'bi-graph-down',
+                'color': '#78909c',
+                'short': 'Nilai perubahan kerja jantung saat beraktivitas dibanding saat istirahat.',
+                'detail': 'Mengukur depresi segmen ST pada grafik EKG akibat aktivitas fisik. Semakin tinggi nilainya, semakin besar kemungkinan adanya kekurangan aliran darah ke jantung.',
+                'normal': 'Normal: 0.0 (tidak ada depresi). Nilai > 1.0 menunjukkan adanya tanda beban kerja jantung yang abnormal.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
+            },
+            {
+                'term': 'ST-Abnormal',
+                'icon': 'bi-exclamation-circle-fill',
+                'color': '#ff8f00',
+                'short': 'Perubahan grafik rekam listrik jantung yang abnormal.',
+                'detail': 'Ada perubahan pada hasil rekam jantung yang bisa mengarah pada gangguan jantung.',
+                'normal': 'Indikasi awal perlunya pemeriksaan beban latihan fisik atau EKG serial.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
+            },
+            {
+                'term': 'Tekanan Darah Istirahat (Resting Blood Pressure)',
+                'icon': 'bi-activity',
+                'color': '#ef5350',
+                'short': 'Tekanan darah saat tubuh sedang dalam keadaan tenang atau tidak beraktivitas.',
+                'detail': 'Tekanan darah tinggi memaksa jantung bekerja lebih keras dan dapat merusak pembuluh darah serta organ vital jika tidak terkontrol.',
+                'normal': 'Normal: < 120 mmHg. Pra-hipertensi: 120–129 mmHg. Hipertensi: ≥ 130 mmHg.',
+                'tags': ['vital', 'kardiovaskular']
+            },
+            {
+                'term': 'Thal',
+                'icon': 'bi-clipboard2-pulse-fill',
+                'color': '#ec407a',
+                'short': 'Hasil pemeriksaan aliran darah ke otot jantung menggunakan tes khusus.',
+                'detail': 'Hasil pemeriksaan aliran darah ke otot jantung menggunakan tes khusus (Thallium Stress Test).',
+                'normal': 'Mendeteksi sirkulasi darah di bilik jantung saat stres fisik.',
+                'tags': ['pemeriksaan', 'hematologi']
+            },
+            {
+                'term': 'Tipe Nyeri Dada (Chest Pain Type)',
+                'icon': 'bi-bandaid-fill',
+                'color': '#ef5350',
+                'short': 'Menunjukkan jenis nyeri dada yang pernah dirasakan pasien.',
+                'detail': 'Nyeri dada merupakan salah satu gejala yang sering berhubungan dengan penyakit jantung.',
+                'normal': 'Pemeriksaan klinis diperlukan untuk membedakan asal nyeri dada.',
+                'tags': ['dasar', 'gejala']
+            },
+            {
+                'term': 'Typical Angina',
+                'icon': 'bi-heart-break-fill',
+                'color': '#e53935',
+                'short': 'Nyeri dada khas akibat penyakit jantung koroner.',
+                'detail': 'Nyeri dada yang biasanya muncul saat berjalan, naik tangga, atau berolahraga, kemudian berkurang setelah istirahat. Ini merupakan gejala yang paling sering berhubungan dengan penyakit jantung.',
+                'normal': 'Memerlukan pemeriksaan rekam jantung (EKG) atau uji latih beban.',
+                'tags': ['gejala', 'nyeri dada']
+            },
+            {
                 'term': 'Unknown',
                 'icon': 'bi-question-circle-fill',
                 'color': '#b0bec5',
@@ -458,6 +440,24 @@ TRANSLATIONS = {
                 'detail': 'Hasil pemeriksaan tidak tersedia atau belum diketahui.',
                 'normal': 'Pemeriksaan ulang atau diagnosis alternatif mungkin diperlukan.',
                 'tags': ['pemeriksaan', 'hematologi']
+            },
+            {
+                'term': 'Upsloping',
+                'icon': 'bi-arrow-up-right-circle-fill',
+                'color': '#4caf50',
+                'short': 'Pola EKG yang cenderung normal.',
+                'detail': 'Arah pemulihan segmen ST ke atas pasca latihan fisik.',
+                'normal': 'Respon kelistrikan jantung yang normal dan baik terhadap aktivitas fisik.',
+                'tags': ['pemeriksaan', 'kardiovaskular']
+            },
+            {
+                'term': 'Usia (Age)',
+                'icon': 'bi-person-fill',
+                'color': '#4fc3f7',
+                'short': 'Umur pasien dalam satuan tahun.',
+                'detail': 'Semakin bertambah usia, risiko penyakit jantung umumnya semakin meningkat.',
+                'normal': 'Tidak ada batasan "normal" khusus. Semakin tua, semakin penting untuk memantau faktor risiko lainnya.',
+                'tags': ['dasar', 'demografis']
             },
         ],
     },
@@ -688,15 +688,6 @@ TRANSLATIONS = {
                 'tags': ['basic', 'demographics']
             },
             {
-                'term': 'Gender (Jenis Kelamin)',
-                'icon': 'bi-gender-ambiguous',
-                'color': '#f48fb1',
-                'short': 'The patient\'s gender.',
-                'detail': 'In some studies, males have a higher risk of heart disease compared to females of the same age.',
-                'normal': 'Influenced by biological and genetic factors.',
-                'tags': ['basic', 'demographics']
-            },
-            {
                 'term': 'Chest Pain Type (Tipe Nyeri Dada)',
                 'icon': 'bi-bandaid-fill',
                 'color': '#ef5350',
@@ -704,15 +695,6 @@ TRANSLATIONS = {
                 'detail': 'Chest pain is one of the symptoms most commonly associated with heart disease.',
                 'normal': 'Categorized as:\n- **Typical Angina**: Chest pain that usually appears during walking, climbing stairs, or exercising, and then decreases after rest. This is the symptom most commonly associated with heart disease.\n- **Atypical Angina**: Chest pain that is still suspected to originate from the heart, but the symptoms are not very typical.\n- **Non-anginal Pain**: Chest pain that is unlikely to originate from the heart, for example due to muscles, stomach acid, or other causes.\n- **Asymptomatic**: Never experienced any chest pain at all.',
                 'tags': ['basic', 'symptoms']
-            },
-            {
-                'term': 'Resting Blood Pressure (Tekanan Darah Istirahat)',
-                'icon': 'bi-activity',
-                'color': '#ef5350',
-                'short': 'Blood pressure when the body is in a calm state or not active.',
-                'detail': 'High blood pressure forces the heart to work harder and can damage blood vessels and vital organs if uncontrolled.',
-                'normal': 'Normal: < 120 mmHg. Pre-hypertension: 120–129 mmHg. Hypertension: ≥ 130 mmHg.',
-                'tags': ['vital', 'cardiovascular']
             },
             {
                 'term': 'Cholesterol (Kolesterol)',
@@ -724,6 +706,15 @@ TRANSLATIONS = {
                 'tags': ['vital', 'metabolic']
             },
             {
+                'term': 'Exercise Induced Angina (Angina Akibat Olahraga)',
+                'icon': 'bi-exclamation-octagon-fill',
+                'color': '#ef5350',
+                'short': 'Asks whether you have ever experienced chest pain while exercising or doing strenuous activity.',
+                'detail': 'Exercise-induced angina occurs because the heart muscle lacks oxygen when forced to work harder during physical activity.',
+                'normal': '0 = No (no chest pain during exercise). 1 = Yes (chest pain present during activity).',
+                'tags': ['exam', 'symptoms', 'cardiovascular']
+            },
+            {
                 'term': 'Fasting Blood Sugar (FBS)',
                 'icon': 'bi-droplet-half',
                 'color': '#ab47bc',
@@ -733,13 +724,13 @@ TRANSLATIONS = {
                 'tags': ['exam', 'metabolic']
             },
             {
-                'term': 'Resting ECG (Hasil ECG Istirahat)',
-                'icon': 'bi-heart-pulse-fill',
-                'color': '#26a69a',
-                'short': 'Result of heart\'s electrical recording while resting.',
-                'detail': 'This examination is performed in a hospital or clinic using an ECG machine.',
-                'normal': 'Categorized as:\n- **Normal**: Heart recording shows good condition.\n- **ST-T Abnormal**: There are changes in the heart recording that could point to heart disorders.\n- **Left Ventricular Hypertrophy**: The left heart muscle is thicker than usual because the heart is working harder.',
-                'tags': ['exam', 'cardiovascular']
+                'term': 'Gender (Jenis Kelamin)',
+                'icon': 'bi-gender-ambiguous',
+                'color': '#f48fb1',
+                'short': 'The patient\'s gender.',
+                'detail': 'In some studies, males have a higher risk of heart disease compared to females of the same age.',
+                'normal': 'Influenced by biological and genetic factors.',
+                'tags': ['basic', 'demographics']
             },
             {
                 'term': 'Maximum Heart Rate (Detak Jantung Maksimum)',
@@ -751,21 +742,30 @@ TRANSLATIONS = {
                 'tags': ['vital', 'cardiovascular']
             },
             {
-                'term': 'Exercise Induced Angina (Angina Akibat Olahraga)',
-                'icon': 'bi-exclamation-octagon-fill',
-                'color': '#ef5350',
-                'short': 'Asks whether you have ever experienced chest pain while exercising or doing strenuous activity.',
-                'detail': 'Exercise-induced angina occurs because the heart muscle lacks oxygen when forced to work harder during physical activity.',
-                'normal': '0 = No (no chest pain during exercise). 1 = Yes (chest pain present during activity).',
-                'tags': ['exam', 'symptoms', 'cardiovascular']
+                'term': 'Number of Major Vessels (CA)',
+                'icon': 'bi-diagram-3-fill',
+                'color': '#42a5f5',
+                'short': 'Shows how many of the main blood vessels of the heart are narrowing based on special examination results.',
+                'detail': 'Uses fluoroscopy to view the number of major blood vessels (0-4) experiencing blockage or narrowing of blood flow.',
+                'normal': '0 = Normal (no narrowing). 1 to 4 = Number of narrowed blood vessels.',
+                'tags': ['exam', 'cardiovascular']
             },
             {
-                'term': 'ST Depression (Oldpeak)',
-                'icon': 'bi-graph-down',
-                'color': '#78909c',
-                'short': 'A value showing how much the heart\'s workload changes during activity compared to rest.',
-                'detail': 'Measures the depression of the ST segment on the ECG graph due to physical activity. The higher the value, the higher the likelihood of insufficient blood flow to the heart.',
-                'normal': 'Normal: 0.0 (no depression). Values > 1.0 indicate signs of abnormal heart workload.',
+                'term': 'Resting Blood Pressure (Tekanan Darah Istirahat)',
+                'icon': 'bi-activity',
+                'color': '#ef5350',
+                'short': 'Blood pressure when the body is in a calm state or not active.',
+                'detail': 'High blood pressure forces the heart to work harder and can damage blood vessels and vital organs if uncontrolled.',
+                'normal': 'Normal: < 120 mmHg. Pre-hypertension: 120–129 mmHg. Hypertension: ≥ 130 mmHg.',
+                'tags': ['vital', 'cardiovascular']
+            },
+            {
+                'term': 'Resting ECG (Hasil ECG Istirahat)',
+                'icon': 'bi-heart-pulse-fill',
+                'color': '#26a69a',
+                'short': 'Result of heart\'s electrical recording while resting.',
+                'detail': 'This examination is performed in a hospital or clinic using an ECG machine.',
+                'normal': 'Categorized as:\n- **Normal**: Heart recording shows good condition.\n- **ST-T Abnormal**: There are changes in the heart recording that could point to heart disorders.\n- **Left Ventricular Hypertrophy**: The left heart muscle is thicker than usual because the heart is working harder.',
                 'tags': ['exam', 'cardiovascular']
             },
             {
@@ -778,12 +778,12 @@ TRANSLATIONS = {
                 'tags': ['exam', 'cardiovascular']
             },
             {
-                'term': 'Number of Major Vessels (CA)',
-                'icon': 'bi-diagram-3-fill',
-                'color': '#42a5f5',
-                'short': 'Shows how many of the main blood vessels of the heart are narrowing based on special examination results.',
-                'detail': 'Uses fluoroscopy to view the number of major blood vessels (0-4) experiencing blockage or narrowing of blood flow.',
-                'normal': '0 = Normal (no narrowing). 1 to 4 = Number of narrowed blood vessels.',
+                'term': 'ST Depression (Oldpeak)',
+                'icon': 'bi-graph-down',
+                'color': '#78909c',
+                'short': 'A value showing how much the heart\'s workload changes during activity compared to rest.',
+                'detail': 'Measures the depression of the ST segment on the ECG graph due to physical activity. The higher the value, the higher the likelihood of insufficient blood flow to the heart.',
+                'normal': 'Normal: 0.0 (no depression). Values > 1.0 indicate signs of abnormal heart workload.',
                 'tags': ['exam', 'cardiovascular']
             },
             {
